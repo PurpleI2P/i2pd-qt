@@ -1,0 +1,3 @@
+[submodule "src/i2pd"]
+	path = src/i2pd
+	url = https://github.com/PurpleI2P/i2pd.git
