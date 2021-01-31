@@ -90,28 +90,28 @@ FORMS += \
     src/generalsettingswidget.ui \
     src/AboutDialog.ui
 
-LIBS += src/i2pd/libi2pd.a src/i2pd/libi2pdclient.a -lz
+LIBS += $$PWD/src/i2pd/libi2pd.a $$PWD/src/i2pd/libi2pdclient.a -lz
 
 libi2pd.commands = @echo Building i2pd libraries
-libi2pd.target = src/i2pd/libi2pd.a
+libi2pd.target = $$PWD/src/i2pd/libi2pd.a
 libi2pd.depends = i2pd FORCE
 
-i2pd.commands = cd src/i2pd/ && mkdir -p obj/libi2pd obj/libi2pd_client && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) USE_UPNP=yes $$I2PDMAKE mk_obj_dir api_client
-i2pd.target += src/i2pd/libi2pdclient.a
+i2pd.commands = cd $$PWD/src/i2pd/ && mkdir -p obj/libi2pd obj/libi2pd_client && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) USE_UPNP=yes $$I2PDMAKE mk_obj_dir api_client
+i2pd.target += $$PWD/src/i2pd/libi2pdclient.a
 i2pd.depends = FORCE
 
-cleani2pd.commands = cd src/i2pd/ && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) clean
+cleani2pd.commands = cd $$PWD/src/i2pd/ && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) clean
 #cleani2pd.depends = clean
 
-PRE_TARGETDEPS += src/i2pd/libi2pd.a src/i2pd/libi2pdclient.a
+PRE_TARGETDEPS += $$PWD/src/i2pd/libi2pd.a $$PWD/src/i2pd/libi2pdclient.a
 QMAKE_EXTRA_TARGETS += cleani2pd i2pd libi2pd
 CLEAN_DEPS += cleani2pd
 
-BuildDateTimeQtTarget.target = src/BuildDateTimeQt.h
+BuildDateTimeQtTarget.target = $$PWD/src/BuildDateTimeQt.h
 BuildDateTimeQtTarget.depends = FORCE
 # 'touch' is unix-only; will probably break on non-unix, TBD
-BuildDateTimeQtTarget.commands = touch src/BuildDateTimeQt.h
-PRE_TARGETDEPS += src/BuildDateTimeQt.h
+BuildDateTimeQtTarget.commands = touch $$PWD/src/BuildDateTimeQt.h
+PRE_TARGETDEPS += $$PWD/src/BuildDateTimeQt.h
 QMAKE_EXTRA_TARGETS += BuildDateTimeQtTarget
 
 # git only, port to other VCS, too. TBD
@@ -156,7 +156,7 @@ windows {
         QMAKE_LFLAGS_RELEASE += -s
 
         LIBS = \
-        src/i2pd/libi2pd.a src/i2pd/libi2pdclient.a \
+        $$PWD/src/i2pd/libi2pd.a $$PWD/src/i2pd/libi2pdclient.a \
         -lminiupnpc \
         -lboost_system$$BOOST_SUFFIX \
         -lboost_date_time$$BOOST_SUFFIX \
