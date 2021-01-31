@@ -115,7 +115,7 @@ PRE_TARGETDEPS += $$PWD/src/BuildDateTimeQt.h
 QMAKE_EXTRA_TARGETS += BuildDateTimeQtTarget
 
 # git only, port to other VCS, too. TBD
-DEFINES += VCS_COMMIT_INFO="\\\"git:$(shell git -C \""$$_PRO_FILE_PWD_"\" describe)\\\""
+DEFINES += VCS_COMMIT_INFO="\\\"git:$(shell git -C \""$$_PRO_FILE_PWD_"\" describe --always)\\\""
 
 macx {
 	message("using mac os x target")
