@@ -1,6 +1,6 @@
-# Installation
+# Downloads
 
- * Flathub: https://flathub.org/apps/details/website.i2pd.i2pd
+<a href='https://flathub.org/apps/details/website.i2pd.i2pd'><img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>
 
 # Build Requirements
 
