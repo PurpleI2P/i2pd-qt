@@ -92,19 +92,20 @@ FORMS += \
 
 LIBS += $$PWD/src/i2pd/libi2pd.a $$PWD/src/i2pd/libi2pdclient.a -lz
 
-libi2pd.commands = @echo Building i2pd libraries
-libi2pd.target = $$PWD/src/i2pd/libi2pd.a
-libi2pd.depends = i2pd FORCE
+# doing that way due to race condition made by make
+i2pd_client.commands = cd $$PWD/src/i2pd/ && mkdir -p obj/libi2pd obj/libi2pd_client && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) USE_UPNP=yes $$I2PDMAKE mk_obj_dir api_client
+i2pd_client.target = $$PWD/src/i2pd/libi2pdclient.a
+i2pd_client.depends = i2pd FORCE
 
-i2pd.commands = cd $$PWD/src/i2pd/ && mkdir -p obj/libi2pd obj/libi2pd_client && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) USE_UPNP=yes $$I2PDMAKE mk_obj_dir api_client
-i2pd.target += $$PWD/src/i2pd/libi2pdclient.a
+i2pd.commands = cd $$PWD/src/i2pd/ && mkdir -p obj/libi2pd obj/libi2pd_client && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) USE_UPNP=yes $$I2PDMAKE mk_obj_dir api
+i2pd.target += $$PWD/src/i2pd/libi2pd.a
 i2pd.depends = FORCE
 
 cleani2pd.commands = cd $$PWD/src/i2pd/ && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) clean
 #cleani2pd.depends = clean
 
 PRE_TARGETDEPS += $$PWD/src/i2pd/libi2pd.a $$PWD/src/i2pd/libi2pdclient.a
-QMAKE_EXTRA_TARGETS += cleani2pd i2pd libi2pd
+QMAKE_EXTRA_TARGETS += cleani2pd i2pd i2pd_client
 CLEAN_DEPS += cleani2pd
 
 BuildDateTimeQtTarget.target = $$PWD/src/BuildDateTimeQt.h
