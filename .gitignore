@@ -10,3 +10,7 @@ i2pd_qt_plugin_import.cpp
 i2pd_qt.pro.autosave*
 /debug
 /release
+*.tmp
+
+#backups
+*~
