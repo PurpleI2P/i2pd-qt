@@ -11,6 +11,8 @@ i2pd_qt.pro.autosave*
 /debug
 /release
 *.tmp
+*.o
 
 #backups
 *~
+
