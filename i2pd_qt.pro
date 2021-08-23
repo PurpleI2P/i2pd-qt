@@ -91,7 +91,7 @@ FORMS += \
     src/generalsettingswidget.ui \
     src/AboutDialog.ui
 
-LIBS += $$PWD/src/i2pd/libi2pd.a $$PWD/src/i2pd/libi2pdclient.a -lz
+LIBS += $$PWD/src/i2pd/libi2pd.a $$PWD/src/i2pd/libi2pdclient.a $$PWD/src/i2pd/libi2pdlang.a -lz
 
 # doing that way due to race condition made by make
 i2pd_client.commands = cd $$PWD/src/i2pd/ && mkdir -p obj/libi2pd obj/libi2pd_client obj/i18n && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) USE_UPNP=yes $$I2PDMAKE mk_obj_dir api_client lang
