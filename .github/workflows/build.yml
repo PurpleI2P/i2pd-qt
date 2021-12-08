@@ -5,7 +5,11 @@ on: [push, pull_request]
 jobs:
   build_qt:
     name: With QT GUI
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+#        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-18.04, ubuntu-20.04]
     steps:
     - uses: actions/checkout@v2
       with:
@@ -18,4 +22,4 @@ jobs:
     - name: build application
       run: |
         qmake
-        make -j3
+        make -j$(nproc)
