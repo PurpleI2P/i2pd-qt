@@ -6,4 +6,6 @@
 
 ## Build Requirements
 
- * Qt 5 is necessary (because Qt4 lacks QtWidgets/ folder)
+ * Qt 5 is necessary (because Qt 4 lacks `QtWidgets/` folder):
+   * ubuntu 20.04: `sudo apt install qt5-default qt5-doc qt5-doc-html`
+ 
