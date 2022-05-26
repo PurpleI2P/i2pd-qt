@@ -30,11 +30,13 @@
   <url type="homepage">https://i2pd.website/</url>
   <url type="bugtracker">https://github.com/PurpleI2P/i2pd/issues</url>
   <url type="help">https://i2pd.readthedocs.io/en/latest/</url>
-  <update_contact>supervillain@riseup.net</update_contact>
+  <update_contact>r4sas@i2pmail.org</update_contact>
   <developer_name>PurpleI2P Team</developer_name>
   <translation type="qt" />
 
   <releases>
+    <release version="2.42.1" date="2022-05-24" />
+    <release version="2.42.0" date="2022-02-22" />
     <release version="2.41.0" date="2022-02-20" />
     <release version="2.40.0" date="2021-11-28" />
     <release version="2.39.0" date="2021-08-23" />
