@@ -3,6 +3,15 @@ QT += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = i2pd_qt
+TARGET.files = i2pd_qt
+linux:TARGET.path = /usr/bin/
+
+desktop.files = contrib/website.i2pd.i2pd.desktop
+linux:desktop.path = /usr/share/applications/
+
+icons.files = contrib/icons/*
+linux:icons.path = /usr/share/icons/hicolor/
+
 TEMPLATE = app
 QMAKE_CXXFLAGS *= -Wno-unused-parameter -Wno-maybe-uninitialized -Wno-deprecated-copy
 CONFIG += strict_c++ c++11
@@ -143,6 +152,10 @@ macx {
 linux:!android {
         message("Using Linux settings")
         LIBS += -lcrypto -lssl -lboost_system -lboost_date_time -lboost_filesystem -lboost_program_options -lpthread -lminiupnpc
+
+        INSTALLS += TARGET
+        INSTALLS += icons
+        INSTALLS += desktop
 }
 
 windows {
