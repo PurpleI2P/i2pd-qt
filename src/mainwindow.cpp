@@ -325,6 +325,10 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     initIPAddressBox(   OPTION("ntcp2","addressv6",[]{return "::";}), uiSettings->ntcp2AddressV6LineEdit, tr("NTCP2 -> IPv6 address")); //External IPv6 for incoming connections
     initStringBox(      OPTION("ntcp2","proxy",[]{return "";}), uiSettings->lineEditNtcp2Proxy); //Specify proxy server for NTCP2. Should be http://address:port or socks://address:port
 
+    initCheckBox(       OPTION("ssu2","enabled",[]{return "false";}), uiSettings->ssu2enabledCheckBox);
+    initCheckBox(       OPTION("ssu2","published",[]{return "false";}), uiSettings->ssu2publishedCheckBox);
+    initTCPPortBox(     OPTION("ssu2","port",[]{return "0";}), uiSettings->ssu2portLineEdit, tr("Port to listen for incoming SSU2 packets (set 0 to auto-assign the port)"));
+
     initCheckBox(       OPTION("nettime","enabled",[]{return "false";}), uiSettings->checkBoxNettimeEnable); //Enable NTP sync. Disabled by default
     initStringBox(      OPTION("nettime","ntpservers",[]{return "pool.ntp.org";}), uiSettings->lineEditNetTimeNtpServers); //Comma-separated list of NTP servers. pool.ntp.org by default
     initIntegerBox(     OPTION("nettime","ntpsyncinterval",[]{return "72";}), uiSettings->nettimeNtpSyncIntervalNumberLineEdit, tr("nettimeNtpSyncInterval")); //NTP time sync interval in hours. 72 by default
