@@ -16,6 +16,9 @@ TEMPLATE = app
 QMAKE_CXXFLAGS *= -Wno-unused-parameter -Wno-maybe-uninitialized -Wno-deprecated-copy
 CONFIG += strict_c++ c++11
 
+# suppress OpenSSL deprecation warnings
+DEFINES += OPENSSL_SUPPRESS_DEPRECATED
+
 CONFIG(debug, debug|release) {
     message(Debug build)
 
