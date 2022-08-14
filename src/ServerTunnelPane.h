@@ -107,7 +107,8 @@ private:
         inPortLabel->setText(QApplication::translate("srvTunForm", "InPort:", 0));
         cryptoTypeLabel->setText(QApplication::translate("srvTunForm", "Crypto type:", 0));
         accessListLabel->setText(QApplication::translate("srvTunForm", "Access list:", 0));
-        hostOverrideLabel->setText(QApplication::translate("srvTunForm", "Host override:", 0));
+        if(tunnelConfig->getType()==i2p::client::I2P_TUNNELS_SECTION_TYPE_HTTP)
+            hostOverrideLabel->setText(QApplication::translate("srvTunForm", "Host override:", 0));
         webIRCPassLabel->setText(QApplication::translate("srvTunForm", "WebIRC password:", 0));
         addressLabel->setText(QApplication::translate("srvTunForm", "Address:", 0));
 
@@ -131,7 +132,9 @@ protected:
         if(!isValidSingleLine(keysLineEdit))return false;
         if(!isValidSingleLine(inPortLineEdit))return false;
         if(!isValidSingleLine(accessListLineEdit))return false;
-        if(!isValidSingleLine(hostOverrideLineEdit))return false;
+        if(stc->getType()==i2p::client::I2P_TUNNELS_SECTION_TYPE_HTTP) {
+            if(!isValidSingleLine(hostOverrideLineEdit))return false;
+        }
         if(!isValidSingleLine(webIRCPassLineEdit))return false;
         if(!isValidSingleLine(addressLineEdit))return false;
 
@@ -165,7 +168,9 @@ protected:
 
         stc->setaccessList(accessListLineEdit->text().toStdString());
 
-        stc->sethostOverride(hostOverrideLineEdit->text().toStdString());
+        if(stc->getType()==i2p::client::I2P_TUNNELS_SECTION_TYPE_HTTP) {
+            stc->sethostOverride(hostOverrideLineEdit->text().toStdString());
+        }
 
         stc->setwebircpass(webIRCPassLineEdit->text().toStdString());
 
