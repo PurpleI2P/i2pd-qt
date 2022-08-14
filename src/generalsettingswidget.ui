@@ -3005,7 +3005,7 @@ Comma separated list of base64 identities:</string>
        </size>
       </property>
       <property name="title">
-       <string>Socks proxy</string>
+       <string>Socks5 proxy</string>
       </property>
       <widget class="QWidget" name="verticalLayoutWidget_8">
        <property name="geometry">
