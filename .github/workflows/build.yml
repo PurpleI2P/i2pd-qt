@@ -23,7 +23,7 @@ jobs:
       if: matrix.os == 'ubuntu-22.04'
       run: |
         sudo apt-get update
-        sudo apt-get install build-essential qtbase5-dev qt5-qmake libqt5gui5 libboost-dev libminiupnpc-dev libssl-dev zlib1g-dev
+        sudo apt-get install build-essential qtbase5-dev qt5-qmake libqt5gui5 libboost-all-dev libminiupnpc-dev libssl-dev zlib1g-dev
     - name: Build application
       run: |
         qmake
