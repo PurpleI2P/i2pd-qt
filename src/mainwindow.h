@@ -681,7 +681,7 @@ private:
         std::string address = "127.0.0.1";
         int destinationPort = 0;
         int cryptoType = 0;
-        i2p::data::SigningKeyType sigType = i2p::data::SIGNING_KEY_TYPE_ECDSA_SHA256_P256;
+        i2p::data::SigningKeyType sigType = i2p::data::SIGNING_KEY_TYPE_EDDSA_SHA512_ED25519;
         // I2CP
         I2CPParameters i2cpParameters;
         CreateDefaultI2CPOptions (i2cpParameters);
@@ -709,7 +709,7 @@ private:
         std::string hostOverride = "";
         std::string webircpass = "";
         bool gzip = true;
-        i2p::data::SigningKeyType sigType = i2p::data::SIGNING_KEY_TYPE_ECDSA_SHA256_P256;
+        i2p::data::SigningKeyType sigType = i2p::data::SIGNING_KEY_TYPE_EDDSA_SHA512_ED25519;
         std::string address = "127.0.0.1";
         bool isUniqueLocal = true;
         int cryptoType = 0;
