@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>679</width>
-    <height>4152</height>
+    <height>8152</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -584,7 +584,7 @@ QGroupBox::title {
          <x>0</x>
          <y>20</y>
          <width>661</width>
-         <height>397</height>
+         <height>488</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -622,6 +622,47 @@ QGroupBox::title {
            <string>Enable SSU transport protocol (use UDP)</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="ssu2enabledCheckBox">
+          <property name="text">
+           <string>Enable SSU2</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="ssu2publishedCheckBox">
+          <property name="text">
+           <string>Publish SSU2</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="ssu2horizontalLayout">
+          <item>
+           <widget class="QLabel" name="ssu2portLabel">
+            <property name="text">
+             <string>Port to listen for incoming SSU2 packets (0 means auto-assign):</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="ssu2portLineEdit"/>
+          </item>
+          <item>
+           <spacer name="ssu2horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
         <item>
          <widget class="QCheckBox" name="natCheckBox">
