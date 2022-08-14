@@ -31,8 +31,8 @@ int ServerTunnelPane::appendServerTunnelForm(
     gridLayoutWidget_2->setGeometry(QRect(0, 0, 561, h));
     serverTunnelNameGroupBox->setGeometry(QRect(0, 0, 561, h));
 
+    const QString& type = tunnelConfig->getType();
     {
-        const QString& type = tunnelConfig->getType();
         int index=0;
         if(type==i2p::client::I2P_TUNNELS_SECTION_TYPE_SERVER)tunnelTypeComboBox->setCurrentIndex(index);
         ++index;
@@ -137,6 +137,7 @@ int ServerTunnelPane::appendServerTunnelForm(
         horizontalLayout_2->addItem(horizontalSpacer);
         tunnelGridLayout->addLayout(horizontalLayout_2);
     }
+
     {
         std::string hostOverride = tunnelConfig->gethostOverride();
         QHBoxLayout *horizontalLayout_2 = new QHBoxLayout();
@@ -144,12 +145,14 @@ int ServerTunnelPane::appendServerTunnelForm(
         ui.hostOverrideLabel = new QLabel(gridLayoutWidget_2);
         hostOverrideLabel->setObjectName(QStringLiteral("hostOverrideLabel"));
         horizontalLayout_2->addWidget(hostOverrideLabel);
+        hostOverrideLabel->setEnabled(type==i2p::client::I2P_TUNNELS_SECTION_TYPE_HTTP);
         ui.hostOverrideLineEdit = new QLineEdit(gridLayoutWidget_2);
         hostOverrideLineEdit->setObjectName(QStringLiteral("hostOverrideLineEdit"));
         hostOverrideLineEdit->setText(hostOverride.c_str());
         QObject::connect(hostOverrideLineEdit, SIGNAL(textChanged(const QString &)),
-                                 this, SLOT(updated()));
+                             this, SLOT(updated()));
         horizontalLayout_2->addWidget(hostOverrideLineEdit);
+        hostOverrideLineEdit->setEnabled(type==i2p::client::I2P_TUNNELS_SECTION_TYPE_HTTP);
         QSpacerItem * horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
         horizontalLayout_2->addItem(horizontalSpacer);
         tunnelGridLayout->addLayout(horizontalLayout_2);

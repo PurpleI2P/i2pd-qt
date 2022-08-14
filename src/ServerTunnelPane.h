@@ -131,7 +131,9 @@ protected:
         if(!isValidSingleLine(keysLineEdit))return false;
         if(!isValidSingleLine(inPortLineEdit))return false;
         if(!isValidSingleLine(accessListLineEdit))return false;
-        if(!isValidSingleLine(hostOverrideLineEdit))return false;
+        if(stc->getType()==i2p::client::I2P_TUNNELS_SECTION_TYPE_HTTP) {
+            if(!isValidSingleLine(hostOverrideLineEdit))return false;
+        }
         if(!isValidSingleLine(webIRCPassLineEdit))return false;
         if(!isValidSingleLine(addressLineEdit))return false;
 
@@ -165,7 +167,9 @@ protected:
 
         stc->setaccessList(accessListLineEdit->text().toStdString());
 
-        stc->sethostOverride(hostOverrideLineEdit->text().toStdString());
+        if(stc->getType()==i2p::client::I2P_TUNNELS_SECTION_TYPE_HTTP) {
+            stc->sethostOverride(hostOverrideLineEdit->text().toStdString());
+        }
 
         stc->setwebircpass(webIRCPassLineEdit->text().toStdString());
 
@@ -176,6 +180,10 @@ protected:
         stc->setisUniqueLocal(isUniqueLocalCheckBox->isChecked());
 
         stc->setsigType(readSigTypeComboboxUI(sigTypeComboBox));
+
+        hostOverrideLabel->setEnabled(stc->getType()==i2p::client::I2P_TUNNELS_SECTION_TYPE_HTTP);
+        hostOverrideLineEdit->setEnabled(stc->getType()==i2p::client::I2P_TUNNELS_SECTION_TYPE_HTTP);
+
         return true;
     }
 };
