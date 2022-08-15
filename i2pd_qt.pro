@@ -19,6 +19,8 @@ CONFIG += strict_c++ c++11
 # suppress OpenSSL deprecation warnings
 DEFINES += OPENSSL_SUPPRESS_DEPRECATED
 
+DEFINES += USE_UPNP
+
 CONFIG(debug, debug|release) {
     message(Debug build)
 
