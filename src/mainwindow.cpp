@@ -216,7 +216,7 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     initIntegerBox(     OPTION("","share",[]{return "100";}), uiSettings->shareLineEdit, tr("Share"));//Max % of bandwidth limit for transit. 0-100. 100 by default
     initStringBox(      OPTION("","family",[]{return "";}), uiSettings->familyLineEdit);
     initIntegerBox(     OPTION("","netid",[]{return "2";}), uiSettings->netIdLineEdit, tr("NetID"));
-    initCheckBox(       OPTION("","ssu",[]{return "true";}), uiSettings->ssuCheckBox);//Enable SSU transport protocol (use UDP). true by default
+    initCheckBox(       OPTION("","ssu",[]{return "false";}), uiSettings->ssuCheckBox);//Enable SSU transport protocol (use UDP). true by default
     initCheckBox(       OPTION("","reservedrange",[]{return "true";}), uiSettings->reservedrange_checkbox);
 
 #ifdef Q_OS_WIN
@@ -325,8 +325,8 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     initIPAddressBox(   OPTION("ntcp2","addressv6",[]{return "::";}), uiSettings->ntcp2AddressV6LineEdit, tr("NTCP2 -> IPv6 address")); //External IPv6 for incoming connections
     initStringBox(      OPTION("ntcp2","proxy",[]{return "";}), uiSettings->lineEditNtcp2Proxy); //Specify proxy server for NTCP2. Should be http://address:port or socks://address:port
 
-    initCheckBox(       OPTION("ssu2","enabled",[]{return "false";}), uiSettings->ssu2enabledCheckBox);
-    initCheckBox(       OPTION("ssu2","published",[]{return "false";}), uiSettings->ssu2publishedCheckBox);
+    initCheckBox(       OPTION("ssu2","enabled",[]{return "true";}), uiSettings->ssu2enabledCheckBox);
+    initCheckBox(       OPTION("ssu2","published",[]{return "true";}), uiSettings->ssu2publishedCheckBox);
     initTCPPortBox(     OPTION("ssu2","port",[]{return "0";}), uiSettings->ssu2portLineEdit, tr("Port to listen for incoming SSU2 packets (set 0 to auto-assign the port)"));
 
     initCheckBox(       OPTION("nettime","enabled",[]{return "false";}), uiSettings->checkBoxNettimeEnable); //Enable NTP sync. Disabled by default
