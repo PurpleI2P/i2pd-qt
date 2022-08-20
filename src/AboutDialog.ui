@@ -42,8 +42,14 @@
      <x>10</x>
      <y>10</y>
      <width>381</width>
-     <height>17</height>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;About i2pd_qt&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -55,8 +61,14 @@
      <x>10</x>
      <y>40</y>
      <width>131</width>
-     <height>17</height>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <property name="text">
     <string>i2pd Version:</string>
@@ -68,8 +80,14 @@
      <x>10</x>
      <y>70</y>
      <width>131</width>
-     <height>17</height>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <property name="text">
     <string>Build Date/Time:</string>
@@ -81,8 +99,14 @@
      <x>150</x>
      <y>40</y>
      <width>241</width>
-     <height>20</height>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <property name="text">
     <string>I2PD_VERSION_LABEL</string>
@@ -94,8 +118,14 @@
      <x>10</x>
      <y>130</y>
      <width>131</width>
-     <height>17</height>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <property name="text">
     <string>I2P Version:</string>
@@ -107,8 +137,14 @@
      <x>150</x>
      <y>130</y>
      <width>241</width>
-     <height>17</height>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <property name="text">
     <string>I2P_VERSION_LABEL</string>
@@ -120,8 +156,14 @@
      <x>150</x>
      <y>70</y>
      <width>241</width>
-     <height>20</height>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <property name="text">
     <string>BUILD_DATE_TIME_LABEL</string>
@@ -133,8 +175,14 @@
      <x>10</x>
      <y>100</y>
      <width>131</width>
-     <height>17</height>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <property name="text">
     <string>Version Control:</string>
@@ -146,8 +194,14 @@
      <x>150</x>
      <y>100</y>
      <width>241</width>
-     <height>17</height>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <property name="text">
     <string>VCS_COMMIT_INFO_LABEL</string>
