@@ -56,6 +56,7 @@ SOURCES += \
     src/SaverImpl.cpp \
     src/i2pd/daemon/Daemon.cpp \
     src/i2pd/daemon/HTTPServer.cpp \
+    src/i2pd/daemon/I2PControlHandlers.cpp \
     src/i2pd/daemon/I2PControl.cpp \
     src/i2pd/daemon/i2pd.cpp \
     src/i2pd/daemon/UPnP.cpp \
@@ -84,6 +85,7 @@ HEADERS += \
     src/SaverImpl.h \
     src/i2pd/daemon/Daemon.h \
     src/i2pd/daemon/HTTPServer.h \
+    src/i2pd/daemon/I2PControlHandlers.h \
     src/i2pd/daemon/I2PControl.h \
     src/i2pd/daemon/UPnP.h \
     src/AboutDialog.h \
