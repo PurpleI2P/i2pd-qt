@@ -5,3 +5,7 @@
 ## Downloads
 
 <a href='https://flathub.org/apps/details/website.i2pd.i2pd'><img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>
+
+## Building
+
+See https://i2pd.readthedocs.io/en/latest/devs/building/qt-desktop-gui/ .
