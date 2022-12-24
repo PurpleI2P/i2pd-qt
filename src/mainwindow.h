@@ -1,9 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <sstream>
+
 #include <QObject>
 #include <QMainWindow>
 #include <QPushButton>
+#include <QMessageBox>
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
@@ -756,7 +759,11 @@ private:
         }
         catch (std::exception& ex)
         {
-            LogPrint (eLogWarning, "Clients: Can't read ", tunConf, ": ", ex.what ());//TODO show err box and disable tunn.page
+            LogPrint (eLogWarning, "Clients: Can't read ", tunConf, ": ", ex.what ());
+            std::stringstream error;
+            error << "Error reading tunnels configuration file " << tunConf << ": " << ex.what();
+            QMessageBox::critical(this, "Error", error.str().c_str());
+            DisableTunnelsPage();
             return;
         }
 
@@ -853,13 +860,23 @@ private:
                                                               isUniqueLocal,
                                                               cryptoType);
                 }
-                else
-                    LogPrint (eLogWarning, "Clients: Unknown section type=", type, " of ", name, " in ", tunConf);//TODO show err box and disable the tunn gui
-
+                else {
+                    LogPrint (eLogWarning, "Clients: Unknown section type=", type, " of ", name, " in ", tunConf);
+                    std::stringstream error;
+                    error << "Error reading tunnels configuration file " << tunConf << ": Unknown section type " << type << " of " << name;
+                    QMessageBox::critical(this, "Error", error.str().c_str());
+                    DisableTunnelsPage();
+                    return;
+                }
             }
             catch (std::exception& ex)
             {
-                LogPrint (eLogError, "Clients: Can't read tunnel ", name, " params: ", ex.what ());//TODO show err box and disable the tunn gui
+                LogPrint (eLogError, "Clients: ", name, " params: ", ex.what ());
+                std::stringstream error;
+                error << "Error reading tunnels configuration file " << tunConf << ": Can't read tunnel named '" << name << "': " << ex.what();
+                QMessageBox::critical(this, "Error", error.str().c_str());
+                DisableTunnelsPage();
+                return;
             }
         }
     }
@@ -878,6 +895,8 @@ private:
     //void onLoggingOptionsChange() {}
 
     SaverImpl* saverPtr;
+
+    void DisableTunnelsPage();
 };
 
 #endif // MAINWINDOW_H

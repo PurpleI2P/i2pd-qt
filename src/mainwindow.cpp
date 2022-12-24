@@ -68,7 +68,10 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     ,tunconfpath()
     ,tunnelConfigs()
     ,tunnelsPageUpdateListener(this)
-    ,saverPtr(new SaverImpl(this, &configItems, &tunnelConfigs))
+    ,saverPtr(
+         new SaverImpl(this,
+                       QSharedPointer<QList<MainWindowItem*>>(&configItems),
+                       QSharedPointer<std::map<std::string,TunnelConfig*>>(&tunnelConfigs)))
 
 {
     assert(delayedSaveManagerPtr!=nullptr);
@@ -771,6 +774,10 @@ void MainWindow::loadAllConfigs(SaverImpl* saverPtr){
     ReadTunnelsConfig();
 
     //onLoggingOptionsChange();
+}
+
+void MainWindow::DisableTunnelsPage() {
+    ui->tunnelsScrollAreaWidgetContents->setEnabled(false);
 }
 
 void MainWindow::layoutTunnels() {
