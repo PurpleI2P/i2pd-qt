@@ -70,8 +70,8 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     ,tunnelsPageUpdateListener(this)
     ,saverPtr(
          new SaverImpl(this,
-                       QSharedPointer<QList<MainWindowItem*>>(&configItems),
-                       QSharedPointer<std::map<std::string,TunnelConfig*>>(&tunnelConfigs)))
+                       &configItems,
+                       &tunnelConfigs))
 
 {
     assert(delayedSaveManagerPtr!=nullptr);

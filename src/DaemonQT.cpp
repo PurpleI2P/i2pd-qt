@@ -25,40 +25,40 @@ namespace qt
 	void Worker::startDaemon()
 	{
 		qDebug("Performing daemon start...");
-        //try{
+        try{
             m_Daemon.start();
             qDebug("Daemon started.");
             emit resultReady(false, "");
-        /*}catch(std::exception ex){
+        }catch(std::exception& ex){
             emit resultReady(true, ex.what());
         }catch(...){
             emit resultReady(true, QObject::tr("Error: unknown exception"));
-        }*/
+        }
 	}
 	void Worker::restartDaemon()
 	{
 		qDebug("Performing daemon restart...");
-        //try{
+        try{
             m_Daemon.restart();
             qDebug("Daemon restarted.");
             emit resultReady(false, "");
-        /*}catch(std::exception ex){
+        }catch(std::exception& ex){
             emit resultReady(true, ex.what());
         }catch(...){
             emit resultReady(true, QObject::tr("Error: unknown exception"));
-        }*/
+        }
     }
 	void Worker::stopDaemon() {
 		qDebug("Performing daemon stop...");
-        //try{
+        try{
             m_Daemon.stop();
             qDebug("Daemon stopped.");
             emit resultReady(false, "");
-        /*}catch(std::exception ex){
+        }catch(std::exception& ex){
             emit resultReady(true, ex.what());
         }catch(...){
             emit resultReady(true, QObject::tr("Error: unknown exception"));
-        }*/
+        }
     }
 
     Controller::Controller(DaemonQTImpl& daemon):
