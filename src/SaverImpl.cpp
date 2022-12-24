@@ -9,7 +9,7 @@
 
 #include "mainwindow.h"
 
-SaverImpl::SaverImpl(MainWindow *mainWindowPtr_, QList<MainWindowItem*> * configItems_, std::map<std::string,TunnelConfig*>* tunnelConfigs_) :
+SaverImpl::SaverImpl(MainWindow *mainWindowPtr_, QSharedPointer<QList<MainWindowItem*>> configItems_, QSharedPointer<std::map<std::string,TunnelConfig*>> tunnelConfigs_) :
     configItems(configItems_), tunnelConfigs(tunnelConfigs_), confpath(), tunconfpath(), mainWindowPtr(mainWindowPtr_)
 {}
 
