@@ -19,7 +19,7 @@ public:
 
 signals:
     void reloadTunnelsConfigAndUISignal(const QString);
-
+    void showPreventedSaveTunnelsConfMessage();
 };
 
 #endif // SAVER_H

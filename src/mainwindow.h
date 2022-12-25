@@ -500,6 +500,8 @@ public:
     Ui::GeneralSettingsContentsForm* uiSettings;
     void adjustSizesAccordingToWrongLabel();
     bool applyTunnelsUiToConfigs();
+    void preventSaveTunnels();
+    bool isPreventSaveTunnelsMode();
 private:
     int settingsTitleLabelNominalHeight;
     TextBrowserTweaked1 * textBrowser;
@@ -894,9 +896,13 @@ private:
 
     //void onLoggingOptionsChange() {}
 
+    bool preventSaveTunnelsBool;
     SaverImpl* saverPtr;
 
     void DisableTunnelsPage();
+
+public slots:
+    void showTunnelsPagePreventedMessage();
 };
 
 #endif // MAINWINDOW_H
