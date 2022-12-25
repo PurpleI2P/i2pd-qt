@@ -14,8 +14,7 @@
 class MainWindowItem;
 class TunnelConfig;
 
-class SaverImpl : public Saver
-{
+class SaverImpl : public Saver {
 public:
     SaverImpl(MainWindow *mainWindowPtr_, QList<MainWindowItem*>* configItems_, std::map<std::string,TunnelConfig*>* tunnelConfigs_);
     virtual ~SaverImpl();

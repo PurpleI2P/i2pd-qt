@@ -11,7 +11,9 @@
 
 SaverImpl::SaverImpl(MainWindow *mainWindowPtr_, QList<MainWindowItem*>* configItems_, std::map<std::string,TunnelConfig*>* tunnelConfigs_) :
     configItems(configItems_), tunnelConfigs(tunnelConfigs_), confpath(), tunconfpath(), mainWindowPtr(mainWindowPtr_)
-{}
+{
+    QObject::connect(this, SIGNAL(showPreventedSaveTunnelsConfMessage()), mainWindowPtr, SLOT(showTunnelsPagePreventedMessage()));
+}
 
 SaverImpl::~SaverImpl() {}
 
@@ -37,7 +39,9 @@ bool SaverImpl::save(bool reloadAfterSave, const FocusEnum focusOn, const std::s
     }
 
     //save tunnels config
-    {
+    if (mainWindowPtr->isPreventSaveTunnelsMode()) {
+        emit showPreventedSaveTunnelsConfMessage();
+    }else{
         std::stringstream out;
 
         for (std::map<std::string,TunnelConfig*>::iterator it=tunnelConfigs->begin(); it!=tunnelConfigs->end(); ++it) {

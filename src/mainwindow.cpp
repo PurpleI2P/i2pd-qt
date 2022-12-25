@@ -16,6 +16,7 @@
 #include <QStyleHints>
 #include <QScreen>
 #include <QWindow>
+#include <QMessageBox>
 
 #include <assert.h>
 
@@ -68,6 +69,7 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     ,tunconfpath()
     ,tunnelConfigs()
     ,tunnelsPageUpdateListener(this)
+    ,preventSaveTunnelsBool(false)
     ,saverPtr(
          new SaverImpl(this,
                        &configItems,
@@ -778,6 +780,10 @@ void MainWindow::loadAllConfigs(SaverImpl* saverPtr){
 
 void MainWindow::DisableTunnelsPage() {
     ui->tunnelsScrollAreaWidgetContents->setEnabled(false);
+    ui->tunnelsScrollArea->setEnabled(false);
+    ui->addClientTunnelPushButton->setEnabled(false);
+    ui->addServerTunnelPushButton->setEnabled(false);
+    preventSaveTunnels();
 }
 
 void MainWindow::layoutTunnels() {
@@ -1135,3 +1141,14 @@ void MainWindow::syncLogLevel (int /*comboBoxIndex*/) {
     i2p::log::Logger().Reopen ();
 }
 
+void MainWindow::preventSaveTunnels() {
+    preventSaveTunnelsBool = true;
+}
+
+bool MainWindow::isPreventSaveTunnelsMode() {
+    return preventSaveTunnelsBool;
+}
+
+void MainWindow::showTunnelsPagePreventedMessage() {
+    QMessageBox::critical(this,QObject::tr("Error"),QObject::tr("Not saving tunnels configuration due to previous errors with it."));
+}
