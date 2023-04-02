@@ -68,6 +68,7 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     ,confpath()
     ,tunconfpath()
     ,tunnelConfigs()
+    ,tunnelConfigsById()
     ,tunnelsPageUpdateListener(this)
     ,preventSaveTunnelsBool(false)
     ,saverPtr(
@@ -601,7 +602,7 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
         setVisible(!isVisible());
         break;
     default:
-        qDebug() << "MainWindow::iconActivated(): unknown reason: " << reason << endl;
+        qDebug() << "MainWindow::iconActivated(): unknown reason: " << reason << Qt::endl;
         break;
     }
 }
@@ -973,7 +974,7 @@ void MainWindow::TunnelsPageUpdateListenerMainWindowImpl::updated(std::string ol
         std::map<std::string,TunnelConfig*>::const_iterator it=mainWindow->tunnelConfigs.find(oldName);
         if(it!=mainWindow->tunnelConfigs.end())mainWindow->tunnelConfigs.erase(it);
         mainWindow->tunnelConfigs[tunConf->getName()]=tunConf;
-        mainWindow->saveAllConfigs(true, FocusEnum::focusOnTunnelName, tunConf->getName());
+        mainWindow->saveAllConfigs(false, FocusEnum::focusOnTunnelName, tunConf->getName());
     }
     else
         mainWindow->saveAllConfigs(false, FocusEnum::noFocus);

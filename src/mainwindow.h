@@ -244,8 +244,7 @@ public:
     virtual ~LogDestinationComboBoxItem(){}
     virtual void loadFromConfigOption(){
         MainWindowItem::loadFromConfigOption();
-        const char * ld = boost::any_cast<std::string>(optionValue).c_str();
-        comboBox->setCurrentText(QString(ld));
+        comboBox->setCurrentText(QString(boost::any_cast<std::string>(optionValue).c_str()));
     }
     virtual void saveToStringStream(std::stringstream& out){
         std::string logDest = comboBox->currentText().toStdString();
@@ -262,8 +261,7 @@ public:
     virtual ~LogLevelComboBoxItem(){}
     virtual void loadFromConfigOption(){
         MainWindowItem::loadFromConfigOption();
-        const char * ll = boost::any_cast<std::string>(optionValue).c_str();
-        comboBox->setCurrentText(QString(ll));
+        comboBox->setCurrentText(QString(boost::any_cast<std::string>(optionValue).c_str()));
     }
     virtual void saveToStringStream(std::stringstream& out){
         optionValue=comboBox->currentText().toStdString();
@@ -573,6 +571,7 @@ private:
     QString tunconfpath;
 
     std::map<std::string, TunnelConfig*> tunnelConfigs;
+    std::map<int, TunnelConfig*> tunnelConfigsById;
     std::list<TunnelPane*> tunnelPanes;
 
     void appendTunnelForms(std::string tunnelNameToFocus);
@@ -661,9 +660,11 @@ private:
             TunnelConfig* tc=it->second;
             deleteTunnelFromUI(name, tc);
             tunnelConfigs.erase(it);
+            tunnelConfigsById.erase(tc->get_TunnelId());
             delete tc;
         }
         saveAllConfigs(true, FocusEnum::noFocus);
+        delayedSaveManagerPtr->saveNow();
     }
 
     std::string GenerateNewTunnelName() {
@@ -677,7 +678,16 @@ private:
         }
     }
 
+    int GenerateNewTunnelId() {
+        int i=1;
+        while(true){
+            if(tunnelConfigsById.find(i)==tunnelConfigsById.end())return i;
+            ++i;
+        }
+    }
+
     void CreateDefaultClientTunnel() {//TODO dedup default values with ReadTunnelsConfig() and with ClientContext.cpp::ReadTunnels ()
+        int tunnelId=GenerateNewTunnelId();
         std::string name=GenerateNewTunnelName();
         std::string type = I2P_TUNNELS_SECTION_TYPE_CLIENT;
         std::string dest = "127.0.0.1";
@@ -691,7 +701,9 @@ private:
         I2CPParameters i2cpParameters;
         CreateDefaultI2CPOptions (i2cpParameters);
 
-        tunnelConfigs[name]=new ClientTunnelConfig(name, QString(type.c_str()), i2cpParameters,
+        tunnelConfigs[name]=tunnelConfigsById[tunnelId]=new ClientTunnelConfig(
+                    tunnelId,
+                    name, QString(type.c_str()), i2cpParameters,
                                                       dest,
                                                       port,
                                                       keys,
@@ -701,9 +713,11 @@ private:
                                                       cryptoType);
 
         saveAllConfigs(true, FocusEnum::focusOnTunnelName, name);
+        delayedSaveManagerPtr->saveNow();
     }
 
     void CreateDefaultServerTunnel() {//TODO dedup default values with ReadTunnelsConfig() and with ClientContext.cpp::ReadTunnels ()
+        int tunnelId=GenerateNewTunnelId();
         std::string name=GenerateNewTunnelName();
         std::string type=I2P_TUNNELS_SECTION_TYPE_SERVER;
         std::string host = "127.0.0.1";
@@ -723,7 +737,9 @@ private:
         I2CPParameters i2cpParameters;
         CreateDefaultI2CPOptions (i2cpParameters);
 
-        tunnelConfigs[name]=new ServerTunnelConfig(name, QString(type.c_str()), i2cpParameters,
+        tunnelConfigs[name]=tunnelConfigsById[tunnelId]=new ServerTunnelConfig(
+                    tunnelId,
+                    name, QString(type.c_str()), i2cpParameters,
                                                   host,
                                                   port,
                                                   keys,
@@ -739,6 +755,7 @@ private:
 
 
         saveAllConfigs(true, FocusEnum::focusOnTunnelName, name);
+        delayedSaveManagerPtr->saveNow();
     }
 
     void ReadTunnelsConfig() //TODO deduplicate the code with ClientContext.cpp::ReadTunnels ()
@@ -797,8 +814,10 @@ private:
                     std::map<std::string, std::string> options;
                     I2CPParameters i2cpParameters;
                     ReadI2CPOptions (section, options, i2cpParameters);
+                    int tunnelId=GenerateNewTunnelId();
 
-                    tunnelConfigs[name]=new ClientTunnelConfig(name, QString(type.c_str()), i2cpParameters,
+                    tunnelConfigs[name]=tunnelConfigsById[tunnelId]=
+                            new ClientTunnelConfig(tunnelId,name, QString(type.c_str()), i2cpParameters,
                                                               dest,
                                                               port,
                                                               keys,
@@ -831,6 +850,7 @@ private:
                     std::map<std::string, std::string> options;
                     I2CPParameters i2cpParameters;
                     ReadI2CPOptions (section, options, i2cpParameters);
+                    int tunnelId=GenerateNewTunnelId();
 
                     /*
                     std::set<i2p::data::IdentHash> idents;
@@ -848,7 +868,8 @@ private:
                         while (comma != std::string::npos);
                     }
                     */
-                    tunnelConfigs[name]=new ServerTunnelConfig(name, QString(type.c_str()), i2cpParameters,
+                    tunnelConfigs[name]=tunnelConfigsById[tunnelId]=
+                            new ServerTunnelConfig(tunnelId,name, QString(type.c_str()), i2cpParameters,
                                                               host,
                                                               port,
                                                               keys,
