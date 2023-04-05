@@ -33,7 +33,8 @@
 # include <QtDebug>
 #endif
 
-#include "DaemonQT.h"
+#include "controller/i2pd_daemon_controller.h"
+
 #include "SignatureTypeComboboxFactory.h"
 
 #include "logviewermanager.h"
@@ -63,21 +64,23 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     ,routerCommandsParent(new QWidget(this))
     ,widgetlocks()
     ,i2pController(nullptr)
-    ,configItems()
     ,datadir()
     ,confpath()
     ,tunconfpath()
-    ,tunnelConfigs()
+    ,ignoreUpdatesOnAppendForms(false)
+    ,volatileDataHolder(new ConcurrentHolder<VolatileData*>(new VolatileData()))
     ,tunnelsPageUpdateListener(this)
     ,preventSaveTunnelsBool(false)
-    ,saverPtr(
-         new SaverImpl(this,
-                       &configItems,
-                       &tunnelConfigs))
-
+    ,saverPtr(nullptr)
 {
     assert(delayedSaveManagerPtr!=nullptr);
+    assert(volatileDataHolder!=nullptr);
+    assert(volatileDataHolder->getData()!=nullptr);
+    saverPtr=new SaverImpl(this);
     assert(saverPtr!=nullptr);
+
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
 
     ui->setupUi(this);
     statusButtonsUI->setupUi(ui->statusButtonsPane);
@@ -208,8 +211,8 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     initFolderChooser(  OPTION("","datadir",[]{return "";}), uiSettings->dataFolderLineEdit, uiSettings->dataFolderBrowsePushButton);
     initIPAddressBox(   OPTION("","host",[]{return "";}), uiSettings->routerExternalHostLineEdit, tr("Router external address -> Host"));
     initTCPPortBox(     OPTION("","port",[]{return "";}), uiSettings->routerExternalPortLineEdit, tr("Router external address -> Port"));
-    daemonOption=initNonGUIOption(   OPTION("","daemon",[]{return "";}));
-    serviceOption=initNonGUIOption(   OPTION("","service",[]{return "";}));
+    daemonOption=initNonGUIOption(   OPTION("","daemon",[]{return "";}),type_bool);
+    serviceOption=initNonGUIOption(   OPTION("","service",[]{return "";}),type_bool);
     initStringBox(      OPTION("","ifname4",[]{return "";}), uiSettings->ifname4LineEdit);//Network interface to bind to for IPv4
     initStringBox(      OPTION("","ifname6",[]{return "";}), uiSettings->ifname6LineEdit);//Network interface to bind to for IPv6
     initCheckBox(       OPTION("","nat",[]{return "true";}), uiSettings->natCheckBox);//If true, assume we are behind NAT. true by default
@@ -388,7 +391,7 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     uiSettings->configFileLineEdit->setText(confpath);
     uiSettings->tunnelsConfigFileLineEdit->setText(tunconfpath);
 
-    for(QList<MainWindowItem*>::iterator it = configItems.begin(); it!= configItems.end(); ++it) {
+    for(QList<MainWindowItem*>::iterator it = vdata->configItems.begin(); it!= vdata->configItems.end(); ++it) {
         MainWindowItem* item = *it;
         item->installListeners(this);
     }
@@ -601,7 +604,7 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
         setVisible(!isVisible());
         break;
     default:
-        qDebug() << "MainWindow::iconActivated(): unknown reason: " << reason << endl;
+        qDebug() << "MainWindow::iconActivated(): unknown reason: " << reason << Qt::endl;
         break;
     }
 }
@@ -664,11 +667,13 @@ MainWindow::~MainWindow()
     delete statusPageUpdateTimer;
     delete delayedSaveManagerPtr;
     delete saverPtr;
-    for(QList<MainWindowItem*>::iterator it = configItems.begin(); it!= configItems.end(); ++it) {
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+    for(QList<MainWindowItem*>::iterator it = vdata->configItems.begin(); it!= vdata->configItems.end(); ++it) {
         MainWindowItem* item = *it;
         item->deleteLater();
     }
-    configItems.clear();
+    vdata->configItems.clear();
     //QMessageBox::information(0, "Debug", "mw destructor 1");
     //delete ui;
     //QMessageBox::information(0, "Debug", "mw destructor 2");
@@ -678,53 +683,82 @@ FileChooserItem* MainWindow::initFileChooser(ConfigOption option, QLineEdit* fil
     FileChooserItem* retVal;
     retVal=new FileChooserItem(option, fileNameLineEdit, fileBrowsePushButton, this, requireExistingFile, readOnly);
     MainWindowItem* super=retVal;
-    configItems.append(super);
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+    vdata->configItems.append(super);
     return retVal;
 }
 void MainWindow::initFolderChooser(ConfigOption option, QLineEdit* folderLineEdit, QPushButton* folderBrowsePushButton){
-    configItems.append(new FolderChooserItem(option, folderLineEdit, folderBrowsePushButton, this, true));
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+    vdata->configItems.append(new FolderChooserItem(option, folderLineEdit, folderBrowsePushButton, this, true));
 }
 /*void MainWindow::initCombobox(ConfigOption option, QComboBox* comboBox){
     configItems.append(new ComboBoxItem(option, comboBox));
     QObject::connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(saveAllConfigs()));
 }*/
 void MainWindow::initLogDestinationCombobox(ConfigOption option, QComboBox* comboBox){
-    configItems.append(new LogDestinationComboBoxItem(option, comboBox));
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+    vdata->configItems.append(new LogDestinationComboBoxItem(option, comboBox));
 }
 void MainWindow::initLogLevelCombobox(ConfigOption option, QComboBox* comboBox){
-    configItems.append(new LogLevelComboBoxItem(option, comboBox));
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+    vdata->configItems.append(new LogLevelComboBoxItem(option, comboBox));
 }
 void MainWindow::initSignatureTypeCombobox(ConfigOption option, QComboBox* comboBox){
-    configItems.append(new SignatureTypeComboBoxItem(option, comboBox));
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+    vdata->configItems.append(new SignatureTypeComboBoxItem(option, comboBox));
 }
 void MainWindow::initIPAddressBox(ConfigOption option, QLineEdit* addressLineEdit, QString fieldNameTranslated){
-    configItems.append(new IPAddressStringItem(option, addressLineEdit, fieldNameTranslated, this));
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+    vdata->configItems.append(new IPAddressStringItem(option, addressLineEdit, fieldNameTranslated, this));
 }
 void MainWindow::initTCPPortBox(ConfigOption option, QLineEdit* portLineEdit, QString fieldNameTranslated){
-    configItems.append(new TCPPortStringItem(option, portLineEdit, fieldNameTranslated, this));
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+    vdata->configItems.append(new TCPPortStringItem(option, portLineEdit, fieldNameTranslated, this));
 }
 void MainWindow::initCheckBox(ConfigOption option, QCheckBox* checkBox) {
-    configItems.append(new CheckBoxItem(option, checkBox));
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+    vdata->configItems.append(new CheckBoxItem(option, checkBox));
 }
 void MainWindow::initIntegerBox(ConfigOption option, QLineEdit* numberLineEdit, QString fieldNameTranslated){
-    configItems.append(new IntegerStringItem(option, numberLineEdit, fieldNameTranslated, this));
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+    vdata->configItems.append(new IntegerStringItem(option, numberLineEdit, fieldNameTranslated, this));
 }
 void MainWindow::initUInt32Box(ConfigOption option, QLineEdit* numberLineEdit, QString fieldNameTranslated){
-    configItems.append(new UInt32StringItem(option, numberLineEdit, fieldNameTranslated, this));
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+    vdata->configItems.append(new UInt32StringItem(option, numberLineEdit, fieldNameTranslated, this));
 }
 void MainWindow::initUInt16Box(ConfigOption option, QLineEdit* numberLineEdit, QString fieldNameTranslated){
-    configItems.append(new UInt16StringItem(option, numberLineEdit, fieldNameTranslated, this));
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+    vdata->configItems.append(new UInt16StringItem(option, numberLineEdit, fieldNameTranslated, this));
 }
 void MainWindow::initStringBox(ConfigOption option, QLineEdit* lineEdit){
-    configItems.append(new BaseStringItem(option, lineEdit, QString(), this));
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+    vdata->configItems.append(new BaseStringItem(option, lineEdit, QString(), this));
 }
-NonGUIOptionItem* MainWindow::initNonGUIOption(ConfigOption option) {
+NonGUIOptionItem* MainWindow::initNonGUIOption(ConfigOption option, TypeEnum optionValueType) {
     NonGUIOptionItem * retValue;
-    configItems.append(retValue=new NonGUIOptionItem(option));
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+    vdata->configItems.append(retValue=new NonGUIOptionItem(option));
+    retValue->optionValueType=optionValueType;
     return retValue;
 }
 
 void MainWindow::loadAllConfigs(SaverImpl* saverPtr){
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
 
     //BORROWED FROM ??? //TODO move this code into single location
     std::string config;  i2p::config::GetOption("conf",    config);
@@ -768,7 +802,7 @@ void MainWindow::loadAllConfigs(SaverImpl* saverPtr){
     saverPtr->setConfPath(this->confpath);
     saverPtr->setTunnelsConfPath(this->tunconfpath);
 
-    for(QList<MainWindowItem*>::iterator it = configItems.begin(); it!= configItems.end(); ++it) {
+    for(QList<MainWindowItem*>::iterator it = vdata->configItems.begin(); it!= vdata->configItems.end(); ++it) {
         MainWindowItem* item = *it;
         item->loadFromConfigOption();
     }
@@ -787,12 +821,14 @@ void MainWindow::DisableTunnelsPage() {
 }
 
 void MainWindow::layoutTunnels() {
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
 
     int height=0;
     ui->tunnelsScrollAreaWidgetContents->setGeometry(0,0,0,0);
-    for(std::map<std::string, TunnelConfig*>::iterator it = tunnelConfigs.begin(); it != tunnelConfigs.end(); ++it) {
-        //const std::string& name=it->first;
-        TunnelConfig* tunconf = it->second;
+    for(const auto& it : vdata->tunnelConfigs) {
+        //const std::string& name=it.first;
+        TunnelConfig* tunconf = it.second;
         TunnelPane * tunnelPane=tunconf->getTunnelPane();
         if(!tunnelPane)continue;
         int h=tunnelPane->height();
@@ -808,9 +844,12 @@ void MainWindow::layoutTunnels() {
 }
 
 void MainWindow::deleteTunnelFromUI(std::string tunnelName, TunnelConfig* cnf) {
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+
     TunnelPane* tp = cnf->getTunnelPane();
     if(!tp)return;
-    tunnelPanes.remove(tp);
+    vdata->tunnelPanes.remove(tp);
     tp->deleteWidget();
     layoutTunnels();
 }
@@ -824,7 +863,10 @@ bool MainWindow::saveAllConfigs(bool reloadAfterSave, FocusEnum focusOn, std::st
     daemonOption->optionValue=boost::any(false);
     serviceOption->optionValue=boost::any(false);
 
-    for(QList<MainWindowItem*>::iterator it = configItems.begin(); it!= configItems.end(); ++it) {
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+
+    for(QList<MainWindowItem*>::iterator it = vdata->configItems.begin(); it != vdata->configItems.end(); ++it) {
         MainWindowItem* item = *it;
         bool alreadyDisplayedIfWrong=false;
         if(!item->isValid(alreadyDisplayedIfWrong)){
@@ -883,34 +925,39 @@ void MainWindow::updated() {
 void MainWindowItem::installListeners(MainWindow *mainWindow) {}
 
 void MainWindow::appendTunnelForms(std::string tunnelNameToFocus) {
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+
+    ignoreUpdatesOnAppendForms = true;
+
     int height=0;
     ui->tunnelsScrollAreaWidgetContents->setGeometry(0,0,0,0);
-    for(std::map<std::string, TunnelConfig*>::iterator it = tunnelConfigs.begin(); it != tunnelConfigs.end(); ++it) {
-        const std::string& name=it->first;
-        TunnelConfig* tunconf = it->second;
-        ServerTunnelConfig* stc = tunconf->asServerTunnelConfig();
+    std::unordered_map<std::string, TunnelConfig*> tunnelConfigsCopy(vdata->tunnelConfigs);
+    for(const auto& it : tunnelConfigsCopy) {
+        const std::string& name=it.first;
+        ServerTunnelConfig* stc = it.second->asServerTunnelConfig();
         if(stc){
             ServerTunnelPane * tunnelPane=new ServerTunnelPane(&tunnelsPageUpdateListener, stc, ui->wrongInputLabel, ui->wrongInputLabel, this);
-            tunconf->setTunnelPane(tunnelPane);
-            int h=tunnelPane->appendServerTunnelForm(stc, ui->tunnelsScrollAreaWidgetContents, tunnelPanes.size(), height);
+            stc->setTunnelPane(tunnelPane);
+            int h=tunnelPane->appendServerTunnelForm(stc, ui->tunnelsScrollAreaWidgetContents, vdata->tunnelPanes.size(), height);
             height+=h;
             //qDebug() << "tun.height:" << height << "sz:" <<  tunnelPanes.size();
-            tunnelPanes.push_back(tunnelPane);
-            if(name==tunnelNameToFocus){
+            vdata->tunnelPanes.push_back(tunnelPane);
+            if(name.compare(tunnelNameToFocus)==0){
                 tunnelPane->getNameLineEdit()->setFocus();
                 ui->tunnelsScrollArea->ensureWidgetVisible(tunnelPane->getNameLineEdit());
             }
             continue;
         }
-        ClientTunnelConfig* ctc = tunconf->asClientTunnelConfig();
+        ClientTunnelConfig* ctc = it.second->asClientTunnelConfig();
         if(ctc){
             ClientTunnelPane * tunnelPane=new ClientTunnelPane(&tunnelsPageUpdateListener, ctc, ui->wrongInputLabel, ui->wrongInputLabel, this);
-            tunconf->setTunnelPane(tunnelPane);
-            int h=tunnelPane->appendClientTunnelForm(ctc, ui->tunnelsScrollAreaWidgetContents, tunnelPanes.size(), height);
+            ctc->setTunnelPane(tunnelPane);
+            int h=tunnelPane->appendClientTunnelForm(ctc, ui->tunnelsScrollAreaWidgetContents, vdata->tunnelPanes.size(), height);
             height+=h;
             //qDebug() << "tun.height:" << height << "sz:" <<  tunnelPanes.size();
-            tunnelPanes.push_back(tunnelPane);
-            if(name==tunnelNameToFocus){
+            vdata->tunnelPanes.push_back(tunnelPane);
+            if(name.compare(tunnelNameToFocus)==0){
                 tunnelPane->getNameLineEdit()->setFocus();
                 ui->tunnelsScrollArea->ensureWidgetVisible(tunnelPane->getNameLineEdit());
             }
@@ -923,9 +970,12 @@ void MainWindow::appendTunnelForms(std::string tunnelNameToFocus) {
     QList<QWidget*> childWidgets = ui->tunnelsScrollAreaWidgetContents->findChildren<QWidget*>();
     foreach(QWidget* widget, childWidgets)
         widget->show();
+    ignoreUpdatesOnAppendForms = false;
 }
 void MainWindow::deleteTunnelForms() {
-    for(std::list<TunnelPane*>::iterator it = tunnelPanes.begin(); it != tunnelPanes.end(); ++it) {
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+    for(std::list<TunnelPane*>::iterator it = vdata->tunnelPanes.begin(); it != vdata->tunnelPanes.end(); ++it) {
         TunnelPane* tp = *it;
         ServerTunnelPane* stp = tp->asServerTunnelPane();
         if(stp){
@@ -941,11 +991,13 @@ void MainWindow::deleteTunnelForms() {
         }
         throw "unknown TunnelPane subtype";
     }
-    tunnelPanes.clear();
+    vdata->tunnelPanes.clear();
 }
 
 bool MainWindow::applyTunnelsUiToConfigs() {
-    for(std::list<TunnelPane*>::iterator it = tunnelPanes.begin(); it != tunnelPanes.end(); ++it) {
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
+    for(std::list<TunnelPane*>::iterator it = vdata->tunnelPanes.begin(); it != vdata->tunnelPanes.end(); ++it) {
         TunnelPane* tp = *it;
         if(!tp->applyDataFromUIToTunnelConfig())return false;
     }
@@ -957,23 +1009,32 @@ void MainWindow::reloadTunnelsConfigAndUI_QString(QString tunnelNameToFocus) {
 }
 
 void MainWindow::reloadTunnelsConfigAndUI(std::string tunnelNameToFocus, QWidget* widgetToFocus) {
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* vdata = volatileDataHolder->getData();
     deleteTunnelForms();
-    for (std::map<std::string,TunnelConfig*>::iterator it=tunnelConfigs.begin(); it!=tunnelConfigs.end(); ++it) {
-        TunnelConfig* tunconf = it->second;
+    const std::unordered_map<std::string, TunnelConfig*> tunnelConfigsCopy(vdata->tunnelConfigs);
+    for (const auto& it : tunnelConfigsCopy) {
+        TunnelConfig* tunconf = it.second;
+        vdata->tunnelConfigs[tunconf->getName()]=nullptr;
+        vdata->tunnelConfigsById[tunconf->get_TunnelId()]=nullptr;
         delete tunconf;
     }
-    tunnelConfigs.clear();
+    vdata->tunnelConfigs.clear();
+    vdata->tunnelConfigsById.clear();
     ReadTunnelsConfig();
     appendTunnelForms(tunnelNameToFocus);
 }
 
 void MainWindow::TunnelsPageUpdateListenerMainWindowImpl::updated(std::string oldName, TunnelConfig* tunConf) {
-    if(oldName!=tunConf->getName()) {
+    MutexWrapperLock lock(mainWindow->volatileDataHolder->getMutex());
+    VolatileData* vdata = mainWindow->volatileDataHolder->getData();
+    if(mainWindow->ignoreUpdatesOnAppendForms)return;
+    if(oldName.compare(tunConf->getName())!=0) {
         //name has changed
-        std::map<std::string,TunnelConfig*>::const_iterator it=mainWindow->tunnelConfigs.find(oldName);
-        if(it!=mainWindow->tunnelConfigs.end())mainWindow->tunnelConfigs.erase(it);
-        mainWindow->tunnelConfigs[tunConf->getName()]=tunConf;
-        mainWindow->saveAllConfigs(true, FocusEnum::focusOnTunnelName, tunConf->getName());
+        auto it=vdata->tunnelConfigs.find(oldName);
+        if(it!=vdata->tunnelConfigs.end())vdata->tunnelConfigs.erase(it);
+        vdata->tunnelConfigs[tunConf->getName()]=tunConf;
+        mainWindow->saveAllConfigs(false, FocusEnum::focusOnTunnelName, tunConf->getName());
     }
     else
         mainWindow->saveAllConfigs(false, FocusEnum::noFocus);
@@ -1151,4 +1212,19 @@ bool MainWindow::isPreventSaveTunnelsMode() {
 
 void MainWindow::showTunnelsPagePreventedMessage() {
     QMessageBox::critical(this,QObject::tr("Error"),QObject::tr("Not saving tunnels configuration due to previous errors with it."));
+}
+
+void MainWindow::DeleteTunnelNamed(std::string name) {
+    MutexWrapperLock lock(volatileDataHolder->getMutex());
+    VolatileData* tunnels = volatileDataHolder->getData();
+    auto it=tunnels->tunnelConfigs.find(name);
+    if(it!=tunnels->tunnelConfigs.end()){
+        TunnelConfig* tc=it->second;
+        deleteTunnelFromUI(name, tc);
+        tunnels->tunnelConfigs.erase(it);
+        tunnels->tunnelConfigsById.erase(tc->get_TunnelId());
+        delete tc;
+    }
+    saveAllConfigs(true, FocusEnum::noFocus);
+    delayedSaveManagerPtr->saveNow();
 }

@@ -56,7 +56,8 @@
 
 #include "TunnelsPageUpdateListener.h"
 
-#include "DaemonQT.h"
+#include "controller/i2pd_daemon_controller.h"
+
 #include "SignatureTypeComboboxFactory.h"
 #include "pagewithbackbutton.h"
 
@@ -71,11 +72,14 @@
 
 #include "I2pdQtUtil.h"
 
+#include "ConcurrentHolder.h"
+#include "MutexWrapperLock.h"
+
 class SaverImpl;
 
 class LogViewerManager;
 
-template<typename ValueType>
+/*template<typename ValueType>
 bool isType(boost::any& a) {
     return
 #ifdef BOOST_AUX_ANY_TYPE_ID_NAME
@@ -84,7 +88,17 @@ bool isType(boost::any& a) {
             a.type() == typeid(ValueType)
 #endif
             ;
-}
+}*/
+
+enum TypeEnum {
+    type_unknown,
+    type_std_string,
+    type_bool,
+    type_uint16,
+    type_uint32,
+    type_int,
+    type_ushort
+};
 
 class ConfigOption {
 public:
@@ -117,6 +131,7 @@ public:
     QString& getRequirementToBeValid() { return requirementToBeValid; }
     ConfigOption& getConfigOption() { return option; }
     boost::any optionValue;
+    TypeEnum optionValueType;
     virtual ~MainWindowItem(){}
     virtual void installListeners(MainWindow *mainWindow);
     virtual void loadFromConfigOption(){
@@ -126,39 +141,43 @@ public:
         //qDebug() << "loadFromConfigOption[" << optName.c_str() << "]";
         boost::any programOption;
         i2p::config::GetOptionAsAny(optName, programOption);
-        optionValue=programOption.empty()?boost::any(std::string(""))
-                   :boost::any_cast<boost::program_options::variable_value>(programOption).value();
+        if(programOption.empty()){
+            optionValue=boost::any(std::string(""));
+            optionValueType=type_std_string;
+        }else{
+            optionValue=boost::any_cast<boost::program_options::variable_value>(programOption).value();
+        }
     }
     virtual void saveToStringStream(std::stringstream& out){
         if(readOnly)return; //should readOnly items (conf=) error somewhere, instead of silently skipping save?
-        if(isType<std::string>(optionValue)) {
-            std::string v = boost::any_cast<std::string>(optionValue);
+        if(optionValueType==type_std_string) {
+            const std::string v = boost::any_cast<std::string>(optionValue);
             if(v.empty())return;
         }
         if(optionValue.empty())return;
-        std::string rtti = optionValue.type().name();
+        //std::string rtti = optionValue.type().name();
         std::string optName="";
         if(!option.section.isEmpty())optName=option.section.toStdString()+std::string(".");
-        optName+=option.option.toStdString();
+        optName+=std::string(option.option.toStdString());
         //qDebug() << "Writing option" << optName.c_str() << "of type" << rtti.c_str();
-        std::string sectionAsStdStr = option.section.toStdString();
+        std::string sectionAsStdStr = std::string(option.section.toStdString());
         if(!option.section.isEmpty() &&
                 sectionAsStdStr!=programOptionsWriterCurrentSection) {
             out << "[" << sectionAsStdStr << "]\n";
             programOptionsWriterCurrentSection=sectionAsStdStr;
         }
-        out << option.option.toStdString() << "=";
-        if(isType<std::string>(optionValue)) {
-            out << boost::any_cast<std::string>(optionValue);
-        }else if(isType<bool>(optionValue)) {
+        out << std::string(option.option.toStdString()) << "=";
+        if(type_std_string==optionValueType) {
+            out << boost::any_cast<const std::string>(optionValue);
+        }else if(type_bool==optionValueType) {
             out << (boost::any_cast<bool>(optionValue) ? "true" : "false");
-        }else if(isType<uint16_t>(optionValue)) {
+        }else if(type_uint16==optionValueType) {
             out << boost::any_cast<uint16_t>(optionValue);
-        }else if(isType<uint32_t>(optionValue)) {
+        }else if(type_uint32==optionValueType) {
             out << boost::any_cast<uint32_t>(optionValue);
-        }else if(isType<int>(optionValue)) {
+        }else if(type_int==optionValueType) {
             out << boost::any_cast<int>(optionValue);
-        }else if(isType<unsigned short>(optionValue)) {
+        }else if(type_ushort==optionValueType) {
             out << boost::any_cast<unsigned short>(optionValue);
         }else out << boost::any_cast<std::string>(optionValue); //let it throw
         out << "\n\n";
@@ -194,9 +213,11 @@ public:
 
     virtual void saveToStringStream(std::stringstream& out){
         optionValue=fromString(lineEdit->text());
+        optionValueType=getOptionValueType();
         MainWindowItem::saveToStringStream(out);
     }
     virtual bool isValid(bool & alreadyDisplayedIfWrong);
+    virtual TypeEnum getOptionValueType() {return type_std_string;}
 };
 class FileOrFolderChooserItem : public BaseStringItem {
 protected:
@@ -206,6 +227,7 @@ public:
     FileOrFolderChooserItem(ConfigOption option_, QLineEdit* lineEdit_, QPushButton* browsePushButton_, MainWindow* mw, bool requireExistingFile_, bool readOnly) :
         BaseStringItem(option_, lineEdit_, QString(), mw, readOnly), requireExistingFile(requireExistingFile_), browsePushButton(browsePushButton_) {}
     virtual ~FileOrFolderChooserItem(){}
+    TypeEnum getOptionValueType() {return type_std_string;}
 };
 class FileChooserItem : public FileOrFolderChooserItem {
     Q_OBJECT
@@ -244,15 +266,16 @@ public:
     virtual ~LogDestinationComboBoxItem(){}
     virtual void loadFromConfigOption(){
         MainWindowItem::loadFromConfigOption();
-        const char * ld = boost::any_cast<std::string>(optionValue).c_str();
-        comboBox->setCurrentText(QString(ld));
+        comboBox->setCurrentText(QString(boost::any_cast<std::string>(optionValue).c_str()));
     }
     virtual void saveToStringStream(std::stringstream& out){
-        std::string logDest = comboBox->currentText().toStdString();
+        const std::string logDest = std::string(comboBox->currentText().toStdString());
         optionValue=logDest;
+        optionValueType=type_std_string;
         MainWindowItem::saveToStringStream(out);
     }
     //virtual bool isValid(bool & alreadyDisplayedIfWrong) { return true; }
+    TypeEnum getOptionValueType() {return type_std_string;}
 
     Q_OBJECT
 };
@@ -262,13 +285,14 @@ public:
     virtual ~LogLevelComboBoxItem(){}
     virtual void loadFromConfigOption(){
         MainWindowItem::loadFromConfigOption();
-        const char * ll = boost::any_cast<std::string>(optionValue).c_str();
-        comboBox->setCurrentText(QString(ll));
+        comboBox->setCurrentText(QString(boost::any_cast<std::string>(optionValue).c_str()));
     }
     virtual void saveToStringStream(std::stringstream& out){
         optionValue=comboBox->currentText().toStdString();
+        optionValueType=type_std_string;
         MainWindowItem::saveToStringStream(out);
     }
+    TypeEnum getOptionValueType() {return type_std_string;}
     //virtual bool isValid(bool & alreadyDisplayedIfWrong) { return true; }
 };
 class SignatureTypeComboBoxItem : public ComboBoxItem {
@@ -284,9 +308,11 @@ public:
     virtual void saveToStringStream(std::stringstream& out){
         uint16_t selected = SignatureTypeComboBoxFactory::getSigType(comboBox->currentData());
         optionValue=(unsigned short)selected;
+        optionValueType=type_ushort;
         MainWindowItem::saveToStringStream(out);
     }
     //virtual bool isValid(bool & alreadyDisplayedIfWrong) { return true; }
+    TypeEnum getOptionValueType() {return type_ushort;}
 };
 class CheckBoxItem : public MainWindowItem {
 public:
@@ -300,10 +326,12 @@ public:
         checkBox->setChecked(boost::any_cast<bool>(optionValue));
     }
     virtual void saveToStringStream(std::stringstream& out){
-        optionValue=checkBox->isChecked();
+        optionValue=static_cast<bool>(checkBox->isChecked());
+        optionValueType=type_bool;
         MainWindowItem::saveToStringStream(out);
     }
     //virtual bool isValid(bool & alreadyDisplayedIfWrong) { return true; }
+    TypeEnum getOptionValueType() {return type_bool;}
 };
 class BaseFormattedStringItem : public BaseStringItem {
 public:
@@ -312,6 +340,7 @@ public:
         BaseStringItem(option_, lineEdit_, requirementToBeValid_, mw), fieldNameTranslated(fieldNameTranslated_) {}
     virtual ~BaseFormattedStringItem(){}
     //virtual bool isValid(bool & alreadyDisplayedIfWrong)=0;
+    TypeEnum getOptionValueType() {return type_std_string;}
 };
 class IntegerStringItem : public BaseFormattedStringItem {
 public:
@@ -329,6 +358,7 @@ public:
     }
     virtual QString toString(){return QString::number(boost::any_cast<int>(optionValue));}
     virtual boost::any fromString(QString s){return boost::any(std::stoi(s.toStdString()));}
+    TypeEnum getOptionValueType() {return type_int;}
 };
 class UShortStringItem : public BaseFormattedStringItem {
 public:
@@ -346,6 +376,7 @@ public:
     }
     virtual QString toString(){return QString::number(boost::any_cast<unsigned short>(optionValue));}
     virtual boost::any fromString(QString s){return boost::any((unsigned short)std::stoi(s.toStdString()));}
+    TypeEnum getOptionValueType() {return type_ushort;}
 };
 class UInt32StringItem : public BaseFormattedStringItem {
 public:
@@ -363,6 +394,7 @@ public:
     }
     virtual QString toString(){return QString::number(boost::any_cast<uint32_t>(optionValue));}
     virtual boost::any fromString(QString s){return boost::any((uint32_t)std::stoi(s.toStdString()));}
+    TypeEnum getOptionValueType() {return type_uint32;}
 };
 class UInt16StringItem : public BaseFormattedStringItem {
 public:
@@ -380,12 +412,14 @@ public:
     }
     virtual QString toString(){return QString::number(boost::any_cast<uint16_t>(optionValue));}
     virtual boost::any fromString(QString s){return boost::any((uint16_t)std::stoi(s.toStdString()));}
+    TypeEnum getOptionValueType() {return type_uint16;}
 };
 class IPAddressStringItem : public BaseFormattedStringItem {
 public:
     IPAddressStringItem(ConfigOption option_, QLineEdit* lineEdit_, QString fieldNameTranslated_, MainWindow* mw) :
         BaseFormattedStringItem(option_, lineEdit_, fieldNameTranslated_, QApplication::tr("Must be an IPv4 address"), mw) {}
     //virtual bool isValid(bool & alreadyDisplayedIfWrong){return true;}//todo
+    TypeEnum getOptionValueType() {return type_std_string;}
 };
 class TCPPortStringItem : public UShortStringItem {
 public:
@@ -527,7 +561,6 @@ protected:
 
     QString getStatusPageHtml(bool showHiddenInfo);
 
-    QList<MainWindowItem*> configItems;
     NonGUIOptionItem* daemonOption;
     NonGUIOptionItem* serviceOption;
     //LogDestinationComboBoxItem* logOption;
@@ -546,7 +579,7 @@ protected:
     void initUInt32Box(ConfigOption option, QLineEdit* numberLineEdit, QString fieldNameTranslated);
     void initUInt16Box(ConfigOption option, QLineEdit* numberLineEdit, QString fieldNameTranslated);
     void initStringBox(ConfigOption option, QLineEdit* lineEdit);
-    NonGUIOptionItem* initNonGUIOption(ConfigOption option);
+    NonGUIOptionItem* initNonGUIOption(ConfigOption option, TypeEnum optionValueType);
 
     void loadAllConfigs(SaverImpl* saverPtr);
     void layoutTunnels();
@@ -571,10 +604,20 @@ private:
     QString datadir;
     QString confpath;
     QString tunconfpath;
+    bool ignoreUpdatesOnAppendForms;
 
-    std::map<std::string, TunnelConfig*> tunnelConfigs;
-    std::list<TunnelPane*> tunnelPanes;
+public:
+    struct VolatileData {
+        QList<MainWindowItem*> configItems;
+        std::unordered_map<std::string, TunnelConfig*> tunnelConfigs;
+        std::unordered_map<int, TunnelConfig*> tunnelConfigsById;
+        std::list<TunnelPane*> tunnelPanes;
+        VolatileData():configItems(), tunnelConfigs(), tunnelConfigsById(), tunnelPanes() {}
+    };
 
+    ConcurrentHolder<VolatileData*>* volatileDataHolder;
+
+private:
     void appendTunnelForms(std::string tunnelNameToFocus);
     void deleteTunnelForms();
     void deleteTunnelFromUI(std::string tunnelName, TunnelConfig* cnf);
@@ -654,30 +697,35 @@ private:
         param.set_i2p_streaming_initialAckDelay(QString::number(_i2p_streaming_initialAckDelay));
     }
 
-
-    void DeleteTunnelNamed(std::string name) {
-        std::map<std::string,TunnelConfig*>::const_iterator it=tunnelConfigs.find(name);
-        if(it!=tunnelConfigs.end()){
-            TunnelConfig* tc=it->second;
-            deleteTunnelFromUI(name, tc);
-            tunnelConfigs.erase(it);
-            delete tc;
-        }
-        saveAllConfigs(true, FocusEnum::noFocus);
-    }
+    void DeleteTunnelNamed(std::string name);
 
     std::string GenerateNewTunnelName() {
+        MutexWrapperLock lock(volatileDataHolder->getMutex());
+        VolatileData* tunnels = volatileDataHolder->getData();
         int i=1;
         while(true){
             std::stringstream name;
             name << "name" << i;
             const std::string& str=name.str();
-            if(tunnelConfigs.find(str)==tunnelConfigs.end())return str;
+            if(tunnels->tunnelConfigs.find(str)==tunnels->tunnelConfigs.end())return str;
+            ++i;
+        }
+    }
+
+    int GenerateNewTunnelId() {
+        MutexWrapperLock lock(volatileDataHolder->getMutex());
+        VolatileData* tunnels = volatileDataHolder->getData();
+        int i=1;
+        while(true){
+            if(tunnels->tunnelConfigsById.find(i)==tunnels->tunnelConfigsById.end())return i;
             ++i;
         }
     }
 
     void CreateDefaultClientTunnel() {//TODO dedup default values with ReadTunnelsConfig() and with ClientContext.cpp::ReadTunnels ()
+        MutexWrapperLock lock(volatileDataHolder->getMutex());
+        VolatileData* tunnels = volatileDataHolder->getData();
+        int tunnelId=GenerateNewTunnelId();
         std::string name=GenerateNewTunnelName();
         std::string type = I2P_TUNNELS_SECTION_TYPE_CLIENT;
         std::string dest = "127.0.0.1";
@@ -691,7 +739,9 @@ private:
         I2CPParameters i2cpParameters;
         CreateDefaultI2CPOptions (i2cpParameters);
 
-        tunnelConfigs[name]=new ClientTunnelConfig(name, QString(type.c_str()), i2cpParameters,
+        tunnels->tunnelConfigs[name]=tunnels->tunnelConfigsById[tunnelId]=new ClientTunnelConfig(
+                    tunnelId,
+                    name, QString(type.c_str()), i2cpParameters,
                                                       dest,
                                                       port,
                                                       keys,
@@ -701,9 +751,13 @@ private:
                                                       cryptoType);
 
         saveAllConfigs(true, FocusEnum::focusOnTunnelName, name);
+        delayedSaveManagerPtr->saveNow();
     }
 
     void CreateDefaultServerTunnel() {//TODO dedup default values with ReadTunnelsConfig() and with ClientContext.cpp::ReadTunnels ()
+        MutexWrapperLock lock(volatileDataHolder->getMutex());
+        VolatileData* tunnels = volatileDataHolder->getData();
+        int tunnelId=GenerateNewTunnelId();
         std::string name=GenerateNewTunnelName();
         std::string type=I2P_TUNNELS_SECTION_TYPE_SERVER;
         std::string host = "127.0.0.1";
@@ -723,7 +777,9 @@ private:
         I2CPParameters i2cpParameters;
         CreateDefaultI2CPOptions (i2cpParameters);
 
-        tunnelConfigs[name]=new ServerTunnelConfig(name, QString(type.c_str()), i2cpParameters,
+        tunnels->tunnelConfigs[name]=tunnels->tunnelConfigsById[tunnelId]=new ServerTunnelConfig(
+                    tunnelId,
+                    name, QString(type.c_str()), i2cpParameters,
                                                   host,
                                                   port,
                                                   keys,
@@ -739,10 +795,14 @@ private:
 
 
         saveAllConfigs(true, FocusEnum::focusOnTunnelName, name);
+        delayedSaveManagerPtr->saveNow();
     }
 
     void ReadTunnelsConfig() //TODO deduplicate the code with ClientContext.cpp::ReadTunnels ()
     {
+        MutexWrapperLock lock(volatileDataHolder->getMutex());
+        VolatileData* tunnels = volatileDataHolder->getData();
+
         boost::property_tree::ptree pt;
         std::string tunConf=tunconfpath.toStdString();
         if (tunConf == "") {
@@ -797,8 +857,10 @@ private:
                     std::map<std::string, std::string> options;
                     I2CPParameters i2cpParameters;
                     ReadI2CPOptions (section, options, i2cpParameters);
+                    int tunnelId=GenerateNewTunnelId();
 
-                    tunnelConfigs[name]=new ClientTunnelConfig(name, QString(type.c_str()), i2cpParameters,
+                    tunnels->tunnelConfigs[name]=tunnels->tunnelConfigsById[tunnelId]=
+                            new ClientTunnelConfig(tunnelId,name, QString(type.c_str()), i2cpParameters,
                                                               dest,
                                                               port,
                                                               keys,
@@ -831,6 +893,7 @@ private:
                     std::map<std::string, std::string> options;
                     I2CPParameters i2cpParameters;
                     ReadI2CPOptions (section, options, i2cpParameters);
+                    int tunnelId=GenerateNewTunnelId();
 
                     /*
                     std::set<i2p::data::IdentHash> idents;
@@ -848,7 +911,8 @@ private:
                         while (comma != std::string::npos);
                     }
                     */
-                    tunnelConfigs[name]=new ServerTunnelConfig(name, QString(type.c_str()), i2cpParameters,
+                    tunnels->tunnelConfigs[name]=tunnels->tunnelConfigsById[tunnelId]=
+                            new ServerTunnelConfig(tunnelId,name, QString(type.c_str()), i2cpParameters,
                                                               host,
                                                               port,
                                                               keys,

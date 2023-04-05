@@ -1,5 +1,5 @@
-#ifndef DAEMONQT_H
-#define DAEMONQT_H
+#ifndef I2PD_DAEMON_CONTROLLER_H
+#define I2PD_DAEMON_CONTROLLER_H
 
 #include <memory>
 #include <QObject>
@@ -85,4 +85,4 @@ namespace qt
 }
 }
 
-#endif // DAEMONQT_H
+#endif // I2PD_DAEMON_CONTROLLER_H

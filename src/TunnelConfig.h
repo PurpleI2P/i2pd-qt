@@ -81,13 +81,15 @@ class TunnelConfig {
     */
     QString type;
     std::string name;
+    int _tunnelId;
     TunnelPane* tunnelPane;
     int cryptoType;
 public:
-    TunnelConfig(std::string name_, QString& type_, I2CPParameters& i2cpParameters_, int cryptoType_):
-        type(type_), name(name_), cryptoType(cryptoType_), i2cpParameters(i2cpParameters_) {}
+    TunnelConfig(int tunnelId, std::string name_, QString& type_, I2CPParameters& i2cpParameters_, int cryptoType_):
+        type(type_), name(name_), _tunnelId(tunnelId), cryptoType(cryptoType_), i2cpParameters(i2cpParameters_) {}
     virtual ~TunnelConfig(){}
     const QString& getType(){return type;}
+    int get_TunnelId(){return _tunnelId;}
     const std::string& getName(){return name;}
     int getcryptoType(){return cryptoType;}
     void setType(const QString& type_){type=type_;}
@@ -135,14 +137,14 @@ class ClientTunnelConfig : public TunnelConfig {
     int destinationPort;
     i2p::data::SigningKeyType sigType;
 public:
-    ClientTunnelConfig(std::string name_, QString type_, I2CPParameters& i2cpParameters_,
+    ClientTunnelConfig(int tunnelId, std::string name_, QString type_, I2CPParameters& i2cpParameters_,
                        std::string dest_,
                        int port_,
                        std::string keys_,
                        std::string address_,
                        int destinationPort_,
                        i2p::data::SigningKeyType sigType_,
-                       int cryptoType_): TunnelConfig(name_, type_, i2cpParameters_, cryptoType_),
+                       int cryptoType_): TunnelConfig(tunnelId, name_, type_, i2cpParameters_, cryptoType_),
         dest(dest_),
         port(port_),
         keys(keys_),
@@ -205,7 +207,7 @@ class ServerTunnelConfig : public TunnelConfig {
     std::string address;
     bool isUniqueLocal;
 public:
-    ServerTunnelConfig(std::string name_, QString type_, I2CPParameters& i2cpParameters_,
+    ServerTunnelConfig(int tunnelId, std::string name_, QString type_, I2CPParameters& i2cpParameters_,
                        std::string host_,
                        int port_,
                        std::string keys_,
@@ -217,7 +219,7 @@ public:
                        i2p::data::SigningKeyType sigType_,
                        std::string address_,
                        bool isUniqueLocal_,
-                       int cryptoType_): TunnelConfig(name_, type_, i2cpParameters_, cryptoType_),
+                       int cryptoType_): TunnelConfig(tunnelId, name_, type_, i2cpParameters_, cryptoType_),
         host(host_),
         port(port_),
         keys(keys_),

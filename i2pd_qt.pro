@@ -29,6 +29,7 @@ CONFIG(debug, debug|release) {
 
     DEFINES += I2PD_QT_DEBUG
     I2PDMAKE += DEBUG=yes
+    QMAKE_CXXFLAGS_DEBUG += "-O0"
 }
 CONFIG(release, debug|release) {
     message(Release build)
@@ -37,7 +38,9 @@ CONFIG(release, debug|release) {
 }
 
 SOURCES += \
-    src/DaemonQT.cpp \
+    src/launcher/i2pd_qt_launcher.cpp \
+    src/controller/i2pd_daemon_controller.cpp \
+    src/MutexWrapperLock.cpp \
     src/mainwindow.cpp \
     src/ClientTunnelPane.cpp \
     src/MainWindowItems.cpp \
@@ -64,7 +67,10 @@ SOURCES += \
     src/I2pdQtUtil.cpp
 
 HEADERS += \
-    src/DaemonQT.h \
+    src/ConcurrentHolder.h \
+    src/launcher/i2pd_qt_launcher.h \
+    src/controller/i2pd_daemon_controller.h \
+    src/MutexWrapperLock.h \
     src/mainwindow.h \
     src/ClientTunnelPane.h \
     src/MainWindowItems.h \
