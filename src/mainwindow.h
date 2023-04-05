@@ -56,7 +56,8 @@
 
 #include "TunnelsPageUpdateListener.h"
 
-#include "DaemonQT.h"
+#include "controller/i2pd_daemon_controller.h"
+
 #include "SignatureTypeComboboxFactory.h"
 #include "pagewithbackbutton.h"
 

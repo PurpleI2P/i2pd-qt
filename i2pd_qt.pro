@@ -38,7 +38,8 @@ CONFIG(release, debug|release) {
 }
 
 SOURCES += \
-    src/DaemonQT.cpp \
+    src/launcher/i2pd_qt_launcher.cpp \
+    src/controller/i2pd_daemon_controller.cpp \
     src/MutexWrapperLock.cpp \
     src/mainwindow.cpp \
     src/ClientTunnelPane.cpp \
@@ -67,7 +68,8 @@ SOURCES += \
 
 HEADERS += \
     src/ConcurrentHolder.h \
-    src/DaemonQT.h \
+    src/launcher/i2pd_qt_launcher.h \
+    src/controller/i2pd_daemon_controller.h \
     src/MutexWrapperLock.h \
     src/mainwindow.h \
     src/ClientTunnelPane.h \
