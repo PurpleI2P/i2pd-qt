@@ -53,7 +53,6 @@ public:
     virtual void setSaver(Saver* saver);
     virtual void start();
     virtual void delayedSave(bool reloadAfterSave, DATA_SERIAL_TYPE dataSerial, FocusEnum focusOn, std::string tunnelNameToFocus, QWidget* widgetToFocus);
-    void saveNow();
     virtual bool appExiting();
 
     typedef DelayedSaveThread::TIMESTAMP_TYPE TIMESTAMP_TYPE;
