@@ -9,8 +9,8 @@
 
 #include "mainwindow.h"
 
-SaverImpl::SaverImpl(MainWindow *mainWindowPtr_) :
-    confpath(), tunconfpath(), mainWindowPtr(mainWindowPtr_)
+SaverImpl::SaverImpl(MainWindow *mainWindowPtr_, QList<MainWindowItem*>* configItems_, std::map<std::string,TunnelConfig*>* tunnelConfigs_) :
+    configItems(configItems_), tunnelConfigs(tunnelConfigs_), confpath(), tunconfpath(), mainWindowPtr(mainWindowPtr_)
 {
     QObject::connect(this, SIGNAL(showPreventedSaveTunnelsConfMessage()), mainWindowPtr, SLOT(showTunnelsPagePreventedMessage()));
 }
@@ -18,13 +18,10 @@ SaverImpl::SaverImpl(MainWindow *mainWindowPtr_) :
 SaverImpl::~SaverImpl() {}
 
 bool SaverImpl::save(bool reloadAfterSave, const FocusEnum focusOn, const std::string& tunnelNameToFocus, QWidget* widgetToFocus) {
-    MutexWrapperLock lock(mainWindowPtr->volatileDataHolder->getMutex());
-    MainWindow::VolatileData* vdata = mainWindowPtr->volatileDataHolder->getData();
-
     //save main config
     {
         std::stringstream out;
-        for(QList<MainWindowItem*>::iterator it = vdata->configItems.begin(); it!= vdata->configItems.end(); ++it) {
+        for(QList<MainWindowItem*>::iterator it = configItems->begin(); it!= configItems->end(); ++it) {
             MainWindowItem* item = *it;
             item->saveToStringStream(out);
         }
@@ -47,9 +44,9 @@ bool SaverImpl::save(bool reloadAfterSave, const FocusEnum focusOn, const std::s
     }else{
         std::stringstream out;
 
-        for (const auto& it : vdata->tunnelConfigs) {
+        for (std::map<std::string,TunnelConfig*>::iterator it=tunnelConfigs->begin(); it!=tunnelConfigs->end(); ++it) {
             //const std::string& name = it->first;
-            TunnelConfig* tunconf = it.second;
+            TunnelConfig* tunconf = it->second;
             tunconf->saveHeaderToStringStream(out);
             tunconf->saveToStringStream(out);
             tunconf->saveI2CPParametersToStringStream(out);

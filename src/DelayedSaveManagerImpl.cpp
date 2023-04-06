@@ -51,11 +51,6 @@ bool DelayedSaveManagerImpl::appExiting() {
     return true;
 }
 
-void DelayedSaveManagerImpl::saveNow() {
-    assert(isSaverValid());
-    saver->save(isReloadAfterSave(), FocusEnum::noFocus);
-}
-
 DelayedSaveThread::DelayedSaveThread(DelayedSaveManagerImpl* delayedSaveManagerImpl_):
     delayedSaveManagerImpl(delayedSaveManagerImpl_),
     mutex(new QMutex()),
