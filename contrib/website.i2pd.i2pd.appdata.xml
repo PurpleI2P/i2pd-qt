@@ -35,6 +35,8 @@
   <translation type="qt" />
 
   <releases>
+    <release version="2.50.0" date="2023-12-18" />
+    <release version="2.49.0" date="2023-09-18" />
     <release version="2.48.0" date="2023-06-12" />
     <release version="2.47.0" date="2023-03-11" />
     <release version="2.46.1" date="2023-02-20" />
