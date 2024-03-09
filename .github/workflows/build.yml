@@ -17,8 +17,17 @@ jobs:
       if: matrix.os == 'ubuntu-20.04'
       run: |
         sudo add-apt-repository ppa:mhier/libboost-latest
+        # sudo add-apt-repository ppa:beineri/opt-qt-5.15.0-focal
+        sudo add-apt-repository ppa:savoury1/qt-5-15
+        sudo add-apt-repository ppa:savoury1/kde-5-80
+        sudo add-apt-repository ppa:savoury1/gpg
+        sudo add-apt-repository ppa:savoury1/ffmpeg4
         sudo apt-get update
-        sudo apt-get install build-essential qt5-default libqt5gui5 libboost1.74-dev libminiupnpc-dev libssl-dev zlib1g-dev
+        sudo apt-get upgrade
+        sudo apt-get dist-upgrade
+        # TBD
+        sudo apt-get install build-essential libboost1.74-dev libminiupnpc-dev libssl-dev zlib1g-dev 
+        # source /opt/qt515/bin/qt515-env.sh
     - name: Install packages on Ubuntu 22.04
       if: matrix.os == 'ubuntu-22.04'
       run: |
