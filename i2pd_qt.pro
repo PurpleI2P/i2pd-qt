@@ -14,7 +14,7 @@ linux:icons.path = /usr/share/icons/hicolor/
 
 TEMPLATE = app
 QMAKE_CXXFLAGS *= -Wno-unused-parameter -Wno-maybe-uninitialized -Wno-deprecated-copy
-CONFIG += strict_c++ c++11
+CONFIG += strict_c++ c++17
 
 # suppress OpenSSL deprecation warnings
 DEFINES += OPENSSL_SUPPRESS_DEPRECATED
@@ -147,8 +147,6 @@ macx {
 	LIBS += $$SSLROOT/lib/libcrypto.a
 	LIBS += $$SSLROOT/lib/libssl.a
 	LIBS += $$BOOSTROOT/lib/libboost_system.a
-	LIBS += $$BOOSTROOT/lib/libboost_date_time.a
-	LIBS += $$BOOSTROOT/lib/libboost_filesystem.a
 	LIBS += $$BOOSTROOT/lib/libboost_program_options.a
 	LIBS += $$UPNPROOT/lib/libminiupnpc.a
 	LIBS += -Wl,-dead_strip
@@ -158,7 +156,7 @@ macx {
 
 linux:!android {
         message("Using Linux settings")
-        LIBS += -lcrypto -lssl -lboost_system -lboost_date_time -lboost_filesystem -lboost_program_options -lpthread -lminiupnpc
+        LIBS += -lcrypto -lssl -lboost_system -lboost_program_options -lpthread -lminiupnpc
 
         INSTALLS += TARGET
         INSTALLS += icons
