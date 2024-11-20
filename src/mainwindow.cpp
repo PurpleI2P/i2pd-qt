@@ -306,7 +306,7 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     initStringBox(      OPTION("addressbook","defaulturl",[]{return "";}), uiSettings->addressbookDefaultURLLineEdit);
     initStringBox(      OPTION("addressbook","subscriptions",[]{return "";}), uiSettings->addressbookSubscriptionsURLslineEdit);
 
-    initUInt16Box(     OPTION("limits","transittunnels",[]{return "2500";}), uiSettings->maxNumOfTransitTunnelsLineEdit, tr("maxNumberOfTransitTunnels"));
+    initUIntBox(     OPTION("limits","transittunnels",[]{return "2500";}), uiSettings->maxNumOfTransitTunnelsLineEdit, tr("maxNumberOfTransitTunnels"));
     initUInt16Box(     OPTION("limits","openfiles",[]{return "0";}), uiSettings->maxNumOfOpenFilesLineEdit, tr("maxNumberOfOpenFiles"));
     initUInt32Box(     OPTION("limits","coresize",[]{return "0";}), uiSettings->coreFileMaxSizeNumberLineEdit, tr("coreFileMaxSize"));
 
@@ -708,6 +708,9 @@ void MainWindow::initCheckBox(ConfigOption option, QCheckBox* checkBox) {
 }
 void MainWindow::initIntegerBox(ConfigOption option, QLineEdit* numberLineEdit, QString fieldNameTranslated){
     configItems.append(new IntegerStringItem(option, numberLineEdit, fieldNameTranslated, this));
+}
+void MainWindow::initUIntBox(ConfigOption option, QLineEdit* numberLineEdit, QString fieldNameTranslated){
+    configItems.append(new UIntStringItem(option, numberLineEdit, fieldNameTranslated, this));
 }
 void MainWindow::initUInt32Box(ConfigOption option, QLineEdit* numberLineEdit, QString fieldNameTranslated){
     configItems.append(new UInt32StringItem(option, numberLineEdit, fieldNameTranslated, this));
