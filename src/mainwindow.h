@@ -160,6 +160,8 @@ public:
             out << boost::any_cast<int>(optionValue);
         }else if(isType<unsigned long>(optionValue)) {
             out << boost::any_cast<unsigned long>(optionValue);
+        }if(isType<unsigned int>(optionValue)) {
+            out << boost::any_cast<unsigned int>(optionValue);
         }else if(isType<unsigned short>(optionValue)) {
             out << boost::any_cast<unsigned short>(optionValue);
         }else out << boost::any_cast<std::string>(optionValue); //let it throw
@@ -332,22 +334,28 @@ public:
     virtual QString toString(){return QString::number(boost::any_cast<int>(optionValue));}
     virtual boost::any fromString(QString s){return boost::any(std::stoi(s.toStdString()));}
 };
-class UIntStringItem : public BaseFormattedStringItem {
+class ULongStringItem : public BaseFormattedStringItem {
 public:
-    UIntStringItem(ConfigOption option_, QLineEdit* lineEdit_, QString fieldNameTranslated_, MainWindow* mw) :
+    ULongStringItem(ConfigOption option_, QLineEdit* lineEdit_, QString fieldNameTranslated_, MainWindow* mw) :
         BaseFormattedStringItem(option_, lineEdit_, fieldNameTranslated_,
-                                QApplication::tr("Must be a valid integer."), mw) {}
-    virtual ~UIntStringItem(){}
+                                QApplication::tr("Must be a valid long integer."), mw) {}
+    virtual ~ULongStringItem(){}
     virtual bool isValid(bool & alreadyDisplayedIfWrong){
         bool correct = BaseFormattedStringItem::isValid(alreadyDisplayedIfWrong);
         if(!correct)return false;
         alreadyDisplayedIfWrong = false;
         auto str=lineEdit->text();
         bool ok;
-        str.toUInt(&ok);
+        str.toULong(&ok);
         return ok;
     }
-    virtual QString toString(){return QString::number(boost::any_cast<unsigned int>(optionValue));}
+    virtual QString toString(){
+        if(isType<unsigned int>(optionValue))
+            return QString::number(boost::any_cast<unsigned int>(optionValue));
+        else
+            return QString::number(boost::any_cast<unsigned long>(optionValue));
+
+    }
     virtual boost::any fromString(QString s){return boost::any(std::stoul(s.toStdString()));}
 };
 class UShortStringItem : public BaseFormattedStringItem {
@@ -563,7 +571,7 @@ protected:
     void initTCPPortBox(ConfigOption option, QLineEdit* portLineEdit, QString fieldNameTranslated);
     void initCheckBox(ConfigOption option, QCheckBox* checkBox);
     void initIntegerBox(ConfigOption option, QLineEdit* numberLineEdit, QString fieldNameTranslated);
-    void initUIntBox(ConfigOption option, QLineEdit* numberLineEdit, QString fieldNameTranslated);
+    void initULongBox(ConfigOption option, QLineEdit* numberLineEdit, QString fieldNameTranslated);
     void initUInt32Box(ConfigOption option, QLineEdit* numberLineEdit, QString fieldNameTranslated);
     void initUInt16Box(ConfigOption option, QLineEdit* numberLineEdit, QString fieldNameTranslated);
     void initStringBox(ConfigOption option, QLineEdit* lineEdit);
