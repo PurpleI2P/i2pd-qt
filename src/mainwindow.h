@@ -160,7 +160,7 @@ public:
             out << boost::any_cast<int>(optionValue);
         }else if(isType<unsigned long>(optionValue)) {
             out << boost::any_cast<unsigned long>(optionValue);
-        }if(isType<unsigned int>(optionValue)) {
+        }else if(isType<unsigned int>(optionValue)) {
             out << boost::any_cast<unsigned int>(optionValue);
         }else if(isType<unsigned short>(optionValue)) {
             out << boost::any_cast<unsigned short>(optionValue);
