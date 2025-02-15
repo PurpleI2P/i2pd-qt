@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2018 Viktor Villainov <supervillain@riseup.net> -->
-<component type="desktop">
+<!-- Copyright 2025 R4SAS <r4sas@i2pmail.org> -->
+<component type="desktop-application">
   <id>website.i2pd.i2pd</id>
-  <launchable type="desktop-id">website.i2pd.i2pd.desktop</launchable>
-  <metadata_license>CC0-1.0</metadata_license>
-  <project_license>BSD-3-Clause</project_license>
+
   <name>i2pd</name>
   <summary>Invisible Internet</summary>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>BSD-3-Clause</project_license>
+
+  <developer id="website.i2pd">
+    <name>PurpleI2P Team</name>
+  </developer>
+
   <description>
     <p>i2pd (I2P Daemon) is a full-featured C++ implementation of I2P client.</p>
     <p>I2P (Invisible Internet Protocol) is a universal anonymous network layer. 
@@ -22,17 +28,22 @@
         <li>Rich set of APIs for developers of secure applications</li>
     </ul>
   </description>
+
+  <launchable type="desktop-id">website.i2pd.i2pd.desktop</launchable>
+
   <screenshots>
     <screenshot type="default">
       <image height="590" width="923">https://i2pd.website/images/i2pd_qt.png</image>
+      <caption>Main window</caption>
     </screenshot>
   </screenshots>
+
   <url type="homepage">https://i2pd.website/</url>
-  <url type="bugtracker">https://github.com/PurpleI2P/i2pd/issues</url>
+  <url type="bugtracker">https://github.com/PurpleI2P/i2pd-qt/issues</url>
   <url type="help">https://i2pd.readthedocs.io/en/latest/</url>
+  <url type="vcs-browser">https://github.com/PurpleI2P/i2pd-qt/</url>
+
   <update_contact>r4sas@i2pmail.org</update_contact>
-  <developer_name>PurpleI2P Team</developer_name>
-  <translation type="qt" />
 
   <releases>
     <release version="2.56.0" date="2025-02-11" />
@@ -79,5 +90,6 @@
     <release version="2.21.1" date="2018-10-22" />
     <release version="2.21.0" date="2018-10-04" />
   </releases>
+
   <content_rating type="oars-1.1" />
 </component>
