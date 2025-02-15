@@ -144,9 +144,8 @@ macx {
 	INCLUDEPATH += $$BOOSTROOT/include
 	INCLUDEPATH += $$SSLROOT/include
 	INCLUDEPATH += $$UPNPROOT/include
-	LIBS += $$SSLROOT/lib/libcrypto.a
 	LIBS += $$SSLROOT/lib/libssl.a
-	LIBS += $$BOOSTROOT/lib/libboost_system.a
+	LIBS += $$SSLROOT/lib/libcrypto.a
 	LIBS += $$BOOSTROOT/lib/libboost_program_options.a
 	LIBS += $$UPNPROOT/lib/libminiupnpc.a
 	LIBS += -Wl,-dead_strip
@@ -156,7 +155,7 @@ macx {
 
 linux:!android {
         message("Using Linux settings")
-        LIBS += -lcrypto -lssl -lboost_system -lboost_program_options -lpthread -lminiupnpc
+        LIBS += -lssl -lcrypto -lboost_program_options -lpthread -lminiupnpc
 
         INSTALLS += TARGET
         INSTALLS += icons
@@ -180,9 +179,6 @@ windows {
         $$PWD/src/i2pd/libi2pdclient.a \
         $$PWD/src/i2pd/libi2pdlang.a \
         -lminiupnpc \
-        -lboost_system$$BOOST_SUFFIX \
-        -lboost_date_time$$BOOST_SUFFIX \
-        -lboost_filesystem$$BOOST_SUFFIX \
         -lboost_program_options$$BOOST_SUFFIX \
         -lssl \
         -lcrypto \
