@@ -1,3 +1,5 @@
+![Downloads](https://img.shields.io/flathub/downloads/website.i2pd.i2pd)
+
 # i2pd-qt — A GUI for i2pd
 
 ![A screenshot of `i2pd-qt`](https://user-images.githubusercontent.com/19966907/184545373-5df5ce7d-6663-4550-ace6-ede24405d64e.png)
