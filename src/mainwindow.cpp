@@ -118,7 +118,7 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     ui->settingsContents->setPalette(pal);
     */
     QPalette pal(palette());
-    pal.setColor(QPalette::Background, Qt::red);
+    pal.setColor(QPalette::Window, Qt::red);
     ui->wrongInputLabel->setAutoFillBackground(true);
     ui->wrongInputLabel->setPalette(pal);
     ui->wrongInputLabel->setMaximumHeight(ui->wrongInputLabel->sizeHint().height());
@@ -223,6 +223,7 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     initIntegerBox(     OPTION("","netid",[]{return "2";}), uiSettings->netIdLineEdit, tr("NetID"));
     initCheckBox(       OPTION("","ssu",[]{return "false";}), uiSettings->ssuCheckBox);//Enable SSU transport protocol (use UDP). true by default
     initCheckBox(       OPTION("","reservedrange",[]{return "true";}), uiSettings->reservedrange_checkbox);
+    initCheckBox(       OPTION("","stan",[]{return "false";}), uiSettings->stanCheckBox);
 
 #ifdef Q_OS_WIN
     initNonGUIOption(   OPTION("","svcctl",[]{return "";}));
@@ -601,7 +602,7 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
         setVisible(!isVisible());
         break;
     default:
-        qDebug() << "MainWindow::iconActivated(): unknown reason: " << reason << endl;
+        qDebug() << "MainWindow::iconActivated(): unknown reason: " << reason << Qt::endl;
         break;
     }
 }
