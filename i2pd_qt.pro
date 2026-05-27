@@ -65,6 +65,7 @@ SOURCES += \
 
 HEADERS += \
     src/DaemonQT.h \
+    src/generalsettingswidget_ui.h \
     src/mainwindow.h \
     src/ClientTunnelPane.h \
     src/MainWindowItems.h \

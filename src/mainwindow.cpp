@@ -4,7 +4,7 @@
 #include "ui_mainwindow.h"
 #include "ui_statusbuttons.h"
 #include "ui_routercommandswidget.h"
-#include "ui_generalsettingswidget.h"
+#include "generalsettingswidget_ui.h"
 #include <QScrollBar>
 #include <QMessageBox>
 #include <QTimer>
