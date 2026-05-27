@@ -427,7 +427,7 @@ QGroupBox::title {
          <x>-1</x>
          <y>19</y>
          <width>661</width>
-         <height>91</height>
+         <height>94</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -584,7 +584,7 @@ QGroupBox::title {
          <x>0</x>
          <y>20</y>
          <width>661</width>
-         <height>488</height>
+         <height>521</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -675,6 +675,16 @@ QGroupBox::title {
          <widget class="QCheckBox" name="reservedrange_checkbox">
           <property name="text">
            <string>Check remote RI for being in blacklist of reserved IP ranges</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="stanCheckBox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>Stan</string>
           </property>
          </widget>
         </item>
@@ -1037,7 +1047,7 @@ QGroupBox::title {
          <x>-1</x>
          <y>200</y>
          <width>661</width>
-         <height>27</height>
+         <height>29</height>
         </rect>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_49">
@@ -1934,7 +1944,7 @@ Comma separated list of base64 identities:</string>
          <x>0</x>
          <y>300</y>
          <width>661</width>
-         <height>95</height>
+         <height>101</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3013,7 +3023,7 @@ Comma separated list of base64 identities:</string>
          <x>9</x>
          <y>20</y>
          <width>661</width>
-         <height>470</height>
+         <height>492</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -3600,7 +3610,7 @@ Comma separated list of base64 identities:</string>
          <x>-1</x>
          <y>19</y>
          <width>671</width>
-         <height>131</height>
+         <height>136</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
