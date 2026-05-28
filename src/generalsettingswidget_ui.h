@@ -367,7 +367,6 @@ public:
     QCheckBox *i2cpSingleThreadCheckBox;
     QLabel *portsLabel;
     QGroupBox *socksProxyGroupBox;
-    QWidget *verticalLayoutWidget_8;
     QVBoxLayout *verticalLayout_8;
     QCheckBox *socksProxyEnabledCheckBox;
     QHBoxLayout *socks_horizontalLayout_17_;
@@ -422,7 +421,6 @@ public:
     QLineEdit *socksProxyI2cpLeaseSetEncTypeLineEdit;
     QSpacerItem *horizontalSpacer_42;
     QGroupBox *groupBox_5;
-    QWidget *verticalLayoutWidget;
     QVBoxLayout *verticalLayout;
     QCheckBox *checkBoxWebsocketsEnable;
     QHBoxLayout *horizontalLayout_4;
@@ -2057,27 +2055,21 @@ public:
 
         socksProxyGroupBox = new QGroupBox(layoutWidget);
         socksProxyGroupBox->setObjectName(QString::fromUtf8("socksProxyGroupBox"));
-        socksProxyGroupBox->setMinimumSize(QSize(0, 500));
-        socksProxyGroupBox->setMaximumSize(QSize(16777215, 500));
-        verticalLayoutWidget_8 = new QWidget(socksProxyGroupBox);
-        verticalLayoutWidget_8->setObjectName(QString::fromUtf8("verticalLayoutWidget_8"));
-        verticalLayoutWidget_8->setGeometry(QRect(9, 20, 661, 492));
-        verticalLayout_8 = new QVBoxLayout(verticalLayoutWidget_8);
+        verticalLayout_8 = new QVBoxLayout(socksProxyGroupBox);
         verticalLayout_8->setObjectName(QString::fromUtf8("verticalLayout_8"));
-        verticalLayout_8->setContentsMargins(10, 10, 10, 10);
-        socksProxyEnabledCheckBox = new QCheckBox(verticalLayoutWidget_8);
+        socksProxyEnabledCheckBox = new QCheckBox();
         socksProxyEnabledCheckBox->setObjectName(QString::fromUtf8("socksProxyEnabledCheckBox"));
 
         verticalLayout_8->addWidget(socksProxyEnabledCheckBox);
 
         socks_horizontalLayout_17_ = new QHBoxLayout();
         socks_horizontalLayout_17_->setObjectName(QString::fromUtf8("socks_horizontalLayout_17_"));
-        socks_label_11 = new QLabel(verticalLayoutWidget_8);
+        socks_label_11 = new QLabel();
         socks_label_11->setObjectName(QString::fromUtf8("socks_label_11"));
 
         socks_horizontalLayout_17_->addWidget(socks_label_11);
 
-        socksProxyAddressLineEdit = new QLineEdit(verticalLayoutWidget_8);
+        socksProxyAddressLineEdit = new QLineEdit();
         socksProxyAddressLineEdit->setObjectName(QString::fromUtf8("socksProxyAddressLineEdit"));
 
         socks_horizontalLayout_17_->addWidget(socksProxyAddressLineEdit);
@@ -2091,12 +2083,12 @@ public:
 
         socks_horizontalLayout_18 = new QHBoxLayout();
         socks_horizontalLayout_18->setObjectName(QString::fromUtf8("socks_horizontalLayout_18"));
-        socks_label_12 = new QLabel(verticalLayoutWidget_8);
+        socks_label_12 = new QLabel();
         socks_label_12->setObjectName(QString::fromUtf8("socks_label_12"));
 
         socks_horizontalLayout_18->addWidget(socks_label_12);
 
-        socksProxyPortLineEdit = new QLineEdit(verticalLayoutWidget_8);
+        socksProxyPortLineEdit = new QLineEdit();
         socksProxyPortLineEdit->setObjectName(QString::fromUtf8("socksProxyPortLineEdit"));
         socksProxyPortLineEdit->setMaximumSize(QSize(80, 16777215));
 
@@ -2111,17 +2103,17 @@ public:
 
         socks_horizontalLayout_19 = new QHBoxLayout();
         socks_horizontalLayout_19->setObjectName(QString::fromUtf8("socks_horizontalLayout_19"));
-        socks_label_17 = new QLabel(verticalLayoutWidget_8);
+        socks_label_17 = new QLabel();
         socks_label_17->setObjectName(QString::fromUtf8("socks_label_17"));
 
         socks_horizontalLayout_19->addWidget(socks_label_17);
 
-        socksProxyKeyFileLineEdit = new QLineEdit(verticalLayoutWidget_8);
+        socksProxyKeyFileLineEdit = new QLineEdit();
         socksProxyKeyFileLineEdit->setObjectName(QString::fromUtf8("socksProxyKeyFileLineEdit"));
 
         socks_horizontalLayout_19->addWidget(socksProxyKeyFileLineEdit);
 
-        socksProxyKeyFilePushButton = new QPushButton(verticalLayoutWidget_8);
+        socksProxyKeyFilePushButton = new QPushButton();
         socksProxyKeyFilePushButton->setObjectName(QString::fromUtf8("socksProxyKeyFilePushButton"));
 
         socks_horizontalLayout_19->addWidget(socksProxyKeyFilePushButton);
@@ -2131,17 +2123,17 @@ public:
 
         horizontalLayout_40 = new QHBoxLayout();
         horizontalLayout_40->setObjectName(QString::fromUtf8("horizontalLayout_40"));
-        label_42 = new QLabel(verticalLayoutWidget_8);
+        label_42 = new QLabel();
         label_42->setObjectName(QString::fromUtf8("label_42"));
 
         horizontalLayout_40->addWidget(label_42);
 
-        comboBox_socksProxySignatureType = new QComboBox(verticalLayoutWidget_8);
+        comboBox_socksProxySignatureType = new QComboBox();
         comboBox_socksProxySignatureType->setObjectName(QString::fromUtf8("comboBox_socksProxySignatureType"));
 
         horizontalLayout_40->addWidget(comboBox_socksProxySignatureType);
 
-        socksProxySignTypeComboEditPushButton = new QPushButton(verticalLayoutWidget_8);
+        socksProxySignTypeComboEditPushButton = new QPushButton();
         socksProxySignTypeComboEditPushButton->setObjectName(QString::fromUtf8("socksProxySignTypeComboEditPushButton"));
 
         horizontalLayout_40->addWidget(socksProxySignTypeComboEditPushButton);
@@ -2155,12 +2147,12 @@ public:
 
         socks_horizontalLayout_20 = new QHBoxLayout();
         socks_horizontalLayout_20->setObjectName(QString::fromUtf8("socks_horizontalLayout_20"));
-        socks_label_18 = new QLabel(verticalLayoutWidget_8);
+        socks_label_18 = new QLabel();
         socks_label_18->setObjectName(QString::fromUtf8("socks_label_18"));
 
         socks_horizontalLayout_20->addWidget(socks_label_18);
 
-        socksProxyInboundTunnelsLenLineEdit = new QLineEdit(verticalLayoutWidget_8);
+        socksProxyInboundTunnelsLenLineEdit = new QLineEdit();
         socksProxyInboundTunnelsLenLineEdit->setObjectName(QString::fromUtf8("socksProxyInboundTunnelsLenLineEdit"));
         socksProxyInboundTunnelsLenLineEdit->setMaximumSize(QSize(80, 16777215));
 
@@ -2175,12 +2167,12 @@ public:
 
         socks_horizontalLayout_21 = new QHBoxLayout();
         socks_horizontalLayout_21->setObjectName(QString::fromUtf8("socks_horizontalLayout_21"));
-        socks_label_19 = new QLabel(verticalLayoutWidget_8);
+        socks_label_19 = new QLabel();
         socks_label_19->setObjectName(QString::fromUtf8("socks_label_19"));
 
         socks_horizontalLayout_21->addWidget(socks_label_19);
 
-        socksProxyInboundTunnQuantityLineEdit = new QLineEdit(verticalLayoutWidget_8);
+        socksProxyInboundTunnQuantityLineEdit = new QLineEdit();
         socksProxyInboundTunnQuantityLineEdit->setObjectName(QString::fromUtf8("socksProxyInboundTunnQuantityLineEdit"));
         socksProxyInboundTunnQuantityLineEdit->setMaximumSize(QSize(80, 16777215));
 
@@ -2195,12 +2187,12 @@ public:
 
         socks_horizontalLayout_22 = new QHBoxLayout();
         socks_horizontalLayout_22->setObjectName(QString::fromUtf8("socks_horizontalLayout_22"));
-        socks_label_20 = new QLabel(verticalLayoutWidget_8);
+        socks_label_20 = new QLabel();
         socks_label_20->setObjectName(QString::fromUtf8("socks_label_20"));
 
         socks_horizontalLayout_22->addWidget(socks_label_20);
 
-        socksProxyOutBoundTunnLenLineEdit = new QLineEdit(verticalLayoutWidget_8);
+        socksProxyOutBoundTunnLenLineEdit = new QLineEdit();
         socksProxyOutBoundTunnLenLineEdit->setObjectName(QString::fromUtf8("socksProxyOutBoundTunnLenLineEdit"));
         socksProxyOutBoundTunnLenLineEdit->setMaximumSize(QSize(80, 16777215));
 
@@ -2215,12 +2207,12 @@ public:
 
         socks_horizontalLayout_23 = new QHBoxLayout();
         socks_horizontalLayout_23->setObjectName(QString::fromUtf8("socks_horizontalLayout_23"));
-        socks_label_21 = new QLabel(verticalLayoutWidget_8);
+        socks_label_21 = new QLabel();
         socks_label_21->setObjectName(QString::fromUtf8("socks_label_21"));
 
         socks_horizontalLayout_23->addWidget(socks_label_21);
 
-        socksProxyOutboundTunnQuantityLineEdit = new QLineEdit(verticalLayoutWidget_8);
+        socksProxyOutboundTunnQuantityLineEdit = new QLineEdit();
         socksProxyOutboundTunnQuantityLineEdit->setObjectName(QString::fromUtf8("socksProxyOutboundTunnQuantityLineEdit"));
         socksProxyOutboundTunnQuantityLineEdit->setMaximumSize(QSize(80, 16777215));
 
@@ -2236,7 +2228,7 @@ public:
         horizontalLayout_56 = new QHBoxLayout();
         horizontalLayout_56->setObjectName(QString::fromUtf8("horizontalLayout_56"));
         horizontalLayout_56->setContentsMargins(-1, 0, -1, 0);
-        socksOutproxyEnabledCheckBox = new QCheckBox(verticalLayoutWidget_8);
+        socksOutproxyEnabledCheckBox = new QCheckBox();
         socksOutproxyEnabledCheckBox->setObjectName(QString::fromUtf8("socksOutproxyEnabledCheckBox"));
 
         horizontalLayout_56->addWidget(socksOutproxyEnabledCheckBox);
@@ -2246,12 +2238,12 @@ public:
 
         horizontalLayout_12 = new QHBoxLayout();
         horizontalLayout_12->setObjectName(QString::fromUtf8("horizontalLayout_12"));
-        label_22 = new QLabel(verticalLayoutWidget_8);
+        label_22 = new QLabel();
         label_22->setObjectName(QString::fromUtf8("label_22"));
 
         horizontalLayout_12->addWidget(label_22);
 
-        outproxyAddressLineEdit = new QLineEdit(verticalLayoutWidget_8);
+        outproxyAddressLineEdit = new QLineEdit();
         outproxyAddressLineEdit->setObjectName(QString::fromUtf8("outproxyAddressLineEdit"));
 
         horizontalLayout_12->addWidget(outproxyAddressLineEdit);
@@ -2265,12 +2257,12 @@ public:
 
         horizontalLayout_24 = new QHBoxLayout();
         horizontalLayout_24->setObjectName(QString::fromUtf8("horizontalLayout_24"));
-        label_23 = new QLabel(verticalLayoutWidget_8);
+        label_23 = new QLabel();
         label_23->setObjectName(QString::fromUtf8("label_23"));
 
         horizontalLayout_24->addWidget(label_23);
 
-        outproxyPortLineEdit = new QLineEdit(verticalLayoutWidget_8);
+        outproxyPortLineEdit = new QLineEdit();
         outproxyPortLineEdit->setObjectName(QString::fromUtf8("outproxyPortLineEdit"));
         outproxyPortLineEdit->setMaximumSize(QSize(80, 16777215));
 
@@ -2285,12 +2277,12 @@ public:
 
         horizontalLayout_57 = new QHBoxLayout();
         horizontalLayout_57->setObjectName(QString::fromUtf8("horizontalLayout_57"));
-        label_56 = new QLabel(verticalLayoutWidget_8);
+        label_56 = new QLabel();
         label_56->setObjectName(QString::fromUtf8("label_56"));
 
         horizontalLayout_57->addWidget(label_56);
 
-        socksProxyI2cpLeaseSetTypeLineEdit = new QLineEdit(verticalLayoutWidget_8);
+        socksProxyI2cpLeaseSetTypeLineEdit = new QLineEdit();
         socksProxyI2cpLeaseSetTypeLineEdit->setObjectName(QString::fromUtf8("socksProxyI2cpLeaseSetTypeLineEdit"));
 
         horizontalLayout_57->addWidget(socksProxyI2cpLeaseSetTypeLineEdit);
@@ -2304,12 +2296,12 @@ public:
 
         horizontalLayout_55 = new QHBoxLayout();
         horizontalLayout_55->setObjectName(QString::fromUtf8("horizontalLayout_55"));
-        label_57 = new QLabel(verticalLayoutWidget_8);
+        label_57 = new QLabel();
         label_57->setObjectName(QString::fromUtf8("label_57"));
 
         horizontalLayout_55->addWidget(label_57);
 
-        socksProxyI2cpLeaseSetEncTypeLineEdit = new QLineEdit(verticalLayoutWidget_8);
+        socksProxyI2cpLeaseSetEncTypeLineEdit = new QLineEdit();
         socksProxyI2cpLeaseSetEncTypeLineEdit->setObjectName(QString::fromUtf8("socksProxyI2cpLeaseSetEncTypeLineEdit"));
 
         horizontalLayout_55->addWidget(socksProxyI2cpLeaseSetEncTypeLineEdit);
@@ -2326,31 +2318,21 @@ public:
 
         groupBox_5 = new QGroupBox(layoutWidget);
         groupBox_5->setObjectName(QString::fromUtf8("groupBox_5"));
-        sizePolicy.setHeightForWidth(groupBox_5->sizePolicy().hasHeightForWidth());
-        groupBox_5->setSizePolicy(sizePolicy);
-        groupBox_5->setMinimumSize(QSize(0, 145));
-        groupBox_5->setMaximumSize(QSize(16777215, 300));
-        groupBox_5->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
-        verticalLayoutWidget = new QWidget(groupBox_5);
-        verticalLayoutWidget->setObjectName(QString::fromUtf8("verticalLayoutWidget"));
-        verticalLayoutWidget->setGeometry(QRect(-1, 19, 681, 124));
-        verticalLayout = new QVBoxLayout(verticalLayoutWidget);
+        verticalLayout = new QVBoxLayout(groupBox_5);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        verticalLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
-        verticalLayout->setContentsMargins(10, 10, 10, 10);
-        checkBoxWebsocketsEnable = new QCheckBox(verticalLayoutWidget);
+        checkBoxWebsocketsEnable = new QCheckBox();
         checkBoxWebsocketsEnable->setObjectName(QString::fromUtf8("checkBoxWebsocketsEnable"));
 
         verticalLayout->addWidget(checkBoxWebsocketsEnable);
 
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
-        label_5 = new QLabel(verticalLayoutWidget);
+        label_5 = new QLabel();
         label_5->setObjectName(QString::fromUtf8("label_5"));
 
         horizontalLayout_4->addWidget(label_5);
 
-        websocketsAddressLineEdit = new QLineEdit(verticalLayoutWidget);
+        websocketsAddressLineEdit = new QLineEdit();
         websocketsAddressLineEdit->setObjectName(QString::fromUtf8("websocketsAddressLineEdit"));
 
         horizontalLayout_4->addWidget(websocketsAddressLineEdit);
@@ -2364,12 +2346,12 @@ public:
 
         horizontalLayout_25 = new QHBoxLayout();
         horizontalLayout_25->setObjectName(QString::fromUtf8("horizontalLayout_25"));
-        label_24 = new QLabel(verticalLayoutWidget);
+        label_24 = new QLabel();
         label_24->setObjectName(QString::fromUtf8("label_24"));
 
         horizontalLayout_25->addWidget(label_24);
 
-        websocketsPortLineEdit = new QLineEdit(verticalLayoutWidget);
+        websocketsPortLineEdit = new QLineEdit();
         websocketsPortLineEdit->setObjectName(QString::fromUtf8("websocketsPortLineEdit"));
         sizePolicy7.setHeightForWidth(websocketsPortLineEdit->sizePolicy().hasHeightForWidth());
         websocketsPortLineEdit->setSizePolicy(sizePolicy7);
