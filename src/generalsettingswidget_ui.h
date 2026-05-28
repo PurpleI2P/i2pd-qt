@@ -359,7 +359,6 @@ public:
     QLabel *i2cp_label_24;
     QLineEdit *i2cpAddressLineEdit;
     QSpacerItem *i2cp_horizontalSpacer_19;
-    QWidget *i2cp_horizontalLayoutWidget_9;
     QHBoxLayout *i2cp_horizontalLayout_26;
     QLabel *i2cp_label_25;
     QLineEdit *i2cpPortLineEdit;
@@ -1983,27 +1982,21 @@ public:
 
         groupBox_2 = new QGroupBox(layoutWidget);
         groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
-        groupBox_2->setMinimumSize(QSize(0, 44));
-        groupBox_2->setMaximumSize(QSize(16777215, 44));
-        useElGamalPrecomputedTablesCheckBox = new QCheckBox(groupBox_2);
+        QVBoxLayout*cryptolay=new QVBoxLayout(groupBox_2);
+        useElGamalPrecomputedTablesCheckBox = new QCheckBox();
         useElGamalPrecomputedTablesCheckBox->setObjectName(QString::fromUtf8("useElGamalPrecomputedTablesCheckBox"));
-        useElGamalPrecomputedTablesCheckBox->setGeometry(QRect(0, 20, 661, 22));
+        cryptolay->addWidget(useElGamalPrecomputedTablesCheckBox);
 
         settingsContentsQVBoxLayout->addWidget(groupBox_2);
 
         i2cpGroupBox = new QGroupBox(layoutWidget);
         i2cpGroupBox->setObjectName(QString::fromUtf8("i2cpGroupBox"));
-        i2cpGroupBox->setMinimumSize(QSize(0, 121));
-        i2cpGroupBox->setMaximumSize(QSize(16777215, 121));
+        QVBoxLayout*layi2cp=new QVBoxLayout(i2cpGroupBox);
         i2cpEnabledCheckBox = new QCheckBox(i2cpGroupBox);
         i2cpEnabledCheckBox->setObjectName(QString::fromUtf8("i2cpEnabledCheckBox"));
-        i2cpEnabledCheckBox->setGeometry(QRect(0, 20, 97, 22));
-        i2cp_horizontalLayoutWidget_8 = new QWidget(i2cpGroupBox);
-        i2cp_horizontalLayoutWidget_8->setObjectName(QString::fromUtf8("i2cp_horizontalLayoutWidget_8"));
-        i2cp_horizontalLayoutWidget_8->setGeometry(QRect(0, 40, 661, 31));
-        i2cp_horizontalLayout_25 = new QHBoxLayout(i2cp_horizontalLayoutWidget_8);
+        layi2cp->addWidget(i2cpEnabledCheckBox);
+        i2cp_horizontalLayout_25 = new QHBoxLayout();
         i2cp_horizontalLayout_25->setObjectName(QString::fromUtf8("i2cp_horizontalLayout_25"));
-        i2cp_horizontalLayout_25->setContentsMargins(0, 0, 0, 0);
         i2cp_label_24 = new QLabel(i2cp_horizontalLayoutWidget_8);
         i2cp_label_24->setObjectName(QString::fromUtf8("i2cp_label_24"));
 
@@ -2017,19 +2010,17 @@ public:
         i2cp_horizontalSpacer_19 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         i2cp_horizontalLayout_25->addItem(i2cp_horizontalSpacer_19);
+        layi2cp->addLayout(i2cp_horizontalLayout_25);
 
-        i2cp_horizontalLayoutWidget_9 = new QWidget(i2cpGroupBox);
-        i2cp_horizontalLayoutWidget_9->setObjectName(QString::fromUtf8("i2cp_horizontalLayoutWidget_9"));
-        i2cp_horizontalLayoutWidget_9->setGeometry(QRect(0, 70, 661, 31));
-        i2cp_horizontalLayout_26 = new QHBoxLayout(i2cp_horizontalLayoutWidget_9);
+        i2cp_horizontalLayout_26 = new QHBoxLayout();
         i2cp_horizontalLayout_26->setObjectName(QString::fromUtf8("i2cp_horizontalLayout_26"));
-        i2cp_horizontalLayout_26->setContentsMargins(0, 0, 0, 0);
-        i2cp_label_25 = new QLabel(i2cp_horizontalLayoutWidget_9);
+
+        i2cp_label_25 = new QLabel();
         i2cp_label_25->setObjectName(QString::fromUtf8("i2cp_label_25"));
 
         i2cp_horizontalLayout_26->addWidget(i2cp_label_25);
 
-        i2cpPortLineEdit = new QLineEdit(i2cp_horizontalLayoutWidget_9);
+        i2cpPortLineEdit = new QLineEdit();
         i2cpPortLineEdit->setObjectName(QString::fromUtf8("i2cpPortLineEdit"));
         i2cpPortLineEdit->setMaximumSize(QSize(80, 16777215));
 
@@ -2038,17 +2029,16 @@ public:
         i2cp_horizontalSpacer_20 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         i2cp_horizontalLayout_26->addItem(i2cp_horizontalSpacer_20);
+        layi2cp->addLayout(i2cp_horizontalLayout_26);
 
-        i2cpSingleThreadCheckBox = new QCheckBox(i2cpGroupBox);
+        i2cpSingleThreadCheckBox = new QCheckBox();
         i2cpSingleThreadCheckBox->setObjectName(QString::fromUtf8("i2cpSingleThreadCheckBox"));
-        i2cpSingleThreadCheckBox->setGeometry(QRect(0, 100, 651, 23));
+        layi2cp->addWidget(i2cpSingleThreadCheckBox);
 
         settingsContentsQVBoxLayout->addWidget(i2cpGroupBox);
 
         portsLabel = new QLabel(layoutWidget);
         portsLabel->setObjectName(QString::fromUtf8("portsLabel"));
-        portsLabel->setMinimumSize(QSize(0, 60));
-        portsLabel->setMaximumSize(QSize(16777215, 60));
         portsLabel->setFont(font);
 
         settingsContentsQVBoxLayout->addWidget(portsLabel);
