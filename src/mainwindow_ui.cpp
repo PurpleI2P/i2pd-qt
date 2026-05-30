@@ -230,11 +230,13 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     verticalLayout_4 = new QVBoxLayout(settingsPage);
     verticalLayout_4->setSpacing(6);
     verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
-    verticalLayout_4->setSizeConstraint(QLayout::SetMinAndMaxSize);
-    verticalLayout_4->setContentsMargins(0, 0, 0, 0);
+    verticalLayout_4->setSizeConstraint(QLayout::SetDefaultConstraint);
+    //verticalLayout_4->setContentsMargins(0, 0, 0, 0);
     settingsTitleLabel = new QLabel();
     settingsTitleLabel->setObjectName(QString::fromUtf8("settingsTitleLabel"));
     settingsTitleLabel->setFont(font1);
+    settingsTitleLabel->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed));
+    settingsTitleLabel->setFixedHeight(settingsTitleLabel->sizeHint().height());
 
     verticalLayout_4->addWidget(settingsTitleLabel);
 

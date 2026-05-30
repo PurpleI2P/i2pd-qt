@@ -1092,30 +1092,28 @@ void MainWindow::backClickedFromChild() {
 }
 
 void MainWindow::adjustSizesAccordingToWrongLabel() {
-    constexpr auto HEIGHT = 581;
-    constexpr auto WIDTH = 707;
     if(ui->wrongInputLabel->isVisible()) {
-        int dh = ui->wrongInputLabel->height()+ui->verticalLayout_7->layout()->spacing();
+        //int dh = ui->wrongInputLabel->height()+ui->verticalLayout_7->layout()->spacing();
         ui->verticalLayout_7->invalidate();
-        ui->wrongInputLabel->adjustSize();
+        //ui->wrongInputLabel->adjustSize();
         //ui->stackedWidget->adjustSize();
-        const auto height = HEIGHT - dh;
+        //const auto height = HEIGHT - dh;
         //ui->stackedWidget->setFixedHeight(height);
-        ui->settingsPage->setFixedHeight(height);
+        //ui->settingsPage->setFixedHeight(height);
         //ui->stackedWidget->setFixedHeight(height);
-        ui->settingsScrollArea->setFixedHeight(height-settingsTitleLabelNominalHeight-ui->verticalLayout_4->spacing());
-        ui->settingsTitleLabel->setFixedHeight(settingsTitleLabelNominalHeight);
+        //ui->settingsScrollArea->setFixedHeight(height-settingsTitleLabelNominalHeight-ui->verticalLayout_4->spacing());
+        //ui->settingsTitleLabel->setFixedHeight(settingsTitleLabelNominalHeight);
         //ui->tunnelsScrollArea->setFixedHeight(height-settingsTitleLabelNominalHeight-ui->horizontalLayout_42->geometry().height()-2*ui->verticalLayout_4->spacing());
         //ui->tunnelsTitleLabel->setFixedHeight(settingsTitleLabelNominalHeight);
     }else{
         ui->verticalLayout_7->invalidate();
-        ui->wrongInputLabel->adjustSize();
+        //ui->wrongInputLabel->adjustSize();
         //ui->stackedWidget->adjustSize();
         //ui->stackedWidget->setFixedHeight(HEIGHT);
-        ui->settingsPage->setFixedHeight(HEIGHT);
+        //ui->settingsPage->setFixedHeight(HEIGHT);
         //ui->stackedWidget->setFixedHeight(HEIGHT);
-        ui->settingsScrollArea->setFixedHeight(HEIGHT-settingsTitleLabelNominalHeight-ui->verticalLayout_4->spacing());
-        ui->settingsTitleLabel->setFixedHeight(settingsTitleLabelNominalHeight);
+        //ui->settingsScrollArea->setFixedHeight(HEIGHT-settingsTitleLabelNominalHeight-ui->verticalLayout_4->spacing());
+        //ui->settingsTitleLabel->setFixedHeight(settingsTitleLabelNominalHeight);
         //ui->tunnelsScrollArea->setFixedHeight(HEIGHT-settingsTitleLabelNominalHeight-ui->horizontalLayout_42->geometry().height()-2*ui->verticalLayout_4->spacing());
         //ui->tunnelsTitleLabel->setFixedHeight(settingsTitleLabelNominalHeight);
     }
