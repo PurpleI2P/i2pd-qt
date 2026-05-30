@@ -50,7 +50,6 @@ public:
     QLabel *label_4;
     QVBoxLayout *verticalLayout_2;
     QWidget *logViewerPage;
-    QWidget *_logViewer;
     QVBoxLayout *verticalLayout_4_logViewer;
     QLabel *logViewerTitleLabel;
     QPlainTextEdit *logViewerTextEdit;

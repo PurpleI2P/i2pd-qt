@@ -186,7 +186,6 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     verticalLayout_5->addWidget(label_4);
 
     verticalLayout_2 = new QVBoxLayout();
-    verticalLayout_2->setSpacing(6);
     verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
     verticalLayout_2->setSizeConstraint(QLayout::SetMaximumSize);
 
@@ -195,13 +194,11 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     stackedWidget->addWidget(statusPage);
     logViewerPage = new QWidget();
     logViewerPage->setObjectName(QString::fromUtf8("logViewerPage"));
-    _logViewer = new QWidget(logViewerPage);
-    _logViewer->setObjectName(QString::fromUtf8("_logViewer"));
-    _logViewer->setGeometry(QRect(0, 0, 707, 586));
-    verticalLayout_4_logViewer = new QVBoxLayout(_logViewer);
+    logViewerPage->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding));
+    verticalLayout_4_logViewer = new QVBoxLayout(logViewerPage);
     verticalLayout_4_logViewer->setObjectName(QString::fromUtf8("verticalLayout_4_logViewer"));
     verticalLayout_4_logViewer->setSizeConstraint(QLayout::SetDefaultConstraint);
-    logViewerTitleLabel = new QLabel(_logViewer);
+    logViewerTitleLabel = new QLabel(logViewerPage);
     logViewerTitleLabel->setObjectName(QString::fromUtf8("logViewerTitleLabel"));
     logViewerTitleLabel->setFont(font1);
     logViewerTitleLabel->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed));
@@ -209,10 +206,9 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
 
     verticalLayout_4_logViewer->addWidget(logViewerTitleLabel);
 
-    logViewerTextEdit = new QPlainTextEdit(_logViewer);
+    logViewerTextEdit = new QPlainTextEdit(logViewerPage);
     logViewerTextEdit->setObjectName(QString::fromUtf8("logViewerTextEdit"));
-    sizePolicy.setHeightForWidth(logViewerTextEdit->sizePolicy().hasHeightForWidth());
-    logViewerTextEdit->setSizePolicy(sizePolicy);
+    logViewerTextEdit->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding));
     logViewerTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     logViewerTextEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     logViewerTextEdit->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
