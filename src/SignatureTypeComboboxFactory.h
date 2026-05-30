@@ -76,8 +76,8 @@ public:
         }
     }
 
-    static QComboBox* createSignatureTypeComboBox(QWidget* parent, uint16_t selectedSigType) {
-        QComboBox* signatureTypeCombobox = new QComboBox(parent);
+    static QComboBox* createSignatureTypeComboBox(uint16_t selectedSigType) {
+        QComboBox* signatureTypeCombobox = new QComboBox();
         fillComboBox(signatureTypeCombobox, selectedSigType);
         return signatureTypeCombobox;
     }

@@ -45,6 +45,7 @@ SOURCES += \
     src/SignatureTypeComboboxFactory.cpp \
     src/TunnelConfig.cpp \
     src/TunnelPane.cpp \
+    src/mainwindow_ui.cpp \
     src/textbrowsertweaked1.cpp \
     src/pagewithbackbutton.cpp \
     src/widgetlock.cpp \
@@ -74,6 +75,7 @@ HEADERS += \
     src/TunnelConfig.h \
     src/TunnelPane.h \
     src/TunnelsPageUpdateListener.h \
+    src/mainwindow_ui.h \
     src/textbrowsertweaked1.h \
     src/pagewithbackbutton.h \
     src/widgetlock.h \

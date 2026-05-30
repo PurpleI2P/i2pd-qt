@@ -53,13 +53,13 @@ protected:
     TunnelsPageUpdateListener* tunnelsPageUpdateListener;
     QVBoxLayout *tunnelGridLayout;
     QGroupBox *tunnelGroupBox;
-    QWidget* gridLayoutWidget_2;
 
     //header
     QLabel *nameLabel;
     QLineEdit *nameLineEdit;
 public:
     QLineEdit * getNameLineEdit() { return nameLineEdit; }
+    QGroupBox * getTunnelGroupBox() { return tunnelGroupBox; }
 
 public slots:
     void updated();
@@ -154,12 +154,12 @@ protected:
     void setupTunnelPane(
             TunnelConfig* tunnelConfig,
             QGroupBox *tunnelGroupBox,
-            QWidget* gridLayoutWidget_2, QComboBox * tunnelTypeComboBox,
+            QVBoxLayout* lay, QComboBox * tunnelTypeComboBox,
             QWidget *tunnelsFormGridLayoutWidget, int tunnelsRow, int height, int h);
     void appendControlsForI2CPParameters(I2CPParameters& i2cpParameters, int& gridIndex);
 public:
     int height() {
-        return gridLayoutWidget_2?gridLayoutWidget_2->height():0;
+        return tunnelGridLayout->geometry().height();
     }
 
 protected slots:

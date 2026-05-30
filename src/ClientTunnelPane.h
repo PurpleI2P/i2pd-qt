@@ -19,13 +19,10 @@ public:
     virtual ServerTunnelPane* asServerTunnelPane();
     virtual ClientTunnelPane* asClientTunnelPane();
     int appendClientTunnelForm(ClientTunnelConfig* tunnelConfig, QWidget *tunnelsFormGridLayoutWidget,
-                                int tunnelsRow, int height);
+                                int tunnelsRow, int height, QVBoxLayout* tunlay);
     void deleteClientTunnelForm();
 private:
     QGroupBox *clientTunnelNameGroupBox;
-
-    //tunnel
-    QWidget *gridLayoutWidget_2;
 
     //destination
     QHBoxLayout *horizontalLayout_2;

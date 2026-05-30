@@ -1,9 +1,9 @@
 #include "mainwindow.h"
 #include "I2pdQtUtil.h"
 #include "AboutDialog.h"
-#include "ui_mainwindow.h"
+#include "mainwindow_ui.h"
 #include "ui_statusbuttons.h"
-#include "ui_routercommandswidget.h"
+#include "routercommandswidget_ui.h"
 #include "generalsettingswidget_ui.h"
 #include <QScrollBar>
 #include <QMessageBox>
@@ -74,6 +74,7 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
          new SaverImpl(this,
                        &configItems,
                        &tunnelConfigs))
+    ,tunnelsListLayout(nullptr)
 
 {
     assert(delayedSaveManagerPtr!=nullptr);
@@ -98,18 +99,13 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     setWindowTitle(QApplication::translate("AppTitle","I2PD"));
 
     //TODO handle resizes and change the below into resize() call
-    constexpr auto WINDOW_HEIGHT = 610;
-    setFixedHeight(WINDOW_HEIGHT);
-    ui->centralWidget->setFixedHeight(WINDOW_HEIGHT);
     onResize();
 
     ui->stackedWidget->setCurrentIndex(0);
     ui->settingsScrollArea->resize(uiSettings->settingsContentsQVBoxLayout->sizeHint().width()+10,380);
     //QScrollBar* const barSett = ui->settingsScrollArea->verticalScrollBar();
-    constexpr auto w = 683;
-    constexpr auto h = 4550;
-    ui->settingsContents->setFixedSize(w, h);
-    ui->settingsContents->setGeometry(QRect(0,0,w,h));
+    //ui->settingsContents->setFixedSize(w, h);
+    //ui->settingsContents->setGeometry(QRect(0,0,w,h));
 
     /*
     QPalette pal(palette());
@@ -121,7 +117,7 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     pal.setColor(QPalette::Window, Qt::red);
     ui->wrongInputLabel->setAutoFillBackground(true);
     ui->wrongInputLabel->setPalette(pal);
-    ui->wrongInputLabel->setMaximumHeight(ui->wrongInputLabel->sizeHint().height());
+    ui->wrongInputLabel->setFixedHeight(ui->wrongInputLabel->sizeHint().height());
     ui->wrongInputLabel->setVisible(false);
 
     settingsTitleLabelNominalHeight = ui->settingsTitleLabel->height();
@@ -446,7 +442,7 @@ void MainWindow::showStatusPage(StatusPage newStatusPage){
     wasSelectingAtStatusMainPage=false;
 }
 
-void MainWindow::showAboutBox(const QString & href) {
+void MainWindow::showAboutBox(const QString &) {
     AboutDialog dialog(this);
 
     /*
@@ -550,14 +546,15 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 void MainWindow::onResize()
 {
     if(isVisible()){
-        ui->horizontalLayoutWidget->resize(ui->horizontalLayoutWidget->width(), height());
+        int leftWidth = ui->verticalLayout->geometry().width();
+        //ui->verticalLayout_7->setGeometry(QRect(ui->verticalLayout->geometry().width(), 0, width()-leftWidth, height()));
 
         //status
-        ui->statusPage->resize(ui->statusPage->width(), height());
+        //ui->statusPage->resize(width(), height());
 
         //tunnels
-        ui->tunnelsPage->resize(ui->tunnelsPage->width(), height());
-        ui->verticalLayoutWidget_6->resize(ui->verticalLayoutWidget_6->width(), height()-20);
+        //ui->tunnelsPage->resize(width(), height());
+        //ui->verticalLayoutWidget_6->resize(width(), height());
         /*ui->tunnelsScrollArea->resize(ui->tunnelsScrollArea->width(),
                                       ui->verticalLayoutWidget_6->height()-ui->label_5->height());*/
     }
@@ -791,31 +788,37 @@ void MainWindow::DisableTunnelsPage() {
 }
 
 void MainWindow::layoutTunnels() {
-
-    int height=0;
-    ui->tunnelsScrollAreaWidgetContents->setGeometry(0,0,0,0);
+    /*
+    //int height=0;
+    //ui->tunnelsScrollAreaWidgetContents->setGeometry(0,0,0,0);
     for(std::map<std::string, TunnelConfig*>::iterator it = tunnelConfigs.begin(); it != tunnelConfigs.end(); ++it) {
         //const std::string& name=it->first;
         TunnelConfig* tunconf = it->second;
         TunnelPane * tunnelPane=tunconf->getTunnelPane();
         if(!tunnelPane)continue;
         int h=tunnelPane->height();
-        height+=h;
+        //height+=h;
         //qDebug() << "tun.height:" << height << "sz:" <<  tunnelPanes.size();
         //int h=tunnelPane->appendClientTunnelForm(ctc, ui->tunnelsScrollAreaWidgetContents, tunnelPanes.size(), height);
     }
     //qDebug() << "tun.setting height:" << height;
-    ui->tunnelsScrollAreaWidgetContents->setGeometry(QRect(0, 0, 621, height));
+    //ui->tunnelsScrollAreaWidgetContents->setGeometry(QRect(0, 0, 621, height));
+    */
     /*QList<QWidget*> childWidgets = ui->tunnelsScrollAreaWidgetContents->findChildren<QWidget*>();
     foreach(QWidget* widget, childWidgets)
         widget->show();*/
+    ui->tunnelsScrollAreaWidgetContents->updateGeometry();
+    ui->verticalLayout_6->parentWidget()->updateGeometry();
 }
 
 void MainWindow::deleteTunnelFromUI(std::string tunnelName, TunnelConfig* cnf) {
     TunnelPane* tp = cnf->getTunnelPane();
     if(!tp)return;
     tunnelPanes.remove(tp);
+    tunnelsListLayout->removeWidget(tp->getTunnelGroupBox());
+    //ui->tunnelsScrollAreaWidgetContents->
     tp->deleteWidget();
+    //ui->tunnelsScrollAreaWidgetContents->
     layoutTunnels();
 }
 
@@ -887,8 +890,7 @@ void MainWindow::updated() {
 void MainWindowItem::installListeners(MainWindow *mainWindow) {}
 
 void MainWindow::appendTunnelForms(std::string tunnelNameToFocus) {
-    int height=0;
-    ui->tunnelsScrollAreaWidgetContents->setGeometry(0,0,0,0);
+    //int height=0;
     for(std::map<std::string, TunnelConfig*>::iterator it = tunnelConfigs.begin(); it != tunnelConfigs.end(); ++it) {
         const std::string& name=it->first;
         TunnelConfig* tunconf = it->second;
@@ -896,8 +898,8 @@ void MainWindow::appendTunnelForms(std::string tunnelNameToFocus) {
         if(stc){
             ServerTunnelPane * tunnelPane=new ServerTunnelPane(&tunnelsPageUpdateListener, stc, ui->wrongInputLabel, ui->wrongInputLabel, this);
             tunconf->setTunnelPane(tunnelPane);
-            int h=tunnelPane->appendServerTunnelForm(stc, ui->tunnelsScrollAreaWidgetContents, tunnelPanes.size(), height);
-            height+=h;
+            int h=tunnelPane->appendServerTunnelForm(stc, ui->tunnelsScrollAreaWidgetContents, tunnelPanes.size(), 0, tunnelsListLayout);
+            //height+=h;
             //qDebug() << "tun.height:" << height << "sz:" <<  tunnelPanes.size();
             tunnelPanes.push_back(tunnelPane);
             if(name==tunnelNameToFocus){
@@ -910,8 +912,8 @@ void MainWindow::appendTunnelForms(std::string tunnelNameToFocus) {
         if(ctc){
             ClientTunnelPane * tunnelPane=new ClientTunnelPane(&tunnelsPageUpdateListener, ctc, ui->wrongInputLabel, ui->wrongInputLabel, this);
             tunconf->setTunnelPane(tunnelPane);
-            int h=tunnelPane->appendClientTunnelForm(ctc, ui->tunnelsScrollAreaWidgetContents, tunnelPanes.size(), height);
-            height+=h;
+            int h=tunnelPane->appendClientTunnelForm(ctc, ui->tunnelsScrollAreaWidgetContents, tunnelPanes.size(), 0, tunnelsListLayout);
+            //height+=h;
             //qDebug() << "tun.height:" << height << "sz:" <<  tunnelPanes.size();
             tunnelPanes.push_back(tunnelPane);
             if(name==tunnelNameToFocus){
@@ -923,10 +925,10 @@ void MainWindow::appendTunnelForms(std::string tunnelNameToFocus) {
         throw "unknown TunnelConfig subtype";
     }
     //qDebug() << "tun.setting height:" << height;
-    ui->tunnelsScrollAreaWidgetContents->setGeometry(QRect(0, 0, 621, height));
-    QList<QWidget*> childWidgets = ui->tunnelsScrollAreaWidgetContents->findChildren<QWidget*>();
-    foreach(QWidget* widget, childWidgets)
-        widget->show();
+    ui->tunnelsScrollAreaWidgetContents->updateGeometry();
+    //QList<QWidget*> childWidgets = ui->tunnelsScrollAreaWidgetContents->findChildren<QWidget*>();
+    //foreach(QWidget* widget, childWidgets)
+    //    widget->show();
 }
 void MainWindow::deleteTunnelForms() {
     for(std::list<TunnelPane*>::iterator it = tunnelPanes.begin(); it != tunnelPanes.end(); ++it) {
@@ -1090,34 +1092,30 @@ void MainWindow::backClickedFromChild() {
 }
 
 void MainWindow::adjustSizesAccordingToWrongLabel() {
-    constexpr auto HEIGHT = 581;
-    constexpr auto WIDTH = 707;
     if(ui->wrongInputLabel->isVisible()) {
-        int dh = ui->wrongInputLabel->height()+ui->verticalLayout_7->layout()->spacing();
+        //int dh = ui->wrongInputLabel->height()+ui->verticalLayout_7->layout()->spacing();
         ui->verticalLayout_7->invalidate();
-        ui->wrongInputLabel->adjustSize();
-        ui->stackedWidget->adjustSize();
-        const auto height = HEIGHT - dh;
-        ui->stackedWidget->setFixedHeight(height);
-        ui->settingsPage->setFixedHeight(height);
-        ui->verticalLayoutWidget_4->setGeometry(QRect(0, 0, WIDTH, height));
-        ui->stackedWidget->setFixedHeight(height);
-        ui->settingsScrollArea->setFixedHeight(height-settingsTitleLabelNominalHeight-ui->verticalLayout_4->spacing());
-        ui->settingsTitleLabel->setFixedHeight(settingsTitleLabelNominalHeight);
-        ui->tunnelsScrollArea->setFixedHeight(height-settingsTitleLabelNominalHeight-ui->horizontalLayout_42->geometry().height()-2*ui->verticalLayout_4->spacing());
-        ui->tunnelsTitleLabel->setFixedHeight(settingsTitleLabelNominalHeight);
+        //ui->wrongInputLabel->adjustSize();
+        //ui->stackedWidget->adjustSize();
+        //const auto height = HEIGHT - dh;
+        //ui->stackedWidget->setFixedHeight(height);
+        //ui->settingsPage->setFixedHeight(height);
+        //ui->stackedWidget->setFixedHeight(height);
+        //ui->settingsScrollArea->setFixedHeight(height-settingsTitleLabelNominalHeight-ui->verticalLayout_4->spacing());
+        //ui->settingsTitleLabel->setFixedHeight(settingsTitleLabelNominalHeight);
+        //ui->tunnelsScrollArea->setFixedHeight(height-settingsTitleLabelNominalHeight-ui->horizontalLayout_42->geometry().height()-2*ui->verticalLayout_4->spacing());
+        //ui->tunnelsTitleLabel->setFixedHeight(settingsTitleLabelNominalHeight);
     }else{
         ui->verticalLayout_7->invalidate();
-        ui->wrongInputLabel->adjustSize();
-        ui->stackedWidget->adjustSize();
-        ui->stackedWidget->setFixedHeight(HEIGHT);
-        ui->settingsPage->setFixedHeight(HEIGHT);
-        ui->verticalLayoutWidget_4->setGeometry(QRect(0, 0, WIDTH, HEIGHT));
-        ui->stackedWidget->setFixedHeight(HEIGHT);
-        ui->settingsScrollArea->setFixedHeight(HEIGHT-settingsTitleLabelNominalHeight-ui->verticalLayout_4->spacing());
-        ui->settingsTitleLabel->setFixedHeight(settingsTitleLabelNominalHeight);
-        ui->tunnelsScrollArea->setFixedHeight(HEIGHT-settingsTitleLabelNominalHeight-ui->horizontalLayout_42->geometry().height()-2*ui->verticalLayout_4->spacing());
-        ui->tunnelsTitleLabel->setFixedHeight(settingsTitleLabelNominalHeight);
+        //ui->wrongInputLabel->adjustSize();
+        //ui->stackedWidget->adjustSize();
+        //ui->stackedWidget->setFixedHeight(HEIGHT);
+        //ui->settingsPage->setFixedHeight(HEIGHT);
+        //ui->stackedWidget->setFixedHeight(HEIGHT);
+        //ui->settingsScrollArea->setFixedHeight(HEIGHT-settingsTitleLabelNominalHeight-ui->verticalLayout_4->spacing());
+        //ui->settingsTitleLabel->setFixedHeight(settingsTitleLabelNominalHeight);
+        //ui->tunnelsScrollArea->setFixedHeight(HEIGHT-settingsTitleLabelNominalHeight-ui->horizontalLayout_42->geometry().height()-2*ui->verticalLayout_4->spacing());
+        //ui->tunnelsTitleLabel->setFixedHeight(settingsTitleLabelNominalHeight);
     }
 }
 

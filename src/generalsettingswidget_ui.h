@@ -325,27 +325,22 @@ public:
     QLabel *label_48;
     QGroupBox *i2pControlGroupBox;
     QCheckBox *i2pControlEnabledCheckBox;
-    QWidget *i2pControl_horizontalLayoutWidget_8;
     QHBoxLayout *i2pControl_horizontalLayout_25;
     QLabel *i2pControl_label_24;
     QLineEdit *i2pControlAddressLineEdit;
     QSpacerItem *i2pControl_horizontalSpacer_19;
-    QWidget *i2pControl_horizontalLayoutWidget_9;
     QHBoxLayout *i2pControl_horizontalLayout_26;
     QLabel *i2pControl_label_25;
     QLineEdit *i2pControlPortLineEdit;
     QSpacerItem *i2pControl_horizontalSpacer_20;
-    QWidget *horizontalLayoutWidget_10;
     QHBoxLayout *horizontalLayout_27;
     QLabel *label_26;
     QLineEdit *i2pControlPasswordLineEdit;
     QSpacerItem *horizontalSpacer_21;
-    QWidget *horizontalLayoutWidget_11;
     QHBoxLayout *horizontalLayout_28;
     QLabel *label_27;
     QLineEdit *i2pControlCertFileLineEdit;
     QPushButton *i2pControlCertFileBrowsePushButton;
-    QWidget *horizontalLayoutWidget_12;
     QHBoxLayout *horizontalLayout_29;
     QLabel *label_28;
     QLineEdit *i2pControlKeyFileLineEdit;
@@ -359,7 +354,6 @@ public:
     QLabel *i2cp_label_24;
     QLineEdit *i2cpAddressLineEdit;
     QSpacerItem *i2cp_horizontalSpacer_19;
-    QWidget *i2cp_horizontalLayoutWidget_9;
     QHBoxLayout *i2cp_horizontalLayout_26;
     QLabel *i2cp_label_25;
     QLineEdit *i2cpPortLineEdit;
@@ -1870,23 +1864,18 @@ public:
 
         i2pControlGroupBox = new QGroupBox(layoutWidget);
         i2pControlGroupBox->setObjectName(QString::fromUtf8("i2pControlGroupBox"));
-        i2pControlGroupBox->setMinimumSize(QSize(0, 189));
-        i2pControlGroupBox->setMaximumSize(QSize(16777215, 189));
-        i2pControlEnabledCheckBox = new QCheckBox(i2pControlGroupBox);
+        QVBoxLayout*i2pcontrol_lay=new QVBoxLayout(i2pControlGroupBox);
+        i2pControlEnabledCheckBox = new QCheckBox();
         i2pControlEnabledCheckBox->setObjectName(QString::fromUtf8("i2pControlEnabledCheckBox"));
-        i2pControlEnabledCheckBox->setGeometry(QRect(0, 20, 97, 22));
-        i2pControl_horizontalLayoutWidget_8 = new QWidget(i2pControlGroupBox);
-        i2pControl_horizontalLayoutWidget_8->setObjectName(QString::fromUtf8("i2pControl_horizontalLayoutWidget_8"));
-        i2pControl_horizontalLayoutWidget_8->setGeometry(QRect(0, 40, 661, 31));
-        i2pControl_horizontalLayout_25 = new QHBoxLayout(i2pControl_horizontalLayoutWidget_8);
+        i2pcontrol_lay->addWidget(i2pControlEnabledCheckBox);
+        i2pControl_horizontalLayout_25 = new QHBoxLayout();
         i2pControl_horizontalLayout_25->setObjectName(QString::fromUtf8("i2pControl_horizontalLayout_25"));
-        i2pControl_horizontalLayout_25->setContentsMargins(0, 0, 0, 0);
-        i2pControl_label_24 = new QLabel(i2pControl_horizontalLayoutWidget_8);
+        i2pControl_label_24 = new QLabel();
         i2pControl_label_24->setObjectName(QString::fromUtf8("i2pControl_label_24"));
 
         i2pControl_horizontalLayout_25->addWidget(i2pControl_label_24);
 
-        i2pControlAddressLineEdit = new QLineEdit(i2pControl_horizontalLayoutWidget_8);
+        i2pControlAddressLineEdit = new QLineEdit();
         i2pControlAddressLineEdit->setObjectName(QString::fromUtf8("i2pControlAddressLineEdit"));
 
         i2pControl_horizontalLayout_25->addWidget(i2pControlAddressLineEdit);
@@ -1894,19 +1883,17 @@ public:
         i2pControl_horizontalSpacer_19 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         i2pControl_horizontalLayout_25->addItem(i2pControl_horizontalSpacer_19);
+        i2pcontrol_lay->addLayout(i2pControl_horizontalLayout_25);
 
-        i2pControl_horizontalLayoutWidget_9 = new QWidget(i2pControlGroupBox);
-        i2pControl_horizontalLayoutWidget_9->setObjectName(QString::fromUtf8("i2pControl_horizontalLayoutWidget_9"));
-        i2pControl_horizontalLayoutWidget_9->setGeometry(QRect(0, 70, 661, 31));
-        i2pControl_horizontalLayout_26 = new QHBoxLayout(i2pControl_horizontalLayoutWidget_9);
+        i2pControl_horizontalLayout_26 = new QHBoxLayout();
         i2pControl_horizontalLayout_26->setObjectName(QString::fromUtf8("i2pControl_horizontalLayout_26"));
         i2pControl_horizontalLayout_26->setContentsMargins(0, 0, 0, 0);
-        i2pControl_label_25 = new QLabel(i2pControl_horizontalLayoutWidget_9);
+        i2pControl_label_25 = new QLabel();
         i2pControl_label_25->setObjectName(QString::fromUtf8("i2pControl_label_25"));
 
         i2pControl_horizontalLayout_26->addWidget(i2pControl_label_25);
 
-        i2pControlPortLineEdit = new QLineEdit(i2pControl_horizontalLayoutWidget_9);
+        i2pControlPortLineEdit = new QLineEdit();
         i2pControlPortLineEdit->setObjectName(QString::fromUtf8("i2pControlPortLineEdit"));
         i2pControlPortLineEdit->setMaximumSize(QSize(80, 16777215));
 
@@ -1915,19 +1902,16 @@ public:
         i2pControl_horizontalSpacer_20 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         i2pControl_horizontalLayout_26->addItem(i2pControl_horizontalSpacer_20);
+        i2pcontrol_lay->addLayout(i2pControl_horizontalLayout_26);
 
-        horizontalLayoutWidget_10 = new QWidget(i2pControlGroupBox);
-        horizontalLayoutWidget_10->setObjectName(QString::fromUtf8("horizontalLayoutWidget_10"));
-        horizontalLayoutWidget_10->setGeometry(QRect(0, 100, 661, 31));
-        horizontalLayout_27 = new QHBoxLayout(horizontalLayoutWidget_10);
+        horizontalLayout_27 = new QHBoxLayout();
         horizontalLayout_27->setObjectName(QString::fromUtf8("horizontalLayout_27"));
-        horizontalLayout_27->setContentsMargins(0, 0, 0, 0);
-        label_26 = new QLabel(horizontalLayoutWidget_10);
+        label_26 = new QLabel();
         label_26->setObjectName(QString::fromUtf8("label_26"));
 
         horizontalLayout_27->addWidget(label_26);
 
-        i2pControlPasswordLineEdit = new QLineEdit(horizontalLayoutWidget_10);
+        i2pControlPasswordLineEdit = new QLineEdit();
         i2pControlPasswordLineEdit->setObjectName(QString::fromUtf8("i2pControlPasswordLineEdit"));
 
         horizontalLayout_27->addWidget(i2pControlPasswordLineEdit);
@@ -1935,75 +1919,65 @@ public:
         horizontalSpacer_21 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_27->addItem(horizontalSpacer_21);
+        i2pcontrol_lay->addLayout(horizontalLayout_27);
 
-        horizontalLayoutWidget_11 = new QWidget(i2pControlGroupBox);
-        horizontalLayoutWidget_11->setObjectName(QString::fromUtf8("horizontalLayoutWidget_11"));
-        horizontalLayoutWidget_11->setGeometry(QRect(0, 130, 661, 31));
-        horizontalLayout_28 = new QHBoxLayout(horizontalLayoutWidget_11);
+        horizontalLayout_28 = new QHBoxLayout();
         horizontalLayout_28->setObjectName(QString::fromUtf8("horizontalLayout_28"));
-        horizontalLayout_28->setContentsMargins(0, 0, 0, 0);
-        label_27 = new QLabel(horizontalLayoutWidget_11);
+        label_27 = new QLabel();
         label_27->setObjectName(QString::fromUtf8("label_27"));
 
         horizontalLayout_28->addWidget(label_27);
 
-        i2pControlCertFileLineEdit = new QLineEdit(horizontalLayoutWidget_11);
+        i2pControlCertFileLineEdit = new QLineEdit();
         i2pControlCertFileLineEdit->setObjectName(QString::fromUtf8("i2pControlCertFileLineEdit"));
 
         horizontalLayout_28->addWidget(i2pControlCertFileLineEdit);
 
-        i2pControlCertFileBrowsePushButton = new QPushButton(horizontalLayoutWidget_11);
+        i2pControlCertFileBrowsePushButton = new QPushButton();
         i2pControlCertFileBrowsePushButton->setObjectName(QString::fromUtf8("i2pControlCertFileBrowsePushButton"));
 
         horizontalLayout_28->addWidget(i2pControlCertFileBrowsePushButton);
 
-        horizontalLayoutWidget_12 = new QWidget(i2pControlGroupBox);
-        horizontalLayoutWidget_12->setObjectName(QString::fromUtf8("horizontalLayoutWidget_12"));
-        horizontalLayoutWidget_12->setGeometry(QRect(0, 160, 661, 31));
-        horizontalLayout_29 = new QHBoxLayout(horizontalLayoutWidget_12);
+        i2pcontrol_lay->addLayout(horizontalLayout_28);
+
+        horizontalLayout_29 = new QHBoxLayout();
         horizontalLayout_29->setObjectName(QString::fromUtf8("horizontalLayout_29"));
-        horizontalLayout_29->setContentsMargins(0, 0, 0, 0);
-        label_28 = new QLabel(horizontalLayoutWidget_12);
+        label_28 = new QLabel();
         label_28->setObjectName(QString::fromUtf8("label_28"));
 
         horizontalLayout_29->addWidget(label_28);
 
-        i2pControlKeyFileLineEdit = new QLineEdit(horizontalLayoutWidget_12);
+        i2pControlKeyFileLineEdit = new QLineEdit();
         i2pControlKeyFileLineEdit->setObjectName(QString::fromUtf8("i2pControlKeyFileLineEdit"));
 
         horizontalLayout_29->addWidget(i2pControlKeyFileLineEdit);
 
-        i2pControlKeyFileBrowsePushButton = new QPushButton(horizontalLayoutWidget_12);
+        i2pControlKeyFileBrowsePushButton = new QPushButton();
         i2pControlKeyFileBrowsePushButton->setObjectName(QString::fromUtf8("i2pControlKeyFileBrowsePushButton"));
 
         horizontalLayout_29->addWidget(i2pControlKeyFileBrowsePushButton);
+        i2pcontrol_lay->addLayout(horizontalLayout_29);
 
 
         settingsContentsQVBoxLayout->addWidget(i2pControlGroupBox);
 
         groupBox_2 = new QGroupBox(layoutWidget);
         groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
-        groupBox_2->setMinimumSize(QSize(0, 44));
-        groupBox_2->setMaximumSize(QSize(16777215, 44));
-        useElGamalPrecomputedTablesCheckBox = new QCheckBox(groupBox_2);
+        QVBoxLayout*cryptolay=new QVBoxLayout(groupBox_2);
+        useElGamalPrecomputedTablesCheckBox = new QCheckBox();
         useElGamalPrecomputedTablesCheckBox->setObjectName(QString::fromUtf8("useElGamalPrecomputedTablesCheckBox"));
-        useElGamalPrecomputedTablesCheckBox->setGeometry(QRect(0, 20, 661, 22));
+        cryptolay->addWidget(useElGamalPrecomputedTablesCheckBox);
 
         settingsContentsQVBoxLayout->addWidget(groupBox_2);
 
         i2cpGroupBox = new QGroupBox(layoutWidget);
         i2cpGroupBox->setObjectName(QString::fromUtf8("i2cpGroupBox"));
-        i2cpGroupBox->setMinimumSize(QSize(0, 121));
-        i2cpGroupBox->setMaximumSize(QSize(16777215, 121));
+        QVBoxLayout*layi2cp=new QVBoxLayout(i2cpGroupBox);
         i2cpEnabledCheckBox = new QCheckBox(i2cpGroupBox);
         i2cpEnabledCheckBox->setObjectName(QString::fromUtf8("i2cpEnabledCheckBox"));
-        i2cpEnabledCheckBox->setGeometry(QRect(0, 20, 97, 22));
-        i2cp_horizontalLayoutWidget_8 = new QWidget(i2cpGroupBox);
-        i2cp_horizontalLayoutWidget_8->setObjectName(QString::fromUtf8("i2cp_horizontalLayoutWidget_8"));
-        i2cp_horizontalLayoutWidget_8->setGeometry(QRect(0, 40, 661, 31));
-        i2cp_horizontalLayout_25 = new QHBoxLayout(i2cp_horizontalLayoutWidget_8);
+        layi2cp->addWidget(i2cpEnabledCheckBox);
+        i2cp_horizontalLayout_25 = new QHBoxLayout();
         i2cp_horizontalLayout_25->setObjectName(QString::fromUtf8("i2cp_horizontalLayout_25"));
-        i2cp_horizontalLayout_25->setContentsMargins(0, 0, 0, 0);
         i2cp_label_24 = new QLabel(i2cp_horizontalLayoutWidget_8);
         i2cp_label_24->setObjectName(QString::fromUtf8("i2cp_label_24"));
 
@@ -2017,19 +1991,17 @@ public:
         i2cp_horizontalSpacer_19 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         i2cp_horizontalLayout_25->addItem(i2cp_horizontalSpacer_19);
+        layi2cp->addLayout(i2cp_horizontalLayout_25);
 
-        i2cp_horizontalLayoutWidget_9 = new QWidget(i2cpGroupBox);
-        i2cp_horizontalLayoutWidget_9->setObjectName(QString::fromUtf8("i2cp_horizontalLayoutWidget_9"));
-        i2cp_horizontalLayoutWidget_9->setGeometry(QRect(0, 70, 661, 31));
-        i2cp_horizontalLayout_26 = new QHBoxLayout(i2cp_horizontalLayoutWidget_9);
+        i2cp_horizontalLayout_26 = new QHBoxLayout();
         i2cp_horizontalLayout_26->setObjectName(QString::fromUtf8("i2cp_horizontalLayout_26"));
-        i2cp_horizontalLayout_26->setContentsMargins(0, 0, 0, 0);
-        i2cp_label_25 = new QLabel(i2cp_horizontalLayoutWidget_9);
+
+        i2cp_label_25 = new QLabel();
         i2cp_label_25->setObjectName(QString::fromUtf8("i2cp_label_25"));
 
         i2cp_horizontalLayout_26->addWidget(i2cp_label_25);
 
-        i2cpPortLineEdit = new QLineEdit(i2cp_horizontalLayoutWidget_9);
+        i2cpPortLineEdit = new QLineEdit();
         i2cpPortLineEdit->setObjectName(QString::fromUtf8("i2cpPortLineEdit"));
         i2cpPortLineEdit->setMaximumSize(QSize(80, 16777215));
 
@@ -2038,17 +2010,16 @@ public:
         i2cp_horizontalSpacer_20 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         i2cp_horizontalLayout_26->addItem(i2cp_horizontalSpacer_20);
+        layi2cp->addLayout(i2cp_horizontalLayout_26);
 
-        i2cpSingleThreadCheckBox = new QCheckBox(i2cpGroupBox);
+        i2cpSingleThreadCheckBox = new QCheckBox();
         i2cpSingleThreadCheckBox->setObjectName(QString::fromUtf8("i2cpSingleThreadCheckBox"));
-        i2cpSingleThreadCheckBox->setGeometry(QRect(0, 100, 651, 23));
+        layi2cp->addWidget(i2cpSingleThreadCheckBox);
 
         settingsContentsQVBoxLayout->addWidget(i2cpGroupBox);
 
         portsLabel = new QLabel(layoutWidget);
         portsLabel->setObjectName(QString::fromUtf8("portsLabel"));
-        portsLabel->setMinimumSize(QSize(0, 60));
-        portsLabel->setMaximumSize(QSize(16777215, 60));
         portsLabel->setFont(font);
 
         settingsContentsQVBoxLayout->addWidget(portsLabel);
