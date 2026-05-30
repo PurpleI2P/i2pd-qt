@@ -173,16 +173,15 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     verticalLayoutWidget_5->setObjectName(QString::fromUtf8("verticalLayoutWidget_5"));
     verticalLayoutWidget_5->setGeometry(QRect(0, 0, 707, 586));
     verticalLayout_5 = new QVBoxLayout(verticalLayoutWidget_5);
-    verticalLayout_5->setSpacing(6);
-    verticalLayout_5->setContentsMargins(11, 11, 11, 11);
     verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
-    verticalLayout_5->setSizeConstraint(QLayout::SetMaximumSize);
-    verticalLayout_5->setContentsMargins(0, 0, 0, 0);
+    verticalLayout_5->setSizeConstraint(QLayout::SetDefaultConstraint);
     label_4 = new QLabel(verticalLayoutWidget_5);
     label_4->setObjectName(QString::fromUtf8("label_4"));
     QFont font1;
     font1.setPointSize(15);
     label_4->setFont(font1);
+    label_4->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed));
+    label_4->setFixedHeight(label_4->sizeHint().height());
 
     verticalLayout_5->addWidget(label_4);
 
@@ -200,14 +199,13 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     _logViewer->setObjectName(QString::fromUtf8("_logViewer"));
     _logViewer->setGeometry(QRect(0, 0, 707, 586));
     verticalLayout_4_logViewer = new QVBoxLayout(_logViewer);
-    verticalLayout_4_logViewer->setSpacing(6);
-    verticalLayout_4_logViewer->setContentsMargins(11, 11, 11, 11);
     verticalLayout_4_logViewer->setObjectName(QString::fromUtf8("verticalLayout_4_logViewer"));
-    verticalLayout_4_logViewer->setSizeConstraint(QLayout::SetMinAndMaxSize);
-    verticalLayout_4_logViewer->setContentsMargins(0, 0, 0, 0);
+    verticalLayout_4_logViewer->setSizeConstraint(QLayout::SetDefaultConstraint);
     logViewerTitleLabel = new QLabel(_logViewer);
     logViewerTitleLabel->setObjectName(QString::fromUtf8("logViewerTitleLabel"));
     logViewerTitleLabel->setFont(font1);
+    logViewerTitleLabel->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed));
+    logViewerTitleLabel->setFixedHeight(logViewerTitleLabel->sizeHint().height());
 
     verticalLayout_4_logViewer->addWidget(logViewerTitleLabel);
 
@@ -314,13 +312,13 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     verticalLayoutWidget_3->setGeometry(QRect(0, 0, 707, 586));
     verticalLayout_3 = new QVBoxLayout(verticalLayoutWidget_3);
     verticalLayout_3->setSpacing(6);
-    verticalLayout_3->setContentsMargins(11, 11, 11, 11);
     verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
-    verticalLayout_3->setSizeConstraint(QLayout::SetMinAndMaxSize);
-    verticalLayout_3->setContentsMargins(0, 0, 0, 0);
+    verticalLayout_3->setSizeConstraint(QLayout::SetDefaultConstraint);
     label_3 = new QLabel(verticalLayoutWidget_3);
     label_3->setObjectName(QString::fromUtf8("label_3"));
     label_3->setFont(font1);
+    label_3->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed));
+    label_3->setFixedHeight(label_3->sizeHint().height());
 
     verticalLayout_3->addWidget(label_3);
 
@@ -340,14 +338,13 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     verticalLayoutWidget_2->setObjectName(QString::fromUtf8("verticalLayoutWidget_2"));
     verticalLayoutWidget_2->setGeometry(QRect(0, 0, 707, 531));
     quitPageVerticalLayout = new QVBoxLayout(verticalLayoutWidget_2);
-    quitPageVerticalLayout->setSpacing(6);
-    quitPageVerticalLayout->setContentsMargins(11, 11, 11, 11);
     quitPageVerticalLayout->setObjectName(QString::fromUtf8("quitPageVerticalLayout"));
-    quitPageVerticalLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
-    quitPageVerticalLayout->setContentsMargins(0, 0, 0, 0);
+    quitPageVerticalLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
     label_2 = new QLabel(verticalLayoutWidget_2);
     label_2->setObjectName(QString::fromUtf8("label_2"));
     label_2->setFont(font1);
+    label_2->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed));
+    label_2->setFixedHeight(label_2->sizeHint().height());
 
     quitPageVerticalLayout->addWidget(label_2);
 
