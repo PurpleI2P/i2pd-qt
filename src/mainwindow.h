@@ -932,6 +932,8 @@ private:
 
 public slots:
     void showTunnelsPagePreventedMessage();
+public:
+    QVBoxLayout* tunnelsListLayout;
 };
 
 #endif // MAINWINDOW_H

@@ -12,15 +12,13 @@ TunnelPane::TunnelPane(TunnelsPageUpdateListener* tunnelsPageUpdateListener_, Tu
     wrongInputPane(wrongInputPane_),
     wrongInputLabel(wrongInputLabel_),
     tunnelConfig(tunnelConfig_),
-    tunnelsPageUpdateListener(tunnelsPageUpdateListener_),
-    gridLayoutWidget_2(nullptr) {}
+    tunnelsPageUpdateListener(tunnelsPageUpdateListener_){}
 
 void TunnelPane::setupTunnelPane(
         TunnelConfig* tunnelConfig,
         QGroupBox *tunnelGroupBox,
-        QWidget* gridLayoutWidget_2, QComboBox * tunnelTypeComboBox,
+        QVBoxLayout* lay, QComboBox * tunnelTypeComboBox,
         QWidget *tunnelsFormGridLayoutWidget, int tunnelsRow, int height, int h) {
-    tunnelGroupBox->setGeometry(0, tunnelsFormGridLayoutWidget->height(), gridLayoutWidget_2->width(), h);
     tunnelsFormGridLayoutWidget->resize(527, tunnelsFormGridLayoutWidget->height()+h);
 
     QObject::connect(tunnelTypeComboBox, SIGNAL(currentIndexChanged(int)),
@@ -29,21 +27,18 @@ void TunnelPane::setupTunnelPane(
 
     this->tunnelGroupBox=tunnelGroupBox;
 
-    gridLayoutWidget_2->setObjectName(QStringLiteral("gridLayoutWidget_2"));
-    this->gridLayoutWidget_2=gridLayoutWidget_2;
-    tunnelGridLayout = new QVBoxLayout(gridLayoutWidget_2);
+    tunnelGridLayout = lay;
     tunnelGridLayout->setObjectName(QStringLiteral("tunnelGridLayout"));
-    tunnelGridLayout->setContentsMargins(10, 25, 10, 10);
     tunnelGridLayout->setSpacing(5);
 
     //header
     QHBoxLayout *headerHorizontalLayout = new QHBoxLayout();
     headerHorizontalLayout->setObjectName(QStringLiteral("headerHorizontalLayout"));
 
-    nameLabel = new QLabel(gridLayoutWidget_2);
+    nameLabel = new QLabel();
     nameLabel->setObjectName(QStringLiteral("nameLabel"));
     headerHorizontalLayout->addWidget(nameLabel);
-    nameLineEdit = new QLineEdit(gridLayoutWidget_2);
+    nameLineEdit = new QLineEdit();
     nameLineEdit->setObjectName(QStringLiteral("nameLineEdit"));
     const QString& tunnelName=tunnelConfig->getName().c_str();
     nameLineEdit->setText(tunnelName);
@@ -55,7 +50,7 @@ void TunnelPane::setupTunnelPane(
     headerHorizontalLayout->addWidget(nameLineEdit);
     headerHorizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
     headerHorizontalLayout->addItem(headerHorizontalSpacer);
-    deletePushButton = new QPushButton(gridLayoutWidget_2);
+    deletePushButton = new QPushButton();
     deletePushButton->setObjectName(QStringLiteral("deletePushButton"));
     QObject::connect(deletePushButton, SIGNAL(released()),
                              this, SLOT(deleteButtonReleased()));//MainWindow::DeleteTunnelNamed(std::string name) {
@@ -67,11 +62,11 @@ void TunnelPane::setupTunnelPane(
         //const QString& type = tunnelConfig->getType();
         QHBoxLayout * horizontalLayout_ = new QHBoxLayout();
         horizontalLayout_->setObjectName(QStringLiteral("horizontalLayout_"));
-        typeLabel = new QLabel(gridLayoutWidget_2);
+        typeLabel = new QLabel();
         typeLabel->setObjectName(QStringLiteral("typeLabel"));
         horizontalLayout_->addWidget(typeLabel);
         horizontalLayout_->addWidget(tunnelTypeComboBox);
-        QPushButton * lockButton1 = new QPushButton(gridLayoutWidget_2);
+        QPushButton * lockButton1 = new QPushButton();
         horizontalLayout_->addWidget(lockButton1);
         widgetlocks.add(new widgetlock(tunnelTypeComboBox, lockButton1));
         this->tunnelTypeComboBox=tunnelTypeComboBox;
@@ -84,7 +79,7 @@ void TunnelPane::setupTunnelPane(
 }
 
 void TunnelPane::deleteWidget() {
-    //gridLayoutWidget_2->deleteLater();
+    //->deleteLater();
     tunnelGroupBox->deleteLater();
 }
 
@@ -94,10 +89,10 @@ void TunnelPane::appendControlsForI2CPParameters(I2CPParameters& i2cpParameters,
         const QString& inbound_length=i2cpParameters.getInbound_length();
         QHBoxLayout *horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        inbound_lengthLabel = new QLabel(gridLayoutWidget_2);
+        inbound_lengthLabel = new QLabel();
         inbound_lengthLabel->setObjectName(QStringLiteral("inbound_lengthLabel"));
         horizontalLayout_2->addWidget(inbound_lengthLabel);
-        inbound_lengthLineEdit = new QLineEdit(gridLayoutWidget_2);
+        inbound_lengthLineEdit = new QLineEdit();
         inbound_lengthLineEdit->setObjectName(QStringLiteral("inbound_lengthLineEdit"));
         inbound_lengthLineEdit->setText(inbound_length);
         inbound_lengthLineEdit->setMaximumWidth(80);
@@ -113,10 +108,10 @@ void TunnelPane::appendControlsForI2CPParameters(I2CPParameters& i2cpParameters,
         const QString& outbound_length=i2cpParameters.getOutbound_length();
         QHBoxLayout *horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        outbound_lengthLabel = new QLabel(gridLayoutWidget_2);
+        outbound_lengthLabel = new QLabel();
         outbound_lengthLabel->setObjectName(QStringLiteral("outbound_lengthLabel"));
         horizontalLayout_2->addWidget(outbound_lengthLabel);
-        outbound_lengthLineEdit = new QLineEdit(gridLayoutWidget_2);
+        outbound_lengthLineEdit = new QLineEdit();
         outbound_lengthLineEdit->setObjectName(QStringLiteral("outbound_lengthLineEdit"));
         outbound_lengthLineEdit->setText(outbound_length);
         outbound_lengthLineEdit->setMaximumWidth(80);
@@ -132,10 +127,10 @@ void TunnelPane::appendControlsForI2CPParameters(I2CPParameters& i2cpParameters,
         const QString& inbound_quantity=i2cpParameters.getInbound_quantity();
         QHBoxLayout *horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        inbound_quantityLabel = new QLabel(gridLayoutWidget_2);
+        inbound_quantityLabel = new QLabel();
         inbound_quantityLabel->setObjectName(QStringLiteral("inbound_quantityLabel"));
         horizontalLayout_2->addWidget(inbound_quantityLabel);
-        inbound_quantityLineEdit = new QLineEdit(gridLayoutWidget_2);
+        inbound_quantityLineEdit = new QLineEdit();
         inbound_quantityLineEdit->setObjectName(QStringLiteral("inbound_quantityLineEdit"));
         inbound_quantityLineEdit->setText(inbound_quantity);
         inbound_quantityLineEdit->setMaximumWidth(80);
@@ -151,10 +146,10 @@ void TunnelPane::appendControlsForI2CPParameters(I2CPParameters& i2cpParameters,
         const QString& outbound_quantity=i2cpParameters.getOutbound_quantity();
         QHBoxLayout *horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        outbound_quantityLabel = new QLabel(gridLayoutWidget_2);
+        outbound_quantityLabel = new QLabel();
         outbound_quantityLabel->setObjectName(QStringLiteral("outbound_quantityLabel"));
         horizontalLayout_2->addWidget(outbound_quantityLabel);
-        outbound_quantityLineEdit = new QLineEdit(gridLayoutWidget_2);
+        outbound_quantityLineEdit = new QLineEdit();
         outbound_quantityLineEdit->setObjectName(QStringLiteral("outbound_quantityLineEdit"));
         outbound_quantityLineEdit->setText(outbound_quantity);
         outbound_quantityLineEdit->setMaximumWidth(80);
@@ -170,10 +165,10 @@ void TunnelPane::appendControlsForI2CPParameters(I2CPParameters& i2cpParameters,
         const QString& crypto_tagsToSend=i2cpParameters.getCrypto_tagsToSend();
         QHBoxLayout *horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        crypto_tagsToSendLabel = new QLabel(gridLayoutWidget_2);
+        crypto_tagsToSendLabel = new QLabel();
         crypto_tagsToSendLabel->setObjectName(QStringLiteral("crypto_tagsToSendLabel"));
         horizontalLayout_2->addWidget(crypto_tagsToSendLabel);
-        crypto_tagsToSendLineEdit = new QLineEdit(gridLayoutWidget_2);
+        crypto_tagsToSendLineEdit = new QLineEdit();
         crypto_tagsToSendLineEdit->setObjectName(QStringLiteral("crypto_tagsToSendLineEdit"));
         crypto_tagsToSendLineEdit->setText(crypto_tagsToSend);
         crypto_tagsToSendLineEdit->setMaximumWidth(80);
@@ -191,11 +186,11 @@ void TunnelPane::appendControlsForI2CPParameters(I2CPParameters& i2cpParameters,
         QHBoxLayout *horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
         QLabel *_Label;
-        explicitPeersLabel = _Label = new QLabel(gridLayoutWidget_2);
+        explicitPeersLabel = _Label = new QLabel();
         _Label->setObjectName(QStringLiteral("_Label"));
         horizontalLayout_2->addWidget(_Label);
         QLineEdit *_LineEdit;
-        explicitPeersLineEdit = _LineEdit = new QLineEdit(gridLayoutWidget_2);
+        explicitPeersLineEdit = _LineEdit = new QLineEdit();
         _LineEdit->setObjectName(QStringLiteral("_LineEdit"));
         _LineEdit->setText(value);
         _LineEdit->setMaximumWidth(80);
@@ -213,11 +208,11 @@ void TunnelPane::appendControlsForI2CPParameters(I2CPParameters& i2cpParameters,
         QHBoxLayout *horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
         QLabel *_Label;
-        i2p_streaming_initialAckDelayLabel = _Label = new QLabel(gridLayoutWidget_2);
+        i2p_streaming_initialAckDelayLabel = _Label = new QLabel();
         _Label->setObjectName(QStringLiteral("_Label"));
         horizontalLayout_2->addWidget(_Label);
         QLineEdit *_LineEdit;
-        i2p_streaming_initialAckDelayLineEdit = _LineEdit = new QLineEdit(gridLayoutWidget_2);
+        i2p_streaming_initialAckDelayLineEdit = _LineEdit = new QLineEdit();
         _LineEdit->setObjectName(QStringLiteral("_LineEdit"));
         _LineEdit->setText(value);
         _LineEdit->setMaximumWidth(80);
@@ -235,7 +230,7 @@ void TunnelPane::appendControlsForI2CPParameters(I2CPParameters& i2cpParameters,
         QHBoxLayout *horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
         QCheckBox *_CheckBox;
-        i2p_streaming_answerPingsCheckBox = _CheckBox = new QCheckBox(gridLayoutWidget_2);
+        i2p_streaming_answerPingsCheckBox = _CheckBox = new QCheckBox();
         _CheckBox->setObjectName(QStringLiteral("_CheckBox"));
         horizontalLayout_2->addWidget(_CheckBox);
         _CheckBox->setChecked(value);
@@ -250,11 +245,11 @@ void TunnelPane::appendControlsForI2CPParameters(I2CPParameters& i2cpParameters,
         QHBoxLayout *horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
         QLabel *_Label;
-        i2cp_leaseSetTypeLabel = _Label = new QLabel(gridLayoutWidget_2);
+        i2cp_leaseSetTypeLabel = _Label = new QLabel();
         _Label->setObjectName(QStringLiteral("_Label"));
         horizontalLayout_2->addWidget(_Label);
         QLineEdit *_LineEdit;
-        i2cp_leaseSetTypeLineEdit = _LineEdit = new QLineEdit(gridLayoutWidget_2);
+        i2cp_leaseSetTypeLineEdit = _LineEdit = new QLineEdit();
         _LineEdit->setObjectName(QStringLiteral("_LineEdit"));
         _LineEdit->setText(value);
         _LineEdit->setMaximumWidth(80);
@@ -272,11 +267,11 @@ void TunnelPane::appendControlsForI2CPParameters(I2CPParameters& i2cpParameters,
         QHBoxLayout *horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
         QLabel *_Label;
-        i2cp_leaseSetEncTypeLabel = _Label = new QLabel(gridLayoutWidget_2);
+        i2cp_leaseSetEncTypeLabel = _Label = new QLabel();
         _Label->setObjectName(QStringLiteral("_Label"));
         horizontalLayout_2->addWidget(_Label);
         QLineEdit *_LineEdit;
-        i2cp_leaseSetEncTypeLineEdit = _LineEdit = new QLineEdit(gridLayoutWidget_2);
+        i2cp_leaseSetEncTypeLineEdit = _LineEdit = new QLineEdit();
         _LineEdit->setObjectName(QStringLiteral("_LineEdit"));
         _LineEdit->setText(value);
         _LineEdit->setMaximumWidth(80);
@@ -294,11 +289,11 @@ void TunnelPane::appendControlsForI2CPParameters(I2CPParameters& i2cpParameters,
         QHBoxLayout *horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
         QLabel *_Label;
-        i2cp_leaseSetPrivKeyLabel = _Label = new QLabel(gridLayoutWidget_2);
+        i2cp_leaseSetPrivKeyLabel = _Label = new QLabel();
         _Label->setObjectName(QStringLiteral("_Label"));
         horizontalLayout_2->addWidget(_Label);
         QLineEdit *_LineEdit;
-        i2cp_leaseSetPrivKeyLineEdit = _LineEdit = new QLineEdit(gridLayoutWidget_2);
+        i2cp_leaseSetPrivKeyLineEdit = _LineEdit = new QLineEdit();
         _LineEdit->setObjectName(QStringLiteral("_LineEdit"));
         _LineEdit->setText(value);
         _LineEdit->setMaximumWidth(80);
@@ -316,11 +311,11 @@ void TunnelPane::appendControlsForI2CPParameters(I2CPParameters& i2cpParameters,
         QHBoxLayout *horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
         QLabel *_Label;
-        i2cp_leaseSetAuthTypeLabel = _Label = new QLabel(gridLayoutWidget_2);
+        i2cp_leaseSetAuthTypeLabel = _Label = new QLabel();
         _Label->setObjectName(QStringLiteral("_Label"));
         horizontalLayout_2->addWidget(_Label);
         QLineEdit *_LineEdit;
-        i2cp_leaseSetAuthTypeLineEdit = _LineEdit = new QLineEdit(gridLayoutWidget_2);
+        i2cp_leaseSetAuthTypeLineEdit = _LineEdit = new QLineEdit();
         _LineEdit->setObjectName(QStringLiteral("_LineEdit"));
         _LineEdit->setText(value);
         _LineEdit->setMaximumWidth(80);

@@ -38,14 +38,11 @@ public:
     virtual ClientTunnelPane* asClientTunnelPane();
 
     int appendServerTunnelForm(ServerTunnelConfig* tunnelConfig, QWidget *tunnelsFormGridLayoutWidget,
-                                int tunnelsRow, int height);
+                                int tunnelsRow, int height, QVBoxLayout* tunlay);
     void deleteServerTunnelForm();
 
 private:
     QGroupBox *serverTunnelNameGroupBox;
-
-    //tunnel
-    QWidget *gridLayoutWidget_2;
 
     //host
     QHBoxLayout *horizontalLayout_2;
