@@ -3,7 +3,7 @@
 #include "AboutDialog.h"
 #include "mainwindow_ui.h"
 #include "ui_statusbuttons.h"
-#include "ui_routercommandswidget.h"
+#include "routercommandswidget_ui.h"
 #include "generalsettingswidget_ui.h"
 #include <QScrollBar>
 #include <QMessageBox>

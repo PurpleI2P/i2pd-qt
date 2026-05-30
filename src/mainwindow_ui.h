@@ -45,7 +45,6 @@ public:
     QLabel *wrongInputLabel;
     QStackedWidget *stackedWidget;
     QWidget *statusPage;
-    QWidget *verticalLayoutWidget_5;
     QVBoxLayout *verticalLayout_5;
     QLabel *label_4;
     QVBoxLayout *verticalLayout_2;
@@ -68,13 +67,11 @@ public:
     QScrollArea *tunnelsScrollArea;
     QWidget *tunnelsScrollAreaWidgetContents;
     QWidget *restartPage;
-    QWidget *verticalLayoutWidget_3;
     QVBoxLayout *verticalLayout_3;
     QLabel *label_3;
     QPushButton *doRestartI2PDPushButton;
     QSpacerItem *verticalSpacer_3;
     QWidget *quitPage;
-    QWidget *verticalLayoutWidget_2;
     QVBoxLayout *quitPageVerticalLayout;
     QLabel *label_2;
     QPushButton *fastQuitPushButton;

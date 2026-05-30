@@ -11,13 +11,9 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     centralWidget->setSizePolicy(sizePolicy);
     centralWidget->setMinimumSize(QSize(908, 600));
     horizontalLayout = new QHBoxLayout(centralWidget);
-    horizontalLayout->setSpacing(6);
-    horizontalLayout->setContentsMargins(11, 11, 11, 11);
     horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
     horizontalLayout->setSizeConstraint(QLayout::SetMaximumSize);
-    horizontalLayout->setContentsMargins(0, 0, 0, 0);
     verticalLayout = new QVBoxLayout();
-    verticalLayout->setSpacing(6);
     verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
     verticalLayout->setSizeConstraint(QLayout::SetMinimumSize);
     statusPagePushButton = new QPushButton();
@@ -169,13 +165,10 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     stackedWidget->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding));
     statusPage = new QWidget();
     statusPage->setObjectName(QString::fromUtf8("statusPage"));
-    verticalLayoutWidget_5 = new QWidget(statusPage);
-    verticalLayoutWidget_5->setObjectName(QString::fromUtf8("verticalLayoutWidget_5"));
-    verticalLayoutWidget_5->setGeometry(QRect(0, 0, 707, 586));
-    verticalLayout_5 = new QVBoxLayout(verticalLayoutWidget_5);
+    verticalLayout_5 = new QVBoxLayout(statusPage);
     verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
     verticalLayout_5->setSizeConstraint(QLayout::SetDefaultConstraint);
-    label_4 = new QLabel(verticalLayoutWidget_5);
+    label_4 = new QLabel(statusPage);
     label_4->setObjectName(QString::fromUtf8("label_4"));
     QFont font1;
     font1.setPointSize(15);
@@ -303,14 +296,10 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     stackedWidget->addWidget(tunnelsPage);
     restartPage = new QWidget();
     restartPage->setObjectName(QString::fromUtf8("restartPage"));
-    verticalLayoutWidget_3 = new QWidget(restartPage);
-    verticalLayoutWidget_3->setObjectName(QString::fromUtf8("verticalLayoutWidget_3"));
-    verticalLayoutWidget_3->setGeometry(QRect(0, 0, 707, 586));
-    verticalLayout_3 = new QVBoxLayout(verticalLayoutWidget_3);
-    verticalLayout_3->setSpacing(6);
+    verticalLayout_3 = new QVBoxLayout(restartPage);
     verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
     verticalLayout_3->setSizeConstraint(QLayout::SetDefaultConstraint);
-    label_3 = new QLabel(verticalLayoutWidget_3);
+    label_3 = new QLabel(restartPage);
     label_3->setObjectName(QString::fromUtf8("label_3"));
     label_3->setFont(font1);
     label_3->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed));
@@ -318,7 +307,7 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
 
     verticalLayout_3->addWidget(label_3);
 
-    doRestartI2PDPushButton = new QPushButton(verticalLayoutWidget_3);
+    doRestartI2PDPushButton = new QPushButton(restartPage);
     doRestartI2PDPushButton->setObjectName(QString::fromUtf8("doRestartI2PDPushButton"));
 
     verticalLayout_3->addWidget(doRestartI2PDPushButton);
@@ -330,13 +319,10 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     stackedWidget->addWidget(restartPage);
     quitPage = new QWidget();
     quitPage->setObjectName(QString::fromUtf8("quitPage"));
-    verticalLayoutWidget_2 = new QWidget(quitPage);
-    verticalLayoutWidget_2->setObjectName(QString::fromUtf8("verticalLayoutWidget_2"));
-    verticalLayoutWidget_2->setGeometry(QRect(0, 0, 707, 531));
-    quitPageVerticalLayout = new QVBoxLayout(verticalLayoutWidget_2);
+    quitPageVerticalLayout = new QVBoxLayout(quitPage);
     quitPageVerticalLayout->setObjectName(QString::fromUtf8("quitPageVerticalLayout"));
     quitPageVerticalLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
-    label_2 = new QLabel(verticalLayoutWidget_2);
+    label_2 = new QLabel(quitPage);
     label_2->setObjectName(QString::fromUtf8("label_2"));
     label_2->setFont(font1);
     label_2->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed));
@@ -344,12 +330,12 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
 
     quitPageVerticalLayout->addWidget(label_2);
 
-    fastQuitPushButton = new QPushButton(verticalLayoutWidget_2);
+    fastQuitPushButton = new QPushButton(quitPage);
     fastQuitPushButton->setObjectName(QString::fromUtf8("fastQuitPushButton"));
 
     quitPageVerticalLayout->addWidget(fastQuitPushButton);
 
-    gracefulQuitPushButton = new QPushButton(verticalLayoutWidget_2);
+    gracefulQuitPushButton = new QPushButton(quitPage);
     gracefulQuitPushButton->setObjectName(QString::fromUtf8("gracefulQuitPushButton"));
 
     quitPageVerticalLayout->addWidget(gracefulQuitPushButton);
