@@ -5,9 +5,9 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     centralWidget = new QWidget(mainWindow);
     centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    sizePolicy.setHorizontalStretch(0);
-    sizePolicy.setVerticalStretch(0);
-    sizePolicy.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
+    //sizePolicy.setHorizontalStretch(0);
+    //sizePolicy.setVerticalStretch(0);
+    //sizePolicy.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
     centralWidget->setSizePolicy(sizePolicy);
     centralWidget->setMinimumSize(QSize(908, 600));
     horizontalLayout = new QHBoxLayout(centralWidget);
@@ -24,12 +24,12 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
 
     statusButtonsPane = new QWidget();
     statusButtonsPane->setObjectName(QString::fromUtf8("statusButtonsPane"));
-    QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    sizePolicy1.setHorizontalStretch(0);
-    sizePolicy1.setVerticalStretch(0);
-    sizePolicy1.setHeightForWidth(statusButtonsPane->sizePolicy().hasHeightForWidth());
+    QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    //sizePolicy1.setHorizontalStretch(0);
+    //sizePolicy1.setVerticalStretch(0);
+    //sizePolicy1.setHeightForWidth(statusButtonsPane->sizePolicy().hasHeightForWidth());
     statusButtonsPane->setSizePolicy(sizePolicy1);
-    statusButtonsPane->setFixedWidth(172);
+    //statusButtonsPane->setFixedWidth(172);
 
     verticalLayout->addWidget(statusButtonsPane);
 
@@ -62,7 +62,7 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
 
     verticalLayout->addWidget(quitPagePushButton);
 
-    horizontalSpacer_19 = new QSpacerItem(171, 0, QSizePolicy::Fixed, QSizePolicy::Minimum);
+    horizontalSpacer_19 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Minimum);
 
     verticalLayout->addItem(horizontalSpacer_19);
 
@@ -86,7 +86,7 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     horizontalLayout->addLayout(verticalLayout);
 
     verticalLayout_7 = new QVBoxLayout();
-    verticalLayout_7->setSpacing(6);
+    //verticalLayout_7->setSpacing(6);
     verticalLayout_7->setObjectName(QString::fromUtf8("verticalLayout_7"));
     verticalLayout_7->setSizeConstraint(verticalLayout_7->SetMaximumSize);
     wrongInputLabel = new QLabel();
@@ -167,7 +167,7 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     statusPage->setObjectName(QString::fromUtf8("statusPage"));
     verticalLayout_5 = new QVBoxLayout(statusPage);
     verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
-    verticalLayout_5->setSizeConstraint(QLayout::SetDefaultConstraint);
+    //verticalLayout_5->setSizeConstraint(QLayout::SetDefaultConstraint);
     label_4 = new QLabel(statusPage);
     label_4->setObjectName(QString::fromUtf8("label_4"));
     QFont font1;
@@ -180,7 +180,7 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
 
     verticalLayout_2 = new QVBoxLayout();
     verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
-    verticalLayout_2->setSizeConstraint(QLayout::SetMaximumSize);
+    //verticalLayout_2->setSizeConstraint(QLayout::SetMaximumSize);
 
     verticalLayout_5->addLayout(verticalLayout_2);
 
@@ -215,9 +215,9 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     settingsPage = new QWidget();
     settingsPage->setObjectName(QString::fromUtf8("settingsPage"));
     verticalLayout_4 = new QVBoxLayout(settingsPage);
-    verticalLayout_4->setSpacing(6);
+    //verticalLayout_4->setSpacing(6);
     verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
-    verticalLayout_4->setSizeConstraint(QLayout::SetDefaultConstraint);
+    //verticalLayout_4->setSizeConstraint(QLayout::SetDefaultConstraint);
     //verticalLayout_4->setContentsMargins(0, 0, 0, 0);
     settingsTitleLabel = new QLabel();
     settingsTitleLabel->setObjectName(QString::fromUtf8("settingsTitleLabel"));
