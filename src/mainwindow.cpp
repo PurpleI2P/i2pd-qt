@@ -38,7 +38,6 @@
 
 #include "logviewermanager.h"
 
-#include "DelayedSaveManagerImpl.h"
 #include "SaverImpl.h"
 
 
@@ -46,10 +45,9 @@ std::string programOptionsWriterCurrentSection;
 
 MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *parent) :
     QMainWindow(parent)
+    ,dirty(false)
     ,currentLocalDestinationB32("")
     ,logStream(logStream_)
-    ,delayedSaveManagerPtr(new DelayedSaveManagerImpl())
-    ,dataSerial(DelayedSaveManagerImpl::INITIAL_DATA_SERIAL)
     ,wasSelectingAtStatusMainPage(false)
     ,showHiddenInfoStatusMainPage(false)
     ,logViewerManagerPtr(nullptr)
@@ -77,7 +75,6 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     ,tunnelsListLayout(nullptr)
 
 {
-    assert(delayedSaveManagerPtr!=nullptr);
     assert(saverPtr!=nullptr);
 
     ui->setupUi(this);
@@ -357,12 +354,11 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     QObject::connect(saverPtr, SIGNAL(reloadTunnelsConfigAndUISignal(const QString)),
                      this, SLOT(reloadTunnelsConfigAndUI_QString(const QString)));
 
-    delayedSaveManagerPtr->setSaver(saverPtr);
-    delayedSaveManagerPtr->start();
-
     QObject::connect(uiSettings->logDestinationComboBox, SIGNAL(currentIndexChanged(const QString &)),
                      this, SLOT(logDestinationComboBoxValueChanged(const QString &)));
     logDestinationComboBoxValueChanged(uiSettings->logDestinationComboBox->currentText());
+
+    QObject::connect(ui->saveButton, SIGNAL(released()), this, SLOT(savePushButtonReleased()));
 
     ui->tunnelsScrollAreaWidgetContents->setGeometry(QRect(0, 0, 621, 451));
 
@@ -546,7 +542,7 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 void MainWindow::onResize()
 {
     if(isVisible()){
-        int leftWidth = ui->verticalLayout->geometry().width();
+        //int leftWidth = ui->verticalLayout->geometry().width();
         //ui->verticalLayout_7->setGeometry(QRect(ui->verticalLayout->geometry().width(), 0, width()-leftWidth, height()));
 
         //status
@@ -617,19 +613,40 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 #endif
 
+// returns true to cancel app exit
+bool MainWindow::checkDirtyShowExitDialog() {
+    if(!dirty)return false;
+    auto reply = QMessageBox::question(
+        this,
+        tr("Confirm exit without save"),
+        tr("You haven't saved, are you sure to discard the changes?"),
+        QMessageBox::Ok | QMessageBox::Cancel,
+        QMessageBox::Cancel
+    );
+
+    if (reply == QMessageBox::Ok) {
+        // confirmed, proceeding to exit
+        return false;
+    } else {
+        // canceled app exit
+        return true;
+    }
+}
+
 void MainWindow::handleQuitButton() {
-    qDebug("Quit pressed. Hiding the main window");
+    qDebug("Quit pressed.");
+    if(checkDirtyShowExitDialog())return;
 #ifndef ANDROID
     quitting=true;
 #endif
     close();
-    delayedSaveManagerPtr->appExiting();
     qDebug("Performing quit");
     QApplication::instance()->quit();
 }
 
 void MainWindow::handleGracefulQuitButton() {
     qDebug("Graceful Quit pressed.");
+    if(checkDirtyShowExitDialog())return;
     ui->gracefulQuitPushButton->setText(QApplication::translate("MainWindow", "Graceful quit is in progress", 0));
     ui->gracefulQuitPushButton->setEnabled(false);
     ui->gracefulQuitPushButton->adjustSize();
@@ -646,12 +663,12 @@ void MainWindow::handleDoRestartButton() {
 
 
 void MainWindow::handleGracefulQuitTimerEvent() {
+    if(checkDirtyShowExitDialog())return;
     qDebug("Hiding the main window");
 #ifndef ANDROID
     quitting=true;
 #endif
     close();
-    delayedSaveManagerPtr->appExiting();
     qDebug("Performing quit");
     QApplication::instance()->quit();
 }
@@ -660,7 +677,6 @@ MainWindow::~MainWindow()
 {
     qDebug("Destroying main window");
     delete statusPageUpdateTimer;
-    delete delayedSaveManagerPtr;
     delete saverPtr;
     for(QList<MainWindowItem*>::iterator it = configItems.begin(); it!= configItems.end(); ++it) {
         MainWindowItem* item = *it;
@@ -811,7 +827,7 @@ void MainWindow::layoutTunnels() {
     ui->verticalLayout_6->parentWidget()->updateGeometry();
 }
 
-void MainWindow::deleteTunnelFromUI(std::string tunnelName, TunnelConfig* cnf) {
+void MainWindow::deleteTunnelFromUI(std::string, TunnelConfig* cnf) {
     TunnelPane* tp = cnf->getTunnelPane();
     if(!tp)return;
     tunnelPanes.remove(tp);
@@ -823,7 +839,7 @@ void MainWindow::deleteTunnelFromUI(std::string tunnelName, TunnelConfig* cnf) {
 }
 
 /** returns false iff not valid items present and save was aborted */
-bool MainWindow::saveAllConfigs(bool reloadAfterSave, FocusEnum focusOn, std::string tunnelNameToFocus, QWidget* widgetToFocus){
+bool MainWindow::saveAllConfigs(bool, FocusEnum, std::string, QWidget*){
     QString cannotSaveSettings = QApplication::tr("Cannot save settings.");
     programOptionsWriterCurrentSection="";
     /*if(!logFileNameOption->lineEdit->text().trimmed().isEmpty())logOption->optionValue=boost::any(std::string("file"));
@@ -843,10 +859,14 @@ bool MainWindow::saveAllConfigs(bool reloadAfterSave, FocusEnum focusOn, std::st
             return false;
         }
     }
-    delayedSaveManagerPtr->delayedSave(reloadAfterSave, ++dataSerial, focusOn, tunnelNameToFocus, widgetToFocus);//TODO does dataSerial work? //FIXME
+    setDirty(true);
 
     //onLoggingOptionsChange();
     return true;
+}
+
+void MainWindow::actualSave(bool reloadAfterSave, FocusEnum focusOn, std::string tunnelNameToFocus, QWidget* widgetToFocus) {
+    saverPtr->save(reloadAfterSave, focusOn, tunnelNameToFocus, widgetToFocus);
 }
 
 void FileChooserItem::pushButtonReleased() {
@@ -879,6 +899,7 @@ void CheckBoxItem::installListeners(MainWindow *mainWindow) {
 }
 
 void MainWindow::updated() {
+    ui->saveButton->setEnabled(true);
     ui->wrongInputLabel->setVisible(false);
     adjustSizesAccordingToWrongLabel();
 
@@ -887,7 +908,7 @@ void MainWindow::updated() {
     saveAllConfigs(false, FocusEnum::noFocus);
 }
 
-void MainWindowItem::installListeners(MainWindow *mainWindow) {}
+void MainWindowItem::installListeners(MainWindow *) {}
 
 void MainWindow::appendTunnelForms(std::string tunnelNameToFocus) {
     //int height=0;
@@ -898,7 +919,7 @@ void MainWindow::appendTunnelForms(std::string tunnelNameToFocus) {
         if(stc){
             ServerTunnelPane * tunnelPane=new ServerTunnelPane(&tunnelsPageUpdateListener, stc, ui->wrongInputLabel, ui->wrongInputLabel, this);
             tunconf->setTunnelPane(tunnelPane);
-            int h=tunnelPane->appendServerTunnelForm(stc, ui->tunnelsScrollAreaWidgetContents, tunnelPanes.size(), 0, tunnelsListLayout);
+            (void)tunnelPane->appendServerTunnelForm(stc, ui->tunnelsScrollAreaWidgetContents, tunnelPanes.size(), 0, tunnelsListLayout);
             //height+=h;
             //qDebug() << "tun.height:" << height << "sz:" <<  tunnelPanes.size();
             tunnelPanes.push_back(tunnelPane);
@@ -912,7 +933,7 @@ void MainWindow::appendTunnelForms(std::string tunnelNameToFocus) {
         if(ctc){
             ClientTunnelPane * tunnelPane=new ClientTunnelPane(&tunnelsPageUpdateListener, ctc, ui->wrongInputLabel, ui->wrongInputLabel, this);
             tunconf->setTunnelPane(tunnelPane);
-            int h=tunnelPane->appendClientTunnelForm(ctc, ui->tunnelsScrollAreaWidgetContents, tunnelPanes.size(), 0, tunnelsListLayout);
+            (void)tunnelPane->appendClientTunnelForm(ctc, ui->tunnelsScrollAreaWidgetContents, tunnelPanes.size(), 0, tunnelsListLayout);
             //height+=h;
             //qDebug() << "tun.height:" << height << "sz:" <<  tunnelPanes.size();
             tunnelPanes.push_back(tunnelPane);
@@ -962,7 +983,7 @@ void MainWindow::reloadTunnelsConfigAndUI_QString(QString tunnelNameToFocus) {
     reloadTunnelsConfigAndUI(tunnelNameToFocus.toStdString(), nullptr);
 }
 
-void MainWindow::reloadTunnelsConfigAndUI(std::string tunnelNameToFocus, QWidget* widgetToFocus) {
+void MainWindow::reloadTunnelsConfigAndUI(std::string tunnelNameToFocus, QWidget*) {
     deleteTunnelForms();
     for (std::map<std::string,TunnelConfig*>::iterator it=tunnelConfigs.begin(); it!=tunnelConfigs.end(); ++it) {
         TunnelConfig* tunconf = it->second;
@@ -1130,6 +1151,7 @@ void MainWindow::highlightWrongInput(QString warningText, WrongInputPageEnum inp
         case WrongInputPageEnum::tunnelsSettingsPage: showTunnelsPage(); break;
         default: assert(false); break;
     }
+    ui->saveButton->setEnabled(false);
 }
 
 void MainWindow::syncLogLevel (int /*comboBoxIndex*/) {
@@ -1153,4 +1175,13 @@ bool MainWindow::isPreventSaveTunnelsMode() {
 
 void MainWindow::showTunnelsPagePreventedMessage() {
     QMessageBox::critical(this,QObject::tr("Error"),QObject::tr("Not saving tunnels configuration due to previous errors with it."));
+}
+
+void MainWindow::setDirty(bool dirty_) {
+    dirty=dirty_;
+    ui->saveButtonPane->setVisible(dirty);
+    std::stringstream ss;
+    ss<<QApplication::translate("AppTitle","I2PD").toStdString();
+    if(dirty)ss<<" *";
+    setWindowTitle(ss.str().c_str());
 }

@@ -17,3 +17,6 @@ i2pd_qt.pro.autosave*
 *~
 
 .qtc*
+
+*.desktop
+i2pd_qt.sh

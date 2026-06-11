@@ -51,9 +51,7 @@ SOURCES += \
     src/widgetlock.cpp \
     src/widgetlockregistry.cpp \
     src/logviewermanager.cpp \
-    src/DelayedSaveManager.cpp \
     src/Saver.cpp \
-    src/DelayedSaveManagerImpl.cpp \
     src/SaverImpl.cpp \
     src/i2pd/daemon/Daemon.cpp \
     src/i2pd/daemon/HTTPServer.cpp \
@@ -82,9 +80,7 @@ HEADERS += \
     src/widgetlockregistry.h \
     src/i2pd.rc \
     src/logviewermanager.h \
-    src/DelayedSaveManager.h \
     src/Saver.h \
-    src/DelayedSaveManagerImpl.h \
     src/SaverImpl.h \
     src/i2pd/daemon/Daemon.h \
     src/i2pd/daemon/HTTPServer.h \

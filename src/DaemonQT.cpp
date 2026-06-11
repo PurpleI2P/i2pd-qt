@@ -88,7 +88,7 @@ namespace qt
 	}
 
 	DaemonQTImpl::DaemonQTImpl ():
-        mutex(nullptr), m_IsRunning(nullptr), m_RunningChangedCallback(nullptr)
+        mutex(nullptr), m_IsRunning(false), m_RunningChangedCallback(nullptr)
 	{
 	}
 
