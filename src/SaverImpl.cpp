@@ -72,6 +72,8 @@ bool SaverImpl::save(bool reloadAfterSave, const FocusEnum focusOn, const std::s
         if(reloadAfterSave) emit reloadTunnelsConfigAndUISignal(focusOn==FocusEnum::focusOnTunnelName?QString::fromStdString(tunnelNameToFocus):"");
     }
 
+    mainWindowPtr->setDirty(false);
+
     return true;
 }
 

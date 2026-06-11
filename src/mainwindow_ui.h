@@ -31,6 +31,8 @@ public:
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     QVBoxLayout *verticalLayout;
+    QWidget *saveButtonPane;
+    QPushButton *saveButton;
     QPushButton *statusPagePushButton;
     QWidget *statusButtonsPane;
     QPushButton *logViewerPushButton;
@@ -83,6 +85,7 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
+        saveButton->setText(QCoreApplication::translate("MainWindow", "Save", nullptr));
         statusPagePushButton->setText(QCoreApplication::translate("MainWindow", "Status", nullptr));
         logViewerPushButton->setText(QCoreApplication::translate("MainWindow", "Log", nullptr));
         settingsPagePushButton->setText(QCoreApplication::translate("MainWindow", "General settings", nullptr));

@@ -2,7 +2,7 @@
 
 #include "QMessageBox"
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "mainwindow_ui.h"
 
 #include "I2pdQtUtil.h"
 
@@ -381,6 +381,7 @@ void TunnelPane::deleteTunnelForm() {
 
 void TunnelPane::highlightWrongInput(QString warningText, QWidget* controlWithWrongInput) {
     wrongInputPane->setVisible(true);
+    mainWindow->ui->saveButton->setEnabled(false);
     wrongInputLabel->setText(warningText);
     mainWindow->adjustSizesAccordingToWrongLabel();
     if(controlWithWrongInput){
@@ -392,6 +393,7 @@ void TunnelPane::highlightWrongInput(QString warningText, QWidget* controlWithWr
 
 void TunnelPane::hideWrongInputLabel() const {
     wrongInputPane->setVisible(false);
+    mainWindow->ui->saveButton->setEnabled(true);
     mainWindow->adjustSizesAccordingToWrongLabel();
 }
 

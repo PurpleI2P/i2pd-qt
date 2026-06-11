@@ -86,7 +86,7 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     horizontalLayout->addLayout(verticalLayout);
 
     verticalLayout_7 = new QVBoxLayout();
-    //verticalLayout_7->setSpacing(6);
+    verticalLayout_7->setSpacing(6);
     verticalLayout_7->setObjectName(QString::fromUtf8("verticalLayout_7"));
     verticalLayout_7->setSizeConstraint(verticalLayout_7->SetMaximumSize);
     wrongInputLabel = new QLabel();
@@ -347,6 +347,14 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     stackedWidget->addWidget(quitPage);
 
     verticalLayout_7->addWidget(stackedWidget);
+
+    saveButtonPane = new QWidget();
+    QHBoxLayout *saveButtonLayout = new QHBoxLayout(saveButtonPane);
+    saveButton = new QPushButton();
+    saveButtonLayout->addWidget(saveButton);
+
+    saveButtonPane->setVisible(false);
+    verticalLayout_7->addWidget(saveButtonPane);
 
 
     horizontalLayout->addLayout(verticalLayout_7);

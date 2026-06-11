@@ -65,10 +65,9 @@
 #include "widgetlockregistry.h"
 #include "widgetlock.h"
 
-#include "DelayedSaveManager.h"
-#include "DelayedSaveManagerImpl.h"
 #include "SaverImpl.h"
 
+#include "I2pdQtTypes.h"
 #include "I2pdQtUtil.h"
 
 class SaverImpl;
@@ -248,8 +247,11 @@ public:
     virtual ~LogDestinationComboBoxItem(){}
     virtual void loadFromConfigOption(){
         MainWindowItem::loadFromConfigOption();
-        const char * ld = boost::any_cast<std::string>(optionValue).c_str();
-        comboBox->setCurrentText(QString(ld));
+        {
+            auto ld_ = boost::any_cast<std::string>(optionValue);
+            const char * ld = ld_.c_str();
+            comboBox->setCurrentText(QString(ld));
+        }
     }
     virtual void saveToStringStream(std::stringstream& out){
         std::string logDest = comboBox->currentText().toStdString();
@@ -266,7 +268,8 @@ public:
     virtual ~LogLevelComboBoxItem(){}
     virtual void loadFromConfigOption(){
         MainWindowItem::loadFromConfigOption();
-        const char * ll = boost::any_cast<std::string>(optionValue).c_str();
+        auto ll_ = boost::any_cast<std::string>(optionValue);
+        const char * ll = ll_.c_str();
         comboBox->setCurrentText(QString(ll));
     }
     virtual void saveToStringStream(std::stringstream& out){
@@ -441,13 +444,14 @@ class DelayedSaveManagerImpl;
 class MainWindow : public QMainWindow {
     Q_OBJECT
 private:
+    bool dirty;
     std::string currentLocalDestinationB32;
     std::shared_ptr<std::iostream> logStream;
-    DelayedSaveManagerImpl* delayedSaveManagerPtr;
-    DelayedSaveManager::DATA_SERIAL_TYPE dataSerial;
 public:
     explicit MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *parent=nullptr);
     ~MainWindow();
+
+    void setDirty(bool dirty_);
 
     void setI2PController(i2p::qt::Controller* controller_);
 
@@ -595,7 +599,10 @@ public slots:
     void backClickedFromChild();
 
     void logDestinationComboBoxValueChanged(const QString & text);
-
+    void actualSave(bool reloadAfterSave, FocusEnum focusOn, std::string tunnelNameToFocus="", QWidget* widgetToFocus=nullptr);
+    void savePushButtonReleased() {
+        actualSave(true, FocusEnum::noFocus);
+    }
 private:
     QString datadir;
     QString confpath;
@@ -607,6 +614,9 @@ private:
     void appendTunnelForms(std::string tunnelNameToFocus);
     void deleteTunnelForms();
     void deleteTunnelFromUI(std::string tunnelName, TunnelConfig* cnf);
+
+    // returns true to cancel app exit
+    bool checkDirtyShowExitDialog();
 
     template<typename Section>
     std::string GetI2CPOption (const Section& section, const std::string& name, const std::string& value) const
