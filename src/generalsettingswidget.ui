@@ -1004,7 +1004,11 @@ QGroupBox::title {
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="webconsolePasswordLineEditBasicAuth"/>
+         <widget class="QLineEdit" name="webconsolePasswordLineEditBasicAuth">
+          <property name="echoMode">
+           <enum>QLineEdit::Password</enum>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_10">
@@ -2738,7 +2742,11 @@ Comma separated list of base64 identities:</string>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="i2pControlPasswordLineEdit"/>
+         <widget class="QLineEdit" name="i2pControlPasswordLineEdit">
+          <property name="echoMode">
+           <enum>QLineEdit::Password</enum>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_21">

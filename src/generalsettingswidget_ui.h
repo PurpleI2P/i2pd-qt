@@ -1001,6 +1001,7 @@ public:
 
         webconsolePasswordLineEditBasicAuth = new QLineEdit(horizontalLayoutWidget_16);
         webconsolePasswordLineEditBasicAuth->setObjectName(QString::fromUtf8("webconsolePasswordLineEditBasicAuth"));
+        webconsolePasswordLineEditBasicAuth->setEchoMode(QLineEdit::Password);
 
         horizontalLayout_16->addWidget(webconsolePasswordLineEditBasicAuth);
 
@@ -1907,6 +1908,7 @@ public:
 
         i2pControlPasswordLineEdit = new QLineEdit();
         i2pControlPasswordLineEdit->setObjectName(QString::fromUtf8("i2pControlPasswordLineEdit"));
+        i2pControlPasswordLineEdit->setEchoMode(QLineEdit::Password);
 
         horizontalLayout_27->addWidget(i2pControlPasswordLineEdit);
 
