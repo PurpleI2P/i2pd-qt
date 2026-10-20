@@ -113,7 +113,7 @@ i2pd_client.commands = cd $$PWD/src/i2pd/ && mkdir -p obj/libi2pd obj/libi2pd_cl
 i2pd_client.target = $$PWD/src/i2pd/libi2pdclient.a
 i2pd_client.depends = i2pd FORCE
 
-i2pd.commands = cd $$PWD/src/i2pd/ && mkdir -p obj/libi2pd obj/libi2pd_client && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) USE_UPNP=yes $$I2PDMAKE mk_obj_dir api
+i2pd.commands = cd $$PWD/src/i2pd/ && mkdir -p obj/libi2pd obj/libi2pd_client && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) USE_UPNP=yes NO_TORRENTS=Y $$I2PDMAKE mk_obj_dir api
 i2pd.target += $$PWD/src/i2pd/libi2pd.a
 i2pd.depends = FORCE
 
