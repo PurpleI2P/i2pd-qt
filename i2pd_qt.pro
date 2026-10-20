@@ -13,7 +13,7 @@ icons.files = contrib/icons/*
 linux:icons.path = /usr/share/icons/hicolor/
 
 TEMPLATE = app
-QMAKE_CXXFLAGS *= -Wno-unused-parameter -Wno-maybe-uninitialized -Wno-deprecated-copy
+QMAKE_CXXFLAGS *= -Wno-unused-parameter -Wno-maybe-uninitialized -Wno-deprecated-copy -std=c++20
 CONFIG += strict_c++ c++20
 
 # suppress OpenSSL deprecation warnings
@@ -28,12 +28,12 @@ CONFIG(debug, debug|release) {
     DEFINES += DEBUG_WITH_DEFAULT_LOGGING
 
     DEFINES += I2PD_QT_DEBUG
-    I2PDMAKE += DEBUG=yes
+    I2PDMAKE += DEBUG=yes NO_TORRENTS=Y
 }
 CONFIG(release, debug|release) {
     message(Release build)
     DEFINES += I2PD_QT_RELEASE
-    I2PDMAKE += DEBUG=no
+    I2PDMAKE += DEBUG=no NO_TORRENTS=Y
 }
 
 SOURCES += \
