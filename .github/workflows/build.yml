@@ -24,5 +24,6 @@ jobs:
         # g++-12 --version
     - name: Build application
       run: |
-        qmake QMAKE_CC=gcc-12 QMAKE_CXX=g++-12
+        qmake
+        # QMAKE_CC=gcc-12 QMAKE_CXX=g++-12
         make -j$(nproc)
