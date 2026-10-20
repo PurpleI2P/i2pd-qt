@@ -18,6 +18,8 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install build-essential g++-12 qtbase5-dev qt5-qmake libqt5gui5 libboost-all-dev libminiupnpc-dev libssl-dev zlib1g-dev
+        g++ --version
+        apt-cache policy g++-12
     - name: Build application
       run: |
         qmake
