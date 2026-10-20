@@ -14,7 +14,7 @@ linux:icons.path = /usr/share/icons/hicolor/
 
 TEMPLATE = app
 QMAKE_CXXFLAGS *= -Wno-unused-parameter -Wno-maybe-uninitialized -Wno-deprecated-copy
-CONFIG += strict_c++ c++17
+CONFIG += strict_c++ c++20
 
 # suppress OpenSSL deprecation warnings
 DEFINES += OPENSSL_SUPPRESS_DEPRECATED
