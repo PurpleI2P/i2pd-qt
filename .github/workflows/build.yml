@@ -22,5 +22,5 @@ jobs:
         apt-cache policy g++-12
     - name: Build application
       run: |
-        qmake
+        qmake QMAKE_CC=gcc-12 QMAKE_CXX=g++-12
         make -j$(nproc)
