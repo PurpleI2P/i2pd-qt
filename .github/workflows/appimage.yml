@@ -40,8 +40,7 @@ jobs:
             file \
             wget \
             patchelf \
-            desktop-file-utils \
-            appstream
+            desktop-file-utils
 
       - name: Build i2pd-qt
         run: |
@@ -64,16 +63,15 @@ jobs:
           mkdir -p AppDir/usr/share/applications
           mkdir -p AppDir/usr/share/icons/hicolor/128x128/apps
           mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
-          mkdir -p AppDir/usr/share/metainfo
 
-          # Binary (имя должно совпадать с Exec= в .desktop)
+          # Binary — имя должно совпадать с Exec= в .desktop
           install -m 755 i2pd_qt AppDir/usr/bin/i2pd_qt
 
           # Desktop file из репозитория
           install -m 644 contrib/website.i2pd.i2pd.desktop \
             AppDir/usr/share/applications/website.i2pd.i2pd.desktop
 
-          # Иконки (берём 128 и 256 — самые полезные размеры)
+          # Иконки
           if [ -f contrib/icons/128x128/apps/website.i2pd.i2pd.png ]; then
             install -m 644 contrib/icons/128x128/apps/website.i2pd.i2pd.png \
               AppDir/usr/share/icons/hicolor/128x128/apps/website.i2pd.i2pd.png
@@ -83,20 +81,28 @@ jobs:
               AppDir/usr/share/icons/hicolor/256x256/apps/website.i2pd.i2pd.png
           fi
 
-          # AppStream metainfo (опционально, но полезно)
-          if [ -f contrib/website.i2pd.i2pd.appdata.xml ]; then
-            install -m 644 contrib/website.i2pd.i2pd.appdata.xml \
-              AppDir/usr/share/metainfo/website.i2pd.i2pd.appdata.xml
-          fi
-
-          # Копия иконки в корень AppDir (linuxdeploy иногда ищет именно там)
+          # Копия иконки в корень AppDir (нужна linuxdeploy/appimagetool)
           if [ -f AppDir/usr/share/icons/hicolor/256x256/apps/website.i2pd.i2pd.png ]; then
             cp AppDir/usr/share/icons/hicolor/256x256/apps/website.i2pd.i2pd.png \
                AppDir/website.i2pd.i2pd.png
           elif [ -f AppDir/usr/share/icons/hicolor/128x128/apps/website.i2pd.i2pd.png ]; then
             cp AppDir/usr/share/icons/hicolor/128x128/apps/website.i2pd.i2pd.png \
                AppDir/website.i2pd.i2pd.png
+          else
+            echo "ERROR: no icon found"
+            exit 1
           fi
+
+          # appdata.xml НЕ копируем.
+          # appdata.xml не проходит строгую валидацию appstreamcli
+          # и ломает создание AppImage:
+          # [appimage/stdout]   I: website.i2pd.i2pd:4: cid-maybe-not-rdns website.i2pd.i2pd
+          # [appimage/stdout]   I: website.i2pd.i2pd:12: unknown-tag developer
+          # [appimage/stderr] ::error::Failed to validate AppStream information with appstreamcli
+          # [appimage/stdout]   I: website.i2pd.i2pd:17: description-first-para-too-short
+          # [appimage/stdout]        i2pd (I2P Daemon) is a full-featured C++ implementation of I2P client.
+          # [appimage/stdout]   W: website.i2pd.i2pd:44: url-invalid-type vcs-browser
+          # [appimage/stdout] ✘ Validation failed: warnings: 1, infos: 3
 
       - name: Bundle Qt and runtime libraries
         env:
@@ -111,6 +117,9 @@ jobs:
             --icon-file AppDir/website.i2pd.i2pd.png
 
       - name: Create AppImage
+        env:
+          # Пропустить проверку AppStream (даже если кто-то потом добавит metainfo)
+          LDAI_NO_APPSTREAM: "1"
         run: |
           ./linuxdeploy --appdir AppDir --output appimage
           find . -maxdepth 1 -name '*.AppImage' -print
