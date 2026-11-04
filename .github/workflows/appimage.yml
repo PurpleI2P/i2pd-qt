@@ -40,7 +40,22 @@ jobs:
             file \
             wget \
             patchelf \
-            desktop-file-utils
+            desktop-file-utils \
+            # X11 / xcb runtime, нужные для platform plugin
+            libxcb1-dev \
+            libxcb-icccm4-dev \
+            libxcb-image0-dev \
+            libxcb-keysyms1-dev \
+            libxcb-randr0-dev \
+            libxcb-render-util0-dev \
+            libxcb-shape0-dev \
+            libxcb-xfixes0-dev \
+            libxcb-xinerama0-dev \
+            libxcb-xkb-dev \
+            libxkbcommon-dev \
+            libxkbcommon-x11-dev \
+            libx11-xcb-dev \
+            libgl1-mesa-dev
 
       - name: Build i2pd-qt
         run: |
@@ -57,25 +72,18 @@ jobs:
             -O linuxdeploy-plugin-qt
           chmod +x linuxdeploy linuxdeploy-plugin-qt
 
-      - name: Prepare AppDir (desktop + icon + binary)
+      - name: Prepare AppDir
         run: |
           mkdir -p AppDir/usr/bin
           mkdir -p AppDir/usr/share/applications
           mkdir -p AppDir/usr/share/icons/hicolor/128x128/apps
           mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
 
-          # Binary — имя должно совпадать с Exec= в .desktop
           install -m 755 i2pd_qt AppDir/usr/bin/i2pd_qt
 
-          # Desktop file из репозитория
           install -m 644 contrib/website.i2pd.i2pd.desktop \
             AppDir/usr/share/applications/website.i2pd.i2pd.desktop
 
-          # Иконки
-          if [ -f contrib/icons/128x128/apps/website.i2pd.i2pd.png ]; then
-            install -m 644 contrib/icons/128x128/apps/website.i2pd.i2pd.png \
-              AppDir/usr/share/icons/hicolor/128x128/apps/website.i2pd.i2pd.png
-          fi
           if [ -f contrib/icons/256x256/apps/website.i2pd.i2pd.png ]; then
             install -m 644 contrib/icons/256x256/apps/website.i2pd.i2pd.png \
               AppDir/usr/share/icons/hicolor/256x256/apps/website.i2pd.i2pd.png
@@ -86,10 +94,13 @@ jobs:
             cp AppDir/usr/share/icons/hicolor/256x256/apps/website.i2pd.i2pd.png \
                AppDir/website.i2pd.i2pd.png
           elif [ -f AppDir/usr/share/icons/hicolor/128x128/apps/website.i2pd.i2pd.png ]; then
+          elif [ -f contrib/icons/128x128/apps/website.i2pd.i2pd.png ]; then
+            install -m 644 contrib/icons/128x128/apps/website.i2pd.i2pd.png \
+              AppDir/usr/share/icons/hicolor/128x128/apps/website.i2pd.i2pd.png
             cp AppDir/usr/share/icons/hicolor/128x128/apps/website.i2pd.i2pd.png \
                AppDir/website.i2pd.i2pd.png
           else
-            echo "ERROR: no icon found"
+            echo "ERROR: icon not found"
             exit 1
           fi
 
@@ -107,7 +118,7 @@ jobs:
       - name: Bundle Qt and runtime libraries
         env:
           QMAKE: qmake
-          EXTRA_QT_PLUGINS: platforms
+          EXTRA_QT_PLUGINS: platforms;styles;imageformats;iconengines;platformthemes
         run: |
           ./linuxdeploy \
             --appdir AppDir \
@@ -116,9 +127,14 @@ jobs:
             --desktop-file AppDir/usr/share/applications/website.i2pd.i2pd.desktop \
             --icon-file AppDir/website.i2pd.i2pd.png
 
+          # Проверка, что xcb-плагин реально попал внутрь
+          echo "=== platforms ==="
+          find AppDir -name 'libqxcb.so' -o -name 'libqgtk3.so' -o -name 'libqfusion.so' | sort
+          echo "=== Qt libs ==="
+          find AppDir/usr/lib -name 'libQt5*.so*' | sort | head -40
+
       - name: Create AppImage
         env:
-          # Пропустить проверку AppStream (даже если кто-то потом добавит metainfo)
           LDAI_NO_APPSTREAM: "1"
         run: |
           ./linuxdeploy --appdir AppDir --output appimage
