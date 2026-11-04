@@ -33,6 +33,8 @@ jobs:
             qtbase5-dev-tools \
             libqt5gui5 \
             libqt5widgets5 \
+            libqt5svg5 \
+            libqt5svg5-dev \
             libssl-dev \
             libboost-all-dev \
             libminiupnpc-dev \
@@ -54,7 +56,9 @@ jobs:
             libxkbcommon-dev \
             libxkbcommon-x11-dev \
             libx11-xcb-dev \
-            libgl1-mesa-dev
+            libgl1-mesa-dev \
+            qt5-gtk-platformtheme \
+            libqt5xdg3
 
       - name: Build i2pd-qt
         run: |
@@ -86,10 +90,6 @@ jobs:
           if [ -f contrib/icons/256x256/apps/website.i2pd.i2pd.png ]; then
             install -m 644 contrib/icons/256x256/apps/website.i2pd.i2pd.png \
               AppDir/usr/share/icons/hicolor/256x256/apps/website.i2pd.i2pd.png
-          fi
-
-          # Копия иконки в корень AppDir (нужна linuxdeploy/appimagetool)
-          if [ -f AppDir/usr/share/icons/hicolor/256x256/apps/website.i2pd.i2pd.png ]; then
             cp AppDir/usr/share/icons/hicolor/256x256/apps/website.i2pd.i2pd.png \
                AppDir/website.i2pd.i2pd.png
           elif [ -f contrib/icons/128x128/apps/website.i2pd.i2pd.png ]; then
@@ -116,7 +116,9 @@ jobs:
       - name: Bundle Qt and runtime libraries
         env:
           QMAKE: qmake
-          EXTRA_QT_PLUGINS: platforms;styles;imageformats;iconengines;platformthemes
+          # доп. platform plugins (для диагностики и headless)
+          EXTRA_PLATFORM_PLUGINS: libqminimal.so;libqoffscreen.so
+          EXTRA_QT_MODULES: svg
         run: |
           ./linuxdeploy \
             --appdir AppDir \
@@ -125,11 +127,37 @@ jobs:
             --desktop-file AppDir/usr/share/applications/website.i2pd.i2pd.desktop \
             --icon-file AppDir/website.i2pd.i2pd.png
 
-          # Проверка, что xcb-плагин реально попал внутрь
+          QT_PLUGINS="$(qmake -query QT_INSTALL_PLUGINS)"
+          echo "QT_INSTALL_PLUGINS=$QT_PLUGINS"
+
+          # styles (fusion и др.)
+          if [ -d "$QT_PLUGINS/styles" ]; then
+            mkdir -p AppDir/usr/plugins/styles
+            cp -a "$QT_PLUGINS/styles"/. AppDir/usr/plugins/styles/ || true
+          fi
+
+          # platformthemes (gtk2/gtk3) — важно при QT_QPA_PLATFORMTHEME=gtk2
+          if [ -d "$QT_PLUGINS/platformthemes" ]; then
+            mkdir -p AppDir/usr/plugins/platformthemes
+            cp -a "$QT_PLUGINS/platformthemes"/. AppDir/usr/plugins/platformthemes/ || true
+          fi
+
+          # на всякий случай imageformats / iconengines
+          for d in imageformats iconengines; do
+            if [ -d "$QT_PLUGINS/$d" ]; then
+              mkdir -p "AppDir/usr/plugins/$d"
+              cp -a "$QT_PLUGINS/$d"/. "AppDir/usr/plugins/$d/" || true
+            fi
+          done
+
           echo "=== platforms ==="
-          find AppDir -name 'libqxcb.so' -o -name 'libqgtk3.so' -o -name 'libqfusion.so' | sort
-          echo "=== Qt libs ==="
-          find AppDir/usr/lib -name 'libQt5*.so*' | sort | head -40
+          find AppDir -path '*/platforms/*' | sort
+          echo "=== styles ==="
+          find AppDir -path '*/styles/*' | sort
+          echo "=== platformthemes ==="
+          find AppDir -path '*/platformthemes/*' | sort
+          echo "=== qt.conf ==="
+          cat AppDir/usr/bin/qt.conf 2>/dev/null || echo "(no qt.conf)"
 
       - name: Create AppImage
         env:
