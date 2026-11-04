@@ -62,7 +62,8 @@ jobs:
 
       - name: Build i2pd-qt
         run: |
-          qmake i2pd_qt.pro
+          # qmake i2pd_qt.pro
+          qmake i2pd_qt.pro QMAKE_CXXFLAGS+=-g QMAKE_CFLAGS+=-g CONFIG+=debug
           make -j"$(nproc)" USE_UPNP=yes
 
       - name: Install linuxdeploy and Qt plugin
