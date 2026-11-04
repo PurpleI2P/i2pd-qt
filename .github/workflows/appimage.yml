@@ -13,7 +13,6 @@ permissions:
 
 jobs:
   build-appimage:
-    # Ubuntu 22.04 (Jammy)
     runs-on: ubuntu-22.04
 
     steps:
@@ -40,7 +39,9 @@ jobs:
             zlib1g-dev \
             file \
             wget \
-            patchelf
+            patchelf \
+            desktop-file-utils \
+            appstream
 
       - name: Build i2pd-qt
         run: |
@@ -57,10 +58,45 @@ jobs:
             -O linuxdeploy-plugin-qt
           chmod +x linuxdeploy linuxdeploy-plugin-qt
 
-      - name: Prepare AppDir
+      - name: Prepare AppDir (desktop + icon + binary)
         run: |
           mkdir -p AppDir/usr/bin
-          install -m 755 i2pd_qt AppDir/usr/bin/i2pd-qt
+          mkdir -p AppDir/usr/share/applications
+          mkdir -p AppDir/usr/share/icons/hicolor/128x128/apps
+          mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
+          mkdir -p AppDir/usr/share/metainfo
+
+          # Binary (имя должно совпадать с Exec= в .desktop)
+          install -m 755 i2pd_qt AppDir/usr/bin/i2pd_qt
+
+          # Desktop file из репозитория
+          install -m 644 contrib/website.i2pd.i2pd.desktop \
+            AppDir/usr/share/applications/website.i2pd.i2pd.desktop
+
+          # Иконки (берём 128 и 256 — самые полезные размеры)
+          if [ -f contrib/icons/128x128/apps/website.i2pd.i2pd.png ]; then
+            install -m 644 contrib/icons/128x128/apps/website.i2pd.i2pd.png \
+              AppDir/usr/share/icons/hicolor/128x128/apps/website.i2pd.i2pd.png
+          fi
+          if [ -f contrib/icons/256x256/apps/website.i2pd.i2pd.png ]; then
+            install -m 644 contrib/icons/256x256/apps/website.i2pd.i2pd.png \
+              AppDir/usr/share/icons/hicolor/256x256/apps/website.i2pd.i2pd.png
+          fi
+
+          # AppStream metainfo (опционально, но полезно)
+          if [ -f contrib/website.i2pd.i2pd.appdata.xml ]; then
+            install -m 644 contrib/website.i2pd.i2pd.appdata.xml \
+              AppDir/usr/share/metainfo/website.i2pd.i2pd.appdata.xml
+          fi
+
+          # Копия иконки в корень AppDir (linuxdeploy иногда ищет именно там)
+          if [ -f AppDir/usr/share/icons/hicolor/256x256/apps/website.i2pd.i2pd.png ]; then
+            cp AppDir/usr/share/icons/hicolor/256x256/apps/website.i2pd.i2pd.png \
+               AppDir/website.i2pd.i2pd.png
+          elif [ -f AppDir/usr/share/icons/hicolor/128x128/apps/website.i2pd.i2pd.png ]; then
+            cp AppDir/usr/share/icons/hicolor/128x128/apps/website.i2pd.i2pd.png \
+               AppDir/website.i2pd.i2pd.png
+          fi
 
       - name: Bundle Qt and runtime libraries
         env:
@@ -70,7 +106,9 @@ jobs:
           ./linuxdeploy \
             --appdir AppDir \
             --plugin qt \
-            --executable AppDir/usr/bin/i2pd-qt
+            --executable AppDir/usr/bin/i2pd_qt \
+            --desktop-file AppDir/usr/share/applications/website.i2pd.i2pd.desktop \
+            --icon-file AppDir/website.i2pd.i2pd.png
 
       - name: Create AppImage
         run: |
@@ -82,6 +120,8 @@ jobs:
           APPIMAGE="$(find . -maxdepth 1 -name '*.AppImage' -print -quit)"
           test -n "$APPIMAGE"
           mv "$APPIMAGE" i2pd-qt-x86_64.AppImage
+          ls -lh i2pd-qt-x86_64.AppImage
+          file i2pd-qt-x86_64.AppImage
 
       - name: Upload CI artifact
         uses: actions/upload-artifact@v4
