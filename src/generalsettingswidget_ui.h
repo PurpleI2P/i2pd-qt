@@ -353,6 +353,7 @@ public:
     QLabel *i2cp_label_24;
     QLineEdit *i2cpAddressLineEdit;
     QSpacerItem *i2cp_horizontalSpacer_19;
+    QWidget *i2cp_horizontalLayoutWidget_9;
     QHBoxLayout *i2cp_horizontalLayout_26;
     QLabel *i2cp_label_25;
     QLineEdit *i2cpPortLineEdit;
@@ -1970,8 +1971,12 @@ public:
         i2cpEnabledCheckBox = new QCheckBox(i2cpGroupBox);
         i2cpEnabledCheckBox->setObjectName(QString::fromUtf8("i2cpEnabledCheckBox"));
         layi2cp->addWidget(i2cpEnabledCheckBox);
-        i2cp_horizontalLayout_25 = new QHBoxLayout();
+
+        i2cp_horizontalLayoutWidget_8 = new QWidget(i2cpGroupBox);
+        i2cp_horizontalLayoutWidget_8->setObjectName(QString::fromUtf8("i2cp_horizontalLayoutWidget_8"));
+        i2cp_horizontalLayout_25 = new QHBoxLayout(i2cp_horizontalLayoutWidget_8);
         i2cp_horizontalLayout_25->setObjectName(QString::fromUtf8("i2cp_horizontalLayout_25"));
+
         i2cp_label_24 = new QLabel(i2cp_horizontalLayoutWidget_8);
         i2cp_label_24->setObjectName(QString::fromUtf8("i2cp_label_24"));
 
@@ -1979,6 +1984,7 @@ public:
 
         i2cpAddressLineEdit = new QLineEdit(i2cp_horizontalLayoutWidget_8);
         i2cpAddressLineEdit->setObjectName(QString::fromUtf8("i2cpAddressLineEdit"));
+        layi2cp->addWidget(i2cp_horizontalLayoutWidget_8);
 
         i2cp_horizontalLayout_25->addWidget(i2cpAddressLineEdit);
 
@@ -1987,7 +1993,9 @@ public:
         i2cp_horizontalLayout_25->addItem(i2cp_horizontalSpacer_19);
         layi2cp->addLayout(i2cp_horizontalLayout_25);
 
-        i2cp_horizontalLayout_26 = new QHBoxLayout();
+        i2cp_horizontalLayoutWidget_9 = new QWidget(i2cpGroupBox);
+        i2cp_horizontalLayoutWidget_9->setObjectName(QString::fromUtf8("i2cp_horizontalLayoutWidget_8"));
+        i2cp_horizontalLayout_26 = new QHBoxLayout(i2cp_horizontalLayoutWidget_9);
         i2cp_horizontalLayout_26->setObjectName(QString::fromUtf8("i2cp_horizontalLayout_26"));
 
         i2cp_label_25 = new QLabel();
@@ -2005,6 +2013,7 @@ public:
 
         i2cp_horizontalLayout_26->addItem(i2cp_horizontalSpacer_20);
         layi2cp->addLayout(i2cp_horizontalLayout_26);
+        layi2cp->addWidget(i2cp_horizontalLayoutWidget_9);
 
         i2cpSingleThreadCheckBox = new QCheckBox();
         i2cpSingleThreadCheckBox->setObjectName(QString::fromUtf8("i2cpSingleThreadCheckBox"));
