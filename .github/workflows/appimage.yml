@@ -1,0 +1,99 @@
+name: AppImage
+
+on:
+  push:
+    branches:
+      - "**"
+    tags:
+      - "v*"
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  build-appimage:
+    # Ubuntu 22.04 (Jammy)
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            git \
+            make \
+            qt5-qmake \
+            qtbase5-dev \
+            qtbase5-dev-tools \
+            libqt5gui5 \
+            libqt5widgets5 \
+            libssl-dev \
+            libboost-all-dev \
+            libminiupnpc-dev \
+            zlib1g-dev \
+            file \
+            wget \
+            patchelf
+
+      - name: Build i2pd-qt
+        run: |
+          qmake i2pd_qt.pro
+          make -j"$(nproc)" USE_UPNP=yes
+
+      - name: Install linuxdeploy and Qt plugin
+        run: |
+          wget -q \
+            https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage \
+            -O linuxdeploy
+          wget -q \
+            https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage \
+            -O linuxdeploy-plugin-qt
+          chmod +x linuxdeploy linuxdeploy-plugin-qt
+
+      - name: Prepare AppDir
+        run: |
+          mkdir -p AppDir/usr/bin
+          install -m 755 i2pd_qt AppDir/usr/bin/i2pd-qt
+
+      - name: Bundle Qt and runtime libraries
+        env:
+          QMAKE: qmake
+          EXTRA_QT_PLUGINS: platforms
+        run: |
+          ./linuxdeploy \
+            --appdir AppDir \
+            --plugin qt \
+            --executable AppDir/usr/bin/i2pd-qt
+
+      - name: Create AppImage
+        run: |
+          ./linuxdeploy --appdir AppDir --output appimage
+          find . -maxdepth 1 -name '*.AppImage' -print
+
+      - name: Rename AppImage
+        run: |
+          APPIMAGE="$(find . -maxdepth 1 -name '*.AppImage' -print -quit)"
+          test -n "$APPIMAGE"
+          mv "$APPIMAGE" i2pd-qt-x86_64.AppImage
+
+      - name: Upload CI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: i2pd-qt-AppImage
+          path: i2pd-qt-x86_64.AppImage
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Publish AppImage to GitHub Release (tags only)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: i2pd-qt-x86_64.AppImage
+          fail_on_unmatched_files: true
