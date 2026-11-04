@@ -62,8 +62,8 @@ jobs:
 
       - name: Build i2pd-qt
         run: |
-          # qmake i2pd_qt.pro
-          qmake i2pd_qt.pro QMAKE_CXXFLAGS+=-g QMAKE_CFLAGS+=-g CONFIG+=debug
+          qmake i2pd_qt.pro
+          # qmake i2pd_qt.pro QMAKE_CXXFLAGS+=-g QMAKE_CFLAGS+=-g CONFIG+=debug
           make -j"$(nproc)" USE_UPNP=yes
 
       - name: Install linuxdeploy and Qt plugin
@@ -120,7 +120,7 @@ jobs:
           # доп. platform plugins (для диагностики и headless)
           EXTRA_PLATFORM_PLUGINS: libqminimal.so;libqoffscreen.so
           EXTRA_QT_MODULES: svg
-          NO_STRIP: "1"
+          # NO_STRIP: "1"
         run: |
           ./linuxdeploy \
             --appdir AppDir \
@@ -164,7 +164,7 @@ jobs:
       - name: Create AppImage
         env:
           LDAI_NO_APPSTREAM: "1"
-          NO_STRIP: "1"
+          # NO_STRIP: "1"
         run: |
           ./linuxdeploy --appdir AppDir --output appimage
           find . -maxdepth 1 -name '*.AppImage' -print
