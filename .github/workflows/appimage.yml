@@ -92,7 +92,6 @@ jobs:
           if [ -f AppDir/usr/share/icons/hicolor/256x256/apps/website.i2pd.i2pd.png ]; then
             cp AppDir/usr/share/icons/hicolor/256x256/apps/website.i2pd.i2pd.png \
                AppDir/website.i2pd.i2pd.png
-          elif [ -f AppDir/usr/share/icons/hicolor/128x128/apps/website.i2pd.i2pd.png ]; then
           elif [ -f contrib/icons/128x128/apps/website.i2pd.i2pd.png ]; then
             install -m 644 contrib/icons/128x128/apps/website.i2pd.i2pd.png \
               AppDir/usr/share/icons/hicolor/128x128/apps/website.i2pd.i2pd.png
