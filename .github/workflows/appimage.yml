@@ -163,6 +163,7 @@ jobs:
       - name: Create AppImage
         env:
           LDAI_NO_APPSTREAM: "1"
+          NO_STRIP: "1"
         run: |
           ./linuxdeploy --appdir AppDir --output appimage
           find . -maxdepth 1 -name '*.AppImage' -print
