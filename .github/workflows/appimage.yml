@@ -41,7 +41,6 @@ jobs:
             wget \
             patchelf \
             desktop-file-utils \
-            # X11 / xcb runtime, нужные для platform plugin
             libxcb1-dev \
             libxcb-icccm4-dev \
             libxcb-image0-dev \
