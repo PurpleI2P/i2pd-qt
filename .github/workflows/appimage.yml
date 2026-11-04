@@ -120,6 +120,7 @@ jobs:
           # доп. platform plugins (для диагностики и headless)
           EXTRA_PLATFORM_PLUGINS: libqminimal.so;libqoffscreen.so
           EXTRA_QT_MODULES: svg
+          NO_STRIP: "1"
         run: |
           ./linuxdeploy \
             --appdir AppDir \
