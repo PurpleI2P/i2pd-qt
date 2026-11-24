@@ -36,6 +36,10 @@ CONFIG(release, debug|release) {
     I2PDMAKE += DEBUG=no TORRENTS=no
 }
 
+macx {
+    I2PDMAKE += HOMEBREW=1 SDKROOT=$$system(xcrun --show-sdk-path)
+}
+
 SOURCES += \
     src/DaemonQT.cpp \
     src/mainwindow.cpp \
@@ -109,11 +113,11 @@ FORMS += \
 LIBS += $$PWD/src/i2pd/libi2pd.a $$PWD/src/i2pd/libi2pdclient.a $$PWD/src/i2pd/libi2pdlang.a -lz
 
 # doing that way due to race condition made by make
-i2pd_client.commands = cd $$PWD/src/i2pd/ && mkdir -p obj/libi2pd obj/libi2pd_client obj/i18n && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) USE_UPNP=yes TORRENTS=no $$I2PDMAKE mk_obj_dir api_client lang
+i2pd_client.commands = cd $$PWD/src/i2pd/ && mkdir -p obj/libi2pd obj/libi2pd_client obj/i18n && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) USE_UPNP=yes TORRENTS=no $$I2PDMAKE mk_obj_dir libi2pdclient.a libi2pdlang.a
 i2pd_client.target = $$PWD/src/i2pd/libi2pdclient.a
 i2pd_client.depends = i2pd FORCE
 
-i2pd.commands = cd $$PWD/src/i2pd/ && mkdir -p obj/libi2pd obj/libi2pd_client && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) USE_UPNP=yes TORRENTS=no $$I2PDMAKE mk_obj_dir api
+i2pd.commands = cd $$PWD/src/i2pd/ && mkdir -p obj/libi2pd obj/libi2pd_client && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) USE_UPNP=yes TORRENTS=no $$I2PDMAKE mk_obj_dir libi2pd.a
 i2pd.target += $$PWD/src/i2pd/libi2pd.a
 i2pd.depends = FORCE
 
@@ -136,9 +140,13 @@ DEFINES += VCS_COMMIT_INFO="\\\"git:$(shell git -C \""$$_PRO_FILE_PWD_"\" descri
 
 macx {
 	message("using mac os x target")
-	BREWROOT=/usr/local
+	exists(/opt/homebrew) {
+		BREWROOT=/opt/homebrew
+	} else {
+		BREWROOT=/usr/local
+	}
 	BOOSTROOT=$$BREWROOT/opt/boost
-	SSLROOT=$$BREWROOT/opt/libressl
+	SSLROOT=$$BREWROOT/opt/openssl@3.5
 	UPNPROOT=$$BREWROOT/opt/miniupnpc
 	INCLUDEPATH += $$BOOSTROOT/include
 	INCLUDEPATH += $$SSLROOT/include
@@ -146,6 +154,8 @@ macx {
 	LIBS += $$SSLROOT/lib/libssl.a
 	LIBS += $$SSLROOT/lib/libcrypto.a
 	LIBS += $$BOOSTROOT/lib/libboost_program_options.a
+	LIBS += $$BOOSTROOT/lib/libboost_json.a
+	LIBS += $$BOOSTROOT/lib/libboost_url.a
 	LIBS += $$UPNPROOT/lib/libminiupnpc.a
 	LIBS += -Wl,-dead_strip
 	LIBS += -Wl,-dead_strip_dylibs
