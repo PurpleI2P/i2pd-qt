@@ -99,7 +99,7 @@ namespace qt
 
     bool DaemonQTImpl::init(int argc, char* argv[], std::shared_ptr<std::ostream> logstream)
 	{
-		mutex=new QMutex(QMutex::Recursive);
+		mutex=new QRecursiveMutex();
 		setRunningCallback(0);
         m_IsRunning=false;
         return Daemon.init(argc,argv,logstream);
