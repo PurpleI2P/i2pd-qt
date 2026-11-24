@@ -239,7 +239,7 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     initTCPPortBox(     OPTION("httpproxy","port",[]{return "4444";}), uiSettings->httpProxyPortLineEdit, tr("HTTP proxy -> Port"));
     initCheckBox(       OPTION("httpproxy","addresshelper",[]{return "true";}), uiSettings->httpProxyAddressHelperCheckBox);//Enable address helper (jump). true by default
     initFileChooser(    OPTION("httpproxy","keys",[]{return "";}), uiSettings->httpProxyKeyFileLineEdit, uiSettings->httpProxyKeyFilePushButton, false);
-    initSignatureTypeCombobox(OPTION("httpproxy","signaturetype",[]{return "7";}), uiSettings->comboBox_httpPorxySignatureType);
+    initSignatureTypeCombobox(OPTION("httpproxy","signaturetype",[]{return "7";}), uiSettings->comboBox_httpProxySignatureType);
     initStringBox(     OPTION("httpproxy","inbound.length",[]{return "3";}), uiSettings->httpProxyInboundTunnelsLenLineEdit);
     initStringBox(     OPTION("httpproxy","inbound.quantity",[]{return "5";}), uiSettings->httpProxyInboundTunnQuantityLineEdit);
     initStringBox(     OPTION("httpproxy","outbound.length",[]{return "3";}), uiSettings->httpProxyOutBoundTunnLenLineEdit);
@@ -315,7 +315,7 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     initIntegerBox(     OPTION("exploratory","inbound.length",[]{return "2";}), uiSettings->exploratoryInboundTunnelsLengthNumberLineEdit, tr("exploratoryInboundTunnelsLength"));//Exploratory inbound tunnels length. 2 by default
     initIntegerBox(     OPTION("exploratory","inbound.quantity",[]{return "3";}), uiSettings->exploratoryInboundTunnelsQuantityNumberLineEdit, tr("exploratoryInboundTunnelsQuantity"));//Exploratory inbound tunnels quantity. 3 by default
     initIntegerBox(     OPTION("exploratory","outbound.length",[]{return "2";}), uiSettings->exploratoryOutboundTunnelsLengthNumberLineEdit, tr("exploratoryOutboundTunnelsLength"));//Exploratory outbound tunnels length. 2 by default
-    initIntegerBox(     OPTION("exploratory","outbound.quantity",[]{return "3";}), uiSettings->exploratoryOutboundTunnelsQuantityNumberLineEdit, tr("exploratoryOutboundTunnelsQuantity"));//Exploratory outbound tunnels length. 3 by default
+    initIntegerBox(     OPTION("exploratory","outbound.quantity",[]{return "3";}), uiSettings->exploratoryOutboundTunnelsQuantityNumberLineEdit, tr("exploratoryOutboundTunnelsQuantity"));//Exploratory outbound tunnels quantity. 3 by default
 
     initCheckBox(       OPTION("ntcp2","enabled",[]{return "true";}), uiSettings->checkBoxNtcp2Enable); //Enable NTCP2. Enabled by default
     initCheckBox(       OPTION("ntcp2","published",[]{return "false";}), uiSettings->checkBoxNtcp2Published); //Enable incoming NTCP2 connections. Disabled by default
@@ -345,7 +345,7 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
 #endif
 
     widgetlocks.add(new widgetlock(uiSettings->logLevelComboBox,uiSettings->logLevelComboEditPushButton));
-    widgetlocks.add(new widgetlock(uiSettings->comboBox_httpPorxySignatureType,uiSettings->httpProxySignTypeComboEditPushButton));
+    widgetlocks.add(new widgetlock(uiSettings->comboBox_httpProxySignatureType,uiSettings->httpProxySignTypeComboEditPushButton));
     widgetlocks.add(new widgetlock(uiSettings->comboBox_socksProxySignatureType,uiSettings->socksProxySignTypeComboEditPushButton));
 
     loadAllConfigs(saverPtr);

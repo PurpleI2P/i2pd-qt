@@ -4,7 +4,7 @@
 
 ![A screenshot of `i2pd-qt`](https://user-images.githubusercontent.com/19966907/184545373-5df5ce7d-6663-4550-ace6-ede24405d64e.png)
 
- * <i><b>TODO:</b></i> port to mobile devices, too, as Qt allows for Androis and iPhones.
+ * <i><b>TODO:</b></i> port to mobile devices, too, as Qt allows for Android and iPhones.
 
 ## Installation
 
