@@ -18,7 +18,7 @@ void TunnelPane::setupTunnelPane(
         TunnelConfig* tunnelConfig,
         QGroupBox *tunnelGroupBox,
         QVBoxLayout* lay, QComboBox * tunnelTypeComboBox,
-        QWidget *tunnelsFormGridLayoutWidget, int tunnelsRow, int height, int h) {
+        QWidget *tunnelsFormGridLayoutWidget, int /*tunnelsRow*/, int /*height*/, int h) {
     tunnelsFormGridLayoutWidget->resize(527, tunnelsFormGridLayoutWidget->height()+h);
 
     QObject::connect(tunnelTypeComboBox, SIGNAL(currentIndexChanged(int)),
@@ -83,7 +83,7 @@ void TunnelPane::deleteWidget() {
     tunnelGroupBox->deleteLater();
 }
 
-void TunnelPane::appendControlsForI2CPParameters(I2CPParameters& i2cpParameters, int& gridIndex) {
+void TunnelPane::appendControlsForI2CPParameters(I2CPParameters& i2cpParameters, int& /*gridIndex*/) {
     {
         //number of hops of an inbound tunnel
         const QString& inbound_length=i2cpParameters.getInbound_length();

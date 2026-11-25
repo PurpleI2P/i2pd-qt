@@ -34,7 +34,6 @@ public:
     {
         if (routerCommandsWidget->objectName().isEmpty())
             routerCommandsWidget->setObjectName(QString::fromUtf8("routerCommandsWidget"));
-        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         verticalLayout = new QVBoxLayout(routerCommandsWidget);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         verticalLayout->setSizeConstraint(QLayout::SetMaximumSize);

@@ -13,7 +13,9 @@ icons.files = contrib/icons/*
 linux:icons.path = /usr/share/icons/hicolor/
 
 TEMPLATE = app
-QMAKE_CXXFLAGS *= -Wno-unused-parameter -Wno-maybe-uninitialized -Wno-deprecated-copy -std=c++20
+QMAKE_CXXFLAGS *= -std=c++20
+QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter -Wno-deprecated-copy
+!contains(QMAKE_COMPILER, clang): QMAKE_CXXFLAGS_WARN_ON += -Wno-maybe-uninitialized
 CONFIG += strict_c++ c++20
 
 # suppress OpenSSL deprecation warnings

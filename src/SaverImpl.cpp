@@ -18,7 +18,7 @@ SaverImpl::SaverImpl(MainWindow *mainWindowPtr_, QList<MainWindowItem*>* configI
 
 SaverImpl::~SaverImpl() {}
 
-bool SaverImpl::save(bool reloadAfterSave, const FocusEnum focusOn, const std::string& tunnelNameToFocus, QWidget* widgetToFocus) {
+bool SaverImpl::save(bool reloadAfterSave, const FocusEnum focusOn, const std::string& tunnelNameToFocus, QWidget* /*widgetToFocus*/) {
     //save main config
     {
         std::stringstream out;
