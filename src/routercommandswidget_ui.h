@@ -48,7 +48,7 @@ public:
         label->setSizePolicy(sizePolicy1);
         QFont font;
         font.setBold(true);
-        font.setWeight(75);
+        font.setWeight(QFont::Bold);
         label->setFont(font);
 
         verticalLayout->addWidget(label);

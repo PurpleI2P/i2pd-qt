@@ -36,7 +36,7 @@ namespace qt
         void setRunning(bool running);
         void showError(std::string errorMsg);
 	private:
-		QMutex* mutex;
+		QRecursiveMutex* mutex;
         bool m_IsRunning;
 		runningChangedCallback m_RunningChangedCallback;
     };

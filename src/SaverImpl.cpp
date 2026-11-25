@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <sstream>
 
+#include "QFile"
 #include "QList"
 #include "QString"
 
