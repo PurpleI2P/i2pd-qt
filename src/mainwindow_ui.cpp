@@ -4,91 +4,21 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
 {
     centralWidget = new QWidget(mainWindow);
     centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
-    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    //sizePolicy.setHorizontalStretch(0);
-    //sizePolicy.setVerticalStretch(0);
-    //sizePolicy.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
-    centralWidget->setSizePolicy(sizePolicy);
-    centralWidget->setMinimumSize(QSize(908, 600));
-    horizontalLayout = new QHBoxLayout(centralWidget);
-    horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-    horizontalLayout->setSizeConstraint(QLayout::SetMaximumSize);
-    verticalLayout = new QVBoxLayout();
-    verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-    verticalLayout->setSizeConstraint(QLayout::SetMinimumSize);
-    statusPagePushButton = new QPushButton();
-    statusPagePushButton->setObjectName(QString::fromUtf8("statusPagePushButton"));
-    statusPagePushButton->setEnabled(true);
+    centralWidget->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+    mainLayout = new QVBoxLayout(centralWidget);
+    mainLayout->setObjectName(QString::fromUtf8("mainLayout"));
+    mainLayout->setSpacing(6);
 
-    verticalLayout->addWidget(statusPagePushButton);
+    // ---- top-level navigation ----
+    navTabBar = new QTabBar();
+    navTabBar->setObjectName(QString::fromUtf8("navTabBar"));
+    navTabBar->setExpanding(false);
+    navTabBar->setDrawBase(false);
+    for (int i = StatusTab; i <= LogTab; ++i) navTabBar->addTab(QString());
 
-    statusButtonsPane = new QWidget();
-    statusButtonsPane->setObjectName(QString::fromUtf8("statusButtonsPane"));
-    QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    //sizePolicy1.setHorizontalStretch(0);
-    //sizePolicy1.setVerticalStretch(0);
-    //sizePolicy1.setHeightForWidth(statusButtonsPane->sizePolicy().hasHeightForWidth());
-    statusButtonsPane->setSizePolicy(sizePolicy1);
-    //statusButtonsPane->setFixedWidth(172);
+    mainLayout->addWidget(navTabBar, 0, Qt::AlignHCenter);
 
-    verticalLayout->addWidget(statusButtonsPane);
-
-    logViewerPushButton = new QPushButton();
-    logViewerPushButton->setObjectName(QString::fromUtf8("logViewerPushButton"));
-
-    verticalLayout->addWidget(logViewerPushButton);
-
-    settingsPagePushButton = new QPushButton();
-    settingsPagePushButton->setObjectName(QString::fromUtf8("settingsPagePushButton"));
-    settingsPagePushButton->setEnabled(true);
-
-    verticalLayout->addWidget(settingsPagePushButton);
-
-    tunnelsPagePushButton = new QPushButton();
-    tunnelsPagePushButton->setObjectName(QString::fromUtf8("tunnelsPagePushButton"));
-    tunnelsPagePushButton->setEnabled(true);
-
-    verticalLayout->addWidget(tunnelsPagePushButton);
-
-    restartPagePushButton = new QPushButton();
-    restartPagePushButton->setObjectName(QString::fromUtf8("restartPagePushButton"));
-    restartPagePushButton->setEnabled(true);
-
-    verticalLayout->addWidget(restartPagePushButton);
-
-    quitPagePushButton = new QPushButton();
-    quitPagePushButton->setObjectName(QString::fromUtf8("quitPagePushButton"));
-    quitPagePushButton->setEnabled(true);
-
-    verticalLayout->addWidget(quitPagePushButton);
-
-    horizontalSpacer_19 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Minimum);
-
-    verticalLayout->addItem(horizontalSpacer_19);
-
-    verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-    verticalLayout->addItem(verticalSpacer);
-
-    aboutHrefLabel = new QLabel();
-    aboutHrefLabel->setObjectName(QString::fromUtf8("aboutHrefLabel"));
-    QFont font;
-    font.setPointSize(9);
-    aboutHrefLabel->setFont(font);
-    aboutHrefLabel->setContextMenuPolicy(Qt::NoContextMenu);
-    aboutHrefLabel->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-    aboutHrefLabel->setMargin(6);
-    aboutHrefLabel->setIndent(0);
-
-    verticalLayout->addWidget(aboutHrefLabel);
-
-
-    horizontalLayout->addLayout(verticalLayout);
-
-    verticalLayout_7 = new QVBoxLayout();
-    verticalLayout_7->setSpacing(6);
-    verticalLayout_7->setObjectName(QString::fromUtf8("verticalLayout_7"));
-    verticalLayout_7->setSizeConstraint(verticalLayout_7->SetMaximumSize);
+    // ---- validation error banner ----
     wrongInputLabel = new QLabel();
     wrongInputLabel->setObjectName(QString::fromUtf8("wrongInputLabel"));
     wrongInputLabel->setMinimumSize(QSize(0, 30));
@@ -158,104 +88,44 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     wrongInputLabel->setWordWrap(true);
     wrongInputLabel->setMargin(10);
 
-    verticalLayout_7->addWidget(wrongInputLabel);
+    mainLayout->addWidget(wrongInputLabel);
 
     stackedWidget = new QStackedWidget();
     stackedWidget->setObjectName(QString::fromUtf8("stackedWidget"));
     stackedWidget->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding));
+
+    // ---- Status: sub-page list on the left, content on the right ----
     statusPage = new QWidget();
     statusPage->setObjectName(QString::fromUtf8("statusPage"));
-    verticalLayout_5 = new QVBoxLayout(statusPage);
-    verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
-    //verticalLayout_5->setSizeConstraint(QLayout::SetDefaultConstraint);
-    label_4 = new QLabel(statusPage);
-    label_4->setObjectName(QString::fromUtf8("label_4"));
-    QFont font1;
-    font1.setPointSize(15);
-    label_4->setFont(font1);
-    label_4->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed));
-    label_4->setFixedHeight(label_4->sizeHint().height());
+    statusPageLayout = new QHBoxLayout(statusPage);
+    statusPageLayout->setObjectName(QString::fromUtf8("statusPageLayout"));
+    statusPageLayout->setContentsMargins(0, 0, 0, 0);
 
-    verticalLayout_5->addWidget(label_4);
+    statusNavList = new QListWidget(statusPage);
+    statusNavList->setObjectName(QString::fromUtf8("statusNavList"));
+    statusNavList->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Fixed, QSizePolicy::Policy::Expanding));
+    statusNavList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    statusNavList->setSelectionMode(QAbstractItemView::SingleSelection);
+    statusNavList->setUniformItemSizes(true);
+    statusNavList->setSpacing(1);
+    for (int i = 0; i < 9; ++i) statusNavList->addItem(QString());
+
+    statusPageLayout->addWidget(statusNavList);
 
     verticalLayout_2 = new QVBoxLayout();
     verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
-    //verticalLayout_2->setSizeConstraint(QLayout::SetMaximumSize);
 
-    verticalLayout_5->addLayout(verticalLayout_2);
+    statusPageLayout->addLayout(verticalLayout_2, 1);
 
     stackedWidget->addWidget(statusPage);
-    logViewerPage = new QWidget();
-    logViewerPage->setObjectName(QString::fromUtf8("logViewerPage"));
-    logViewerPage->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding));
-    verticalLayout_4_logViewer = new QVBoxLayout(logViewerPage);
-    verticalLayout_4_logViewer->setObjectName(QString::fromUtf8("verticalLayout_4_logViewer"));
-    verticalLayout_4_logViewer->setSizeConstraint(QLayout::SetDefaultConstraint);
-    logViewerTitleLabel = new QLabel(logViewerPage);
-    logViewerTitleLabel->setObjectName(QString::fromUtf8("logViewerTitleLabel"));
-    logViewerTitleLabel->setFont(font1);
-    logViewerTitleLabel->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed));
-    logViewerTitleLabel->setFixedHeight(logViewerTitleLabel->sizeHint().height());
 
-    verticalLayout_4_logViewer->addWidget(logViewerTitleLabel);
-
-    logViewerTextEdit = new QPlainTextEdit(logViewerPage);
-    logViewerTextEdit->setObjectName(QString::fromUtf8("logViewerTextEdit"));
-    logViewerTextEdit->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding));
-    logViewerTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    logViewerTextEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    logViewerTextEdit->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
-    logViewerTextEdit->setMaximumBlockCount(10000);
-    logViewerTextEdit->setProperty("acceptRichText", QVariant(false));
-    logViewerTextEdit->setProperty("widgetResizable", QVariant(true));
-
-    verticalLayout_4_logViewer->addWidget(logViewerTextEdit);
-
-    stackedWidget->addWidget(logViewerPage);
-    settingsPage = new QWidget();
-    settingsPage->setObjectName(QString::fromUtf8("settingsPage"));
-    verticalLayout_4 = new QVBoxLayout(settingsPage);
-    //verticalLayout_4->setSpacing(6);
-    verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
-    //verticalLayout_4->setSizeConstraint(QLayout::SetDefaultConstraint);
-    //verticalLayout_4->setContentsMargins(0, 0, 0, 0);
-    settingsTitleLabel = new QLabel();
-    settingsTitleLabel->setObjectName(QString::fromUtf8("settingsTitleLabel"));
-    settingsTitleLabel->setFont(font1);
-    settingsTitleLabel->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed));
-    settingsTitleLabel->setFixedHeight(settingsTitleLabel->sizeHint().height());
-
-    verticalLayout_4->addWidget(settingsTitleLabel);
-
-    settingsScrollArea = new QScrollArea();
-    settingsScrollArea->setObjectName(QString::fromUtf8("settingsScrollArea"));
-    settingsScrollArea->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding));
-    settingsScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    settingsScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    settingsScrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
-    settingsScrollArea->setWidgetResizable(true);
-    settingsContents = new QWidget();
-    settingsContents->setObjectName(QString::fromUtf8("settingsContents"));
-    settingsContents->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding));
-    settingsScrollArea->setWidget(settingsContents);
-
-    verticalLayout_4->addWidget(settingsScrollArea);
-
-    stackedWidget->addWidget(settingsPage);
+    // ---- Tunnels ----
     tunnelsPage = new QWidget();
     tunnelsPage->setObjectName(QString::fromUtf8("tunnelsPage"));
     verticalLayout_6 = new QVBoxLayout(tunnelsPage);
     verticalLayout_6->setSpacing(6);
     verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
-    verticalLayout_6->setSizeConstraint(QLayout::SetDefaultConstraint);
-    tunnelsTitleLabel = new QLabel();
-    tunnelsTitleLabel->setObjectName(QString::fromUtf8("tunnelsTitleLabel"));
-    tunnelsTitleLabel->setFont(font1);
-    tunnelsTitleLabel->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed));
-    tunnelsTitleLabel->setFixedHeight(tunnelsTitleLabel->sizeHint().height());
-    //tunnelsTitleLabel->setMaximumHeight(tunnelsTitleLabel->sizeHint().height());
-    //tunnelsTitleLabel->setMinimumHeight(50);
-    verticalLayout_6->addWidget(tunnelsTitleLabel);
+    verticalLayout_6->setContentsMargins(0, 0, 0, 0);
 
     horizontalLayout_42 = new QHBoxLayout();
     horizontalLayout_42->setSpacing(6);
@@ -274,12 +144,11 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
 
     horizontalLayout_42->addItem(horizontalSpacer_30);
 
-
     verticalLayout_6->addLayout(horizontalLayout_42);
 
     tunnelsScrollArea = new QScrollArea();
     tunnelsScrollArea->setObjectName(QString::fromUtf8("tunnelsScrollArea"));
-    tunnelsScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    tunnelsScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     tunnelsScrollArea->setWidgetResizable(true);
     tunnelsScrollArea->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
     tunnelsScrollArea->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding));
@@ -288,83 +157,115 @@ void Ui_MainWindow::setupUi(MainWindow *mainWindow)
     QVBoxLayout*tunlay=new QVBoxLayout();
     mainWindow->tunnelsListLayout=tunlay;
     tunnelsScrollAreaWidgetContents->setLayout(tunlay);
-    //tunnelsScrollAreaWidgetContents->setGeometry(QRect(0, 0, 699, 425));
     tunnelsScrollArea->setWidget(tunnelsScrollAreaWidgetContents);
 
     verticalLayout_6->addWidget(tunnelsScrollArea);
 
     stackedWidget->addWidget(tunnelsPage);
-    restartPage = new QWidget();
-    restartPage->setObjectName(QString::fromUtf8("restartPage"));
-    verticalLayout_3 = new QVBoxLayout(restartPage);
-    verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
-    verticalLayout_3->setSizeConstraint(QLayout::SetDefaultConstraint);
-    label_3 = new QLabel(restartPage);
-    label_3->setObjectName(QString::fromUtf8("label_3"));
-    label_3->setFont(font1);
-    label_3->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed));
-    label_3->setFixedHeight(label_3->sizeHint().height());
 
-    verticalLayout_3->addWidget(label_3);
+    // ---- Settings ----
+    settingsPage = new QWidget();
+    settingsPage->setObjectName(QString::fromUtf8("settingsPage"));
+    verticalLayout_4 = new QVBoxLayout(settingsPage);
+    verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
+    verticalLayout_4->setContentsMargins(0, 0, 0, 0);
 
-    doRestartI2PDPushButton = new QPushButton(restartPage);
-    doRestartI2PDPushButton->setObjectName(QString::fromUtf8("doRestartI2PDPushButton"));
+    settingsScrollArea = new QScrollArea();
+    settingsScrollArea->setObjectName(QString::fromUtf8("settingsScrollArea"));
+    settingsScrollArea->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding));
+    settingsScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    settingsScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    settingsScrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
+    settingsScrollArea->setWidgetResizable(true);
+    settingsContents = new QWidget();
+    settingsContents->setObjectName(QString::fromUtf8("settingsContents"));
+    settingsContents->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding));
+    settingsScrollArea->setWidget(settingsContents);
 
-    verticalLayout_3->addWidget(doRestartI2PDPushButton);
+    verticalLayout_4->addWidget(settingsScrollArea);
 
-    verticalSpacer_3 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    stackedWidget->addWidget(settingsPage);
 
-    verticalLayout_3->addItem(verticalSpacer_3);
+    // ---- Log ----
+    logViewerPage = new QWidget();
+    logViewerPage->setObjectName(QString::fromUtf8("logViewerPage"));
+    logViewerPage->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding));
+    verticalLayout_4_logViewer = new QVBoxLayout(logViewerPage);
+    verticalLayout_4_logViewer->setObjectName(QString::fromUtf8("verticalLayout_4_logViewer"));
+    verticalLayout_4_logViewer->setContentsMargins(0, 0, 0, 0);
 
-    stackedWidget->addWidget(restartPage);
-    quitPage = new QWidget();
-    quitPage->setObjectName(QString::fromUtf8("quitPage"));
-    quitPageVerticalLayout = new QVBoxLayout(quitPage);
-    quitPageVerticalLayout->setObjectName(QString::fromUtf8("quitPageVerticalLayout"));
-    quitPageVerticalLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
-    label_2 = new QLabel(quitPage);
-    label_2->setObjectName(QString::fromUtf8("label_2"));
-    label_2->setFont(font1);
-    label_2->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed));
-    label_2->setFixedHeight(label_2->sizeHint().height());
+    logViewerTextEdit = new QPlainTextEdit(logViewerPage);
+    logViewerTextEdit->setObjectName(QString::fromUtf8("logViewerTextEdit"));
+    logViewerTextEdit->setSizePolicy(QSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding));
+    logViewerTextEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    logViewerTextEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    logViewerTextEdit->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
+    logViewerTextEdit->setMaximumBlockCount(10000);
+    logViewerTextEdit->setReadOnly(true);
 
-    quitPageVerticalLayout->addWidget(label_2);
+    verticalLayout_4_logViewer->addWidget(logViewerTextEdit);
 
-    fastQuitPushButton = new QPushButton(quitPage);
-    fastQuitPushButton->setObjectName(QString::fromUtf8("fastQuitPushButton"));
+    stackedWidget->addWidget(logViewerPage);
 
-    quitPageVerticalLayout->addWidget(fastQuitPushButton);
+    mainLayout->addWidget(stackedWidget, 1);
 
-    gracefulQuitPushButton = new QPushButton(quitPage);
-    gracefulQuitPushButton->setObjectName(QString::fromUtf8("gracefulQuitPushButton"));
+    // ---- footer: about link, save, restart, quit ----
+    footerLayout = new QHBoxLayout();
+    footerLayout->setObjectName(QString::fromUtf8("footerLayout"));
 
-    quitPageVerticalLayout->addWidget(gracefulQuitPushButton);
+    aboutHrefLabel = new QLabel();
+    aboutHrefLabel->setObjectName(QString::fromUtf8("aboutHrefLabel"));
+    QFont font;
+    font.setPointSize(9);
+    aboutHrefLabel->setFont(font);
+    aboutHrefLabel->setContextMenuPolicy(Qt::NoContextMenu);
+    aboutHrefLabel->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
 
-    verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-    quitPageVerticalLayout->addItem(verticalSpacer_2);
-
-    stackedWidget->addWidget(quitPage);
-
-    verticalLayout_7->addWidget(stackedWidget);
+    footerLayout->addWidget(aboutHrefLabel);
+    footerLayout->addStretch(1);
 
     saveButtonPane = new QWidget();
+    saveButtonPane->setObjectName(QString::fromUtf8("saveButtonPane"));
     QHBoxLayout *saveButtonLayout = new QHBoxLayout(saveButtonPane);
+    saveButtonLayout->setContentsMargins(0, 0, 0, 0);
     saveButton = new QPushButton();
+    saveButton->setObjectName(QString::fromUtf8("saveButton"));
     saveButtonLayout->addWidget(saveButton);
-
     saveButtonPane->setVisible(false);
-    verticalLayout_7->addWidget(saveButtonPane);
 
+    footerLayout->addWidget(saveButtonPane);
 
-    horizontalLayout->addLayout(verticalLayout_7);
+    restartPushButton = new QPushButton();
+    restartPushButton->setObjectName(QString::fromUtf8("restartPushButton"));
+
+    footerLayout->addWidget(restartPushButton);
+
+    // Quit actions are shared by the Quit dialog and the tray menu
+    gracefulQuitAction = new QAction(mainWindow);
+    gracefulQuitAction->setObjectName(QString::fromUtf8("gracefulQuitAction"));
+    fastQuitAction = new QAction(mainWindow);
+    fastQuitAction->setObjectName(QString::fromUtf8("fastQuitAction"));
+
+    quitPushButton = new QPushButton();
+    quitPushButton->setObjectName(QString::fromUtf8("quitPushButton"));
+
+    footerLayout->addWidget(quitPushButton);
+
+    mainLayout->addLayout(footerLayout);
 
     mainWindow->setCentralWidget(centralWidget);
 
     retranslateUi(mainWindow);
 
-    stackedWidget->setCurrentIndex(1);
+    navTabBar->setCurrentIndex(StatusTab);
+    stackedWidget->setCurrentIndex(StatusTab);
 
-    mainWindow->updateGeometry();
+    // Size the status list to its widest entry
+    statusNavList->setFixedWidth(statusNavList->sizeHintForColumn(0)
+                                 + 2 * statusNavList->frameWidth() + 24);
+
+    mainWindow->setMinimumSize(QSize(640, 480));
+    mainWindow->resize(QSize(908, 640));
+
     QMetaObject::connectSlotsByName(mainWindow);
 } // setupUi

@@ -426,7 +426,6 @@ public:
 
 namespace Ui {
   class MainWindow;
-  class StatusButtonsForm;
   class routerCommandsWidget;
   class GeneralSettingsContentsForm;
 }
@@ -470,6 +469,7 @@ private slots:
     void updated();
 
     void handleQuitButton();
+    void showQuitDialog();
     void handleGracefulQuitButton();
     void handleDoRestartButton();
     void handleGracefulQuitTimerEvent();
@@ -484,7 +484,7 @@ private slots:
     void updateStatusPage();
 
     void showStatusMainPage();
-    void showStatus_commands_Page();
+    void mainTabChanged(int tab);
     void runPeerTest();
     void enableTransit();
     void disableTransit();
@@ -492,19 +492,9 @@ private slots:
 public slots:
     void syncLogLevel (int comboBoxIndex);
 
-    void showStatus_local_destinations_Page();
-    void showStatus_leasesets_Page();
-    void showStatus_tunnels_Page();
-    void showStatus_transit_tunnels_Page();
-    void showStatus_transports_Page();
-    void showStatus_i2p_tunnels_Page();
-    void showStatus_sam_sessions_Page();
-
     void showLogViewerPage();
     void showSettingsPage();
     void showTunnelsPage();
-    void showRestartPage();
-    void showQuitPage();
     void showAboutBox(const QString & href);
 
 private:
@@ -516,6 +506,7 @@ private:
     LogViewerManager *logViewerManagerPtr;
 
     void showStatusPage(StatusPage newStatusPage);
+    void showMainTab(int tab);
 #ifndef ANDROID
     void createActions();
     void createTrayIcon();
@@ -527,7 +518,6 @@ private:
 
 public:
     Ui::MainWindow* ui;
-    Ui::StatusButtonsForm* statusButtonsUI;
     Ui::routerCommandsWidget* routerCommandsUI;
     Ui::GeneralSettingsContentsForm* uiSettings;
     void adjustSizesAccordingToWrongLabel();
@@ -535,7 +525,6 @@ public:
     void preventSaveTunnels();
     bool isPreventSaveTunnelsMode();
 private:
-    int settingsTitleLabelNominalHeight;
     TextBrowserTweaked1 * textBrowser;
     QWidget * routerCommandsParent;
     PageWithBackButton * pageWithBackButton;
@@ -555,7 +544,6 @@ protected:
     void resizeEvent(QResizeEvent* event);
     void onResize();
 
-    void setStatusButtonsVisible(bool visible);
 
     QString getStatusPageHtml(bool showHiddenInfo);
 
