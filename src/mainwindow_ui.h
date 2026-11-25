@@ -10,15 +10,18 @@
 #define UI_MAINWINDOW_H
 
 #include <QtCore/QVariant>
+#include <QAction> // QtWidgets in Qt5, QtGui in Qt6
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QScrollArea>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QTabBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include <mainwindow.h>
@@ -28,86 +31,85 @@ QT_BEGIN_NAMESPACE
 class Ui_MainWindow
 {
 public:
+    // Order of the top-level tabs; also the page order in stackedWidget.
+    enum MainTab { StatusTab = 0, TunnelsTab, SettingsTab, LogTab };
+
     QWidget *centralWidget;
-    QHBoxLayout *horizontalLayout;
-    QVBoxLayout *verticalLayout;
-    QWidget *saveButtonPane;
-    QPushButton *saveButton;
-    QPushButton *statusPagePushButton;
-    QWidget *statusButtonsPane;
-    QPushButton *logViewerPushButton;
-    QPushButton *settingsPagePushButton;
-    QPushButton *tunnelsPagePushButton;
-    QPushButton *restartPagePushButton;
-    QPushButton *quitPagePushButton;
-    QSpacerItem *horizontalSpacer_19;
-    QSpacerItem *verticalSpacer;
-    QLabel *aboutHrefLabel;
-    QVBoxLayout *verticalLayout_7;
+    QVBoxLayout *mainLayout;
+    QTabBar *navTabBar;
     QLabel *wrongInputLabel;
     QStackedWidget *stackedWidget;
+
     QWidget *statusPage;
-    QVBoxLayout *verticalLayout_5;
-    QLabel *label_4;
-    QVBoxLayout *verticalLayout_2;
-    QWidget *logViewerPage;
-    QVBoxLayout *verticalLayout_4_logViewer;
-    QLabel *logViewerTitleLabel;
-    QPlainTextEdit *logViewerTextEdit;
-    QWidget *settingsPage;
-    QVBoxLayout *verticalLayout_4;
-    QLabel *settingsTitleLabel;
-    QScrollArea *settingsScrollArea;
-    QWidget *settingsContents;
+    QHBoxLayout *statusPageLayout;
+    QListWidget *statusNavList;
+    QVBoxLayout *verticalLayout_2; // status content area, filled in by MainWindow
+
     QWidget *tunnelsPage;
     QVBoxLayout *verticalLayout_6;
-    QLabel *tunnelsTitleLabel;
     QHBoxLayout *horizontalLayout_42;
     QPushButton *addClientTunnelPushButton;
     QPushButton *addServerTunnelPushButton;
     QSpacerItem *horizontalSpacer_30;
     QScrollArea *tunnelsScrollArea;
     QWidget *tunnelsScrollAreaWidgetContents;
-    QWidget *restartPage;
-    QVBoxLayout *verticalLayout_3;
-    QLabel *label_3;
-    QPushButton *doRestartI2PDPushButton;
-    QSpacerItem *verticalSpacer_3;
-    QWidget *quitPage;
-    QVBoxLayout *quitPageVerticalLayout;
-    QLabel *label_2;
-    QPushButton *fastQuitPushButton;
-    QPushButton *gracefulQuitPushButton;
-    QSpacerItem *verticalSpacer_2;
+
+    QWidget *settingsPage;
+    QVBoxLayout *verticalLayout_4;
+    QScrollArea *settingsScrollArea;
+    QWidget *settingsContents;
+
+    QWidget *logViewerPage;
+    QVBoxLayout *verticalLayout_4_logViewer;
+    QPlainTextEdit *logViewerTextEdit;
+
+    QHBoxLayout *footerLayout;
+    QLabel *aboutHrefLabel;
+    QWidget *saveButtonPane;
+    QPushButton *saveButton;
+    QPushButton *restartPushButton;
+    QPushButton *quitPushButton;
+    QAction *gracefulQuitAction;
+    QAction *fastQuitAction;
 
     void setupUi(MainWindow *mainWindow);
 
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
+
+        navTabBar->setTabText(StatusTab, QCoreApplication::translate("MainWindow", "Status", nullptr));
+        navTabBar->setTabText(TunnelsTab, QCoreApplication::translate("MainWindow", "Tunnels", nullptr));
+        navTabBar->setTabText(SettingsTab, QCoreApplication::translate("MainWindow", "Settings", nullptr));
+        navTabBar->setTabText(LogTab, QCoreApplication::translate("MainWindow", "Log", nullptr));
+
+        // Order must match MainWindow::StatusPage
+        static const char * const statusPageNames[] = {
+            QT_TRANSLATE_NOOP("MainWindow", "Overview"),
+            QT_TRANSLATE_NOOP("MainWindow", "Router commands"),
+            QT_TRANSLATE_NOOP("MainWindow", "Local destinations"),
+            QT_TRANSLATE_NOOP("MainWindow", "Leasesets"),
+            QT_TRANSLATE_NOOP("MainWindow", "Tunnels"),
+            QT_TRANSLATE_NOOP("MainWindow", "Transit tunnels"),
+            QT_TRANSLATE_NOOP("MainWindow", "Transports"),
+            QT_TRANSLATE_NOOP("MainWindow", "I2P tunnels"),
+            QT_TRANSLATE_NOOP("MainWindow", "SAM sessions"),
+        };
+        for (int i = 0; i < statusNavList->count(); ++i)
+            statusNavList->item(i)->setText(QCoreApplication::translate("MainWindow", statusPageNames[i], nullptr));
+
         saveButton->setText(QCoreApplication::translate("MainWindow", "Save", nullptr));
-        statusPagePushButton->setText(QCoreApplication::translate("MainWindow", "Status", nullptr));
-        logViewerPushButton->setText(QCoreApplication::translate("MainWindow", "Log", nullptr));
-        settingsPagePushButton->setText(QCoreApplication::translate("MainWindow", "General settings", nullptr));
-        tunnelsPagePushButton->setText(QCoreApplication::translate("MainWindow", "Tunnels settings", nullptr));
-        restartPagePushButton->setText(QCoreApplication::translate("MainWindow", "Restart", nullptr));
-        quitPagePushButton->setText(QCoreApplication::translate("MainWindow", "Quit", nullptr));
+        restartPushButton->setText(QCoreApplication::translate("MainWindow", "Restart", nullptr));
+        quitPushButton->setText(QCoreApplication::translate("MainWindow", "Quit", nullptr));
+        gracefulQuitAction->setText(QCoreApplication::translate("MainWindow", "Graceful quit", nullptr));
+        fastQuitAction->setText(QCoreApplication::translate("MainWindow", "Quit now", nullptr));
 #if QT_CONFIG(tooltip)
         aboutHrefLabel->setToolTip(QCoreApplication::translate("MainWindow", "Show app name, version and build date", nullptr));
+        restartPushButton->setToolTip(QCoreApplication::translate("MainWindow", "Restart the i2pd router", nullptr));
 #endif // QT_CONFIG(tooltip)
-        aboutHrefLabel->setText(QCoreApplication::translate("MainWindow", "<html><head/><body><p><a href=\"about:i2pd_qt\"><span style=\"text-decoration: none; color:#a0a0a0;\"><span style=\"font-weight: 500;\">i2pd_qt</span><br/>Version SHORT_VERSION \302\267 About...</span></a></p></body></html>", nullptr));
         wrongInputLabel->setText(QCoreApplication::translate("MainWindow", "wrongInputMessageLabel", nullptr));
-        label_4->setText(QCoreApplication::translate("MainWindow", "Status", nullptr));
-        logViewerTitleLabel->setText(QCoreApplication::translate("MainWindow", "Log", nullptr));
-        settingsTitleLabel->setText(QCoreApplication::translate("MainWindow", "General settings", nullptr));
-        tunnelsTitleLabel->setText(QCoreApplication::translate("MainWindow", "Tunnels settings", nullptr));
         addClientTunnelPushButton->setText(QCoreApplication::translate("MainWindow", "Add Client Tunnel", nullptr));
         addServerTunnelPushButton->setText(QCoreApplication::translate("MainWindow", "Add Server Tunnel", nullptr));
-        label_3->setText(QCoreApplication::translate("MainWindow", "Restart", nullptr));
-        doRestartI2PDPushButton->setText(QCoreApplication::translate("MainWindow", "Restart i2pd", nullptr));
-        label_2->setText(QCoreApplication::translate("MainWindow", "Quit", nullptr));
-        fastQuitPushButton->setText(QCoreApplication::translate("MainWindow", "Quit Now", nullptr));
-        gracefulQuitPushButton->setText(QCoreApplication::translate("MainWindow", "Graceful Quit", nullptr));
     } // retranslateUi
 
 };

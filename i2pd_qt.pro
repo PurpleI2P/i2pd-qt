@@ -105,7 +105,6 @@ INCLUDEPATH += src/i2pd/i18n
 FORMS += \
     src/mainwindow.ui \
     src/tunnelform.ui \
-    src/statusbuttons.ui \
     src/routercommandswidget.ui \
     src/generalsettingswidget.ui \
     src/AboutDialog.ui

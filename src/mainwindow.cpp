@@ -2,7 +2,6 @@
 #include "I2pdQtUtil.h"
 #include "AboutDialog.h"
 #include "mainwindow_ui.h"
-#include "ui_statusbuttons.h"
 #include "routercommandswidget_ui.h"
 #include "generalsettingswidget_ui.h"
 #include <QScrollBar>
@@ -55,7 +54,6 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     ,quitting(false)
 #endif
     ,ui(new Ui::MainWindow)
-    ,statusButtonsUI(new Ui::StatusButtonsForm)
     ,routerCommandsUI(new Ui::routerCommandsWidget)
     ,uiSettings(new Ui::GeneralSettingsContentsForm)
     ,routerCommandsParent(new QWidget(this))
@@ -78,19 +76,16 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     assert(saverPtr!=nullptr);
 
     ui->setupUi(this);
-    statusButtonsUI->setupUi(ui->statusButtonsPane);
     routerCommandsUI->setupUi(routerCommandsParent);
     uiSettings->setupUi(ui->settingsContents);
 
     ui->aboutHrefLabel->setText("<html><head/><body><p><a href='about:i2pd_qt'><span style='text-decoration:none;color:#a0a0a0;'>"
-                                "<span style='font-weight:500;'>i2pd_qt</span><br/>Version " I2PD_VERSION " · About...</span></a></p></body></html>");
+                                "<span style='font-weight:500;'>i2pd_qt</span> · Version " I2PD_VERSION " · About...</span></a></p></body></html>");
 
     routerCommandsParent->hide();
     ui->verticalLayout_2->addWidget(routerCommandsParent);
     //,statusHtmlUI(new Ui::StatusHtmlPaneForm)
     //statusHtmlUI->setupUi(lastStatusWidgetui->statusWidget);
-    ui->statusButtonsPane->setFixedSize(171,300);
-    ui->verticalLayout->setGeometry(QRect(0,0,171,ui->verticalLayout->geometry().height()));
     //ui->statusButtonsPane->adjustSize();
     //ui->centralWidget->adjustSize();
     setWindowTitle(QApplication::translate("AppTitle","I2PD"));
@@ -98,8 +93,6 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     //TODO handle resizes and change the below into resize() call
     onResize();
 
-    ui->stackedWidget->setCurrentIndex(0);
-    ui->settingsScrollArea->resize(uiSettings->settingsContentsQVBoxLayout->sizeHint().width()+10,380);
     //QScrollBar* const barSett = ui->settingsScrollArea->verticalScrollBar();
     //ui->settingsContents->setFixedSize(w, h);
     //ui->settingsContents->setGeometry(QRect(0,0,w,h));
@@ -117,7 +110,6 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     ui->wrongInputLabel->setFixedHeight(ui->wrongInputLabel->sizeHint().height());
     ui->wrongInputLabel->setVisible(false);
 
-    settingsTitleLabelNominalHeight = ui->settingsTitleLabel->height();
 #ifndef ANDROID
     createActions();
     createTrayIcon();
@@ -141,17 +133,15 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
     connect(pageWithBackButton, SIGNAL(backReleased()), this, SLOT(backClickedFromChild()));
     scheduleStatusPageUpdates();
 
-    QObject::connect(ui->statusPagePushButton, SIGNAL(released()), this, SLOT(showStatusMainPage()));
+    QObject::connect(ui->navTabBar, &QTabBar::currentChanged, this, &MainWindow::mainTabChanged);
+    QObject::connect(ui->statusNavList, &QListWidget::currentRowChanged, this, [this](int row) {
+        if (row >= 0) showStatusPage(static_cast<StatusPage>(row));
+    });
+    // Clicking the already-selected entry returns from a detail page (e.g. a local destination)
+    QObject::connect(ui->statusNavList, &QListWidget::itemClicked, this, [this](QListWidgetItem*) {
+        if (pageWithBackButton->isVisible()) showStatusPage(statusPage);
+    });
     showStatusMainPage();
-    QObject::connect(statusButtonsUI->mainPagePushButton, SIGNAL(released()), this, SLOT(showStatusMainPage()));
-    QObject::connect(statusButtonsUI->routerCommandsPushButton, SIGNAL(released()), this, SLOT(showStatus_commands_Page()));
-    QObject::connect(statusButtonsUI->localDestinationsPushButton, SIGNAL(released()), this, SLOT(showStatus_local_destinations_Page()));
-    QObject::connect(statusButtonsUI->leasesetsPushButton, SIGNAL(released()), this, SLOT(showStatus_leasesets_Page()));
-    QObject::connect(statusButtonsUI->tunnelsPushButton, SIGNAL(released()), this, SLOT(showStatus_tunnels_Page()));
-    QObject::connect(statusButtonsUI->transitTunnelsPushButton, SIGNAL(released()), this, SLOT(showStatus_transit_tunnels_Page()));
-    QObject::connect(statusButtonsUI->transportsPushButton, SIGNAL(released()), this, SLOT(showStatus_transports_Page()));
-    QObject::connect(statusButtonsUI->i2pTunnelsPushButton, SIGNAL(released()), this, SLOT(showStatus_i2p_tunnels_Page()));
-    QObject::connect(statusButtonsUI->samSessionsPushButton, SIGNAL(released()), this, SLOT(showStatus_sam_sessions_Page()));
 
     QObject::connect(textBrowser, SIGNAL(mouseReleased()), this, SLOT(statusHtmlPageMouseReleased()));
     QObject::connect(textBrowser, SIGNAL(selectionChanged()), this, SLOT(statusHtmlPageSelectionChanged()));
@@ -162,18 +152,11 @@ MainWindow::MainWindow(std::shared_ptr<std::iostream> logStream_, QWidget *paren
 
     QObject::connect(ui->aboutHrefLabel, SIGNAL(linkActivated(const QString &)), this, SLOT(showAboutBox(const QString &)));
 
-    QObject::connect(ui->logViewerPushButton, SIGNAL(released()), this, SLOT(showLogViewerPage()));
+    QObject::connect(ui->fastQuitAction, &QAction::triggered, this, &MainWindow::handleQuitButton);
+    QObject::connect(ui->gracefulQuitAction, &QAction::triggered, this, &MainWindow::handleGracefulQuitButton);
+    QObject::connect(ui->quitPushButton, &QPushButton::clicked, this, &MainWindow::showQuitDialog);
 
-    QObject::connect(ui->settingsPagePushButton, SIGNAL(released()), this, SLOT(showSettingsPage()));
-
-    QObject::connect(ui->tunnelsPagePushButton, SIGNAL(released()), this, SLOT(showTunnelsPage()));
-    QObject::connect(ui->restartPagePushButton, SIGNAL(released()), this, SLOT(showRestartPage()));
-    QObject::connect(ui->quitPagePushButton, SIGNAL(released()), this, SLOT(showQuitPage()));
-
-    QObject::connect(ui->fastQuitPushButton, SIGNAL(released()), this, SLOT(handleQuitButton()));
-    QObject::connect(ui->gracefulQuitPushButton, SIGNAL(released()), this, SLOT(handleGracefulQuitButton()));
-
-    QObject::connect(ui->doRestartI2PDPushButton, SIGNAL(released()), this, SLOT(handleDoRestartButton()));
+    QObject::connect(ui->restartPushButton, &QPushButton::clicked, this, &MainWindow::handleDoRestartButton);
 
 #   define OPTION(section,option,defaultValueGetter) ConfigOption(QString(section),QString(option))
 
@@ -419,9 +402,12 @@ void MainWindow::updateRouterCommandsButtons() {
 }
 
 void MainWindow::showStatusPage(StatusPage newStatusPage){
-    ui->stackedWidget->setCurrentIndex(0);
-    setStatusButtonsVisible(true);
     statusPage=newStatusPage;
+    {
+        const QSignalBlocker blocker(ui->statusNavList);
+        ui->statusNavList->setCurrentRow(static_cast<int>(newStatusPage));
+    }
+    showMainTab(Ui_MainWindow::StatusTab);
     showHiddenInfoStatusMainPage=false;
     if(newStatusPage!=StatusPage::commands){
         textBrowser->setHtml(getStatusPageHtml(false));
@@ -459,14 +445,21 @@ void MainWindow::showAboutBox(const QString &) {
     (void) dialog.exec();
 }
 
-void MainWindow::showLogViewerPage(){ui->stackedWidget->setCurrentIndex(1);setStatusButtonsVisible(false);}
-void MainWindow::showSettingsPage(){ui->stackedWidget->setCurrentIndex(2);setStatusButtonsVisible(false);}
-void MainWindow::showTunnelsPage(){ui->stackedWidget->setCurrentIndex(3);setStatusButtonsVisible(false);}
-void MainWindow::showRestartPage(){ui->stackedWidget->setCurrentIndex(4);setStatusButtonsVisible(false);}
-void MainWindow::showQuitPage(){ui->stackedWidget->setCurrentIndex(5);setStatusButtonsVisible(false);}
+void MainWindow::showLogViewerPage(){showMainTab(Ui_MainWindow::LogTab);}
+void MainWindow::showSettingsPage(){showMainTab(Ui_MainWindow::SettingsTab);}
+void MainWindow::showTunnelsPage(){showMainTab(Ui_MainWindow::TunnelsTab);}
 
-void MainWindow::setStatusButtonsVisible(bool visible) {
-    ui->statusButtonsPane->setVisible(visible);
+void MainWindow::showMainTab(int tab) {
+    // Selecting the tab triggers mainTabChanged() via QTabBar::currentChanged
+    ui->navTabBar->setCurrentIndex(tab);
+    ui->stackedWidget->setCurrentIndex(tab);
+}
+
+void MainWindow::mainTabChanged(int tab) {
+    ui->stackedWidget->setCurrentIndex(tab);
+    // Refresh the status page when returning to it, unless a detail page is open
+    if (tab == Ui_MainWindow::StatusTab && statusPage != StatusPage::commands && !pageWithBackButton->isVisible())
+        updateStatusPage();
 }
 
 // see also: HTTPServer.cpp
@@ -495,14 +488,6 @@ QString MainWindow::getStatusPageHtml(bool showHiddenInfo) {
 }
 
 void MainWindow::showStatusMainPage() { showStatusPage(StatusPage::main_page); }
-void MainWindow::showStatus_commands_Page() { showStatusPage(StatusPage::commands); }
-void MainWindow::showStatus_local_destinations_Page() { showStatusPage(StatusPage::local_destinations); }
-void MainWindow::showStatus_leasesets_Page() { showStatusPage(StatusPage::leasesets); }
-void MainWindow::showStatus_tunnels_Page() { showStatusPage(StatusPage::tunnels); }
-void MainWindow::showStatus_transit_tunnels_Page() { showStatusPage(StatusPage::transit_tunnels); }
-void MainWindow::showStatus_transports_Page() { showStatusPage(StatusPage::transports); }
-void MainWindow::showStatus_i2p_tunnels_Page() { showStatusPage(StatusPage::i2p_tunnels); }
-void MainWindow::showStatus_sam_sessions_Page() { showStatusPage(StatusPage::sam_sessions); }
 
 
 void MainWindow::scheduleStatusPageUpdates() {
@@ -571,8 +556,9 @@ void MainWindow::toggleVisibilitySlot() {
 void MainWindow::createTrayIcon() {
     trayIconMenu = new QMenu(this);
     trayIconMenu->addAction(toggleWindowVisibleAction);
-    //trayIconMenu->addSeparator();
-    //trayIconMenu->addAction(quitAction);
+    trayIconMenu->addSeparator();
+    trayIconMenu->addAction(ui->gracefulQuitAction);
+    trayIconMenu->addAction(ui->fastQuitAction);
 
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(trayIconMenu);
@@ -605,7 +591,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
         QMessageBox::information(this, tr("i2pd"),
                                  tr("The program will keep running in the "
                                     "system tray. To gracefully terminate the program, "
-                                    "choose <b>Graceful Quit</b> at the main i2pd window."));
+                                    "choose <b>Quit</b> -> <b>Graceful quit</b> in the main i2pd window or the tray menu."));
         hide();
         event->ignore();
     }
@@ -643,13 +629,32 @@ void MainWindow::handleQuitButton() {
     QApplication::instance()->quit();
 }
 
+void MainWindow::showQuitDialog() {
+    QMessageBox box(this);
+    box.setIcon(QMessageBox::Question);
+    box.setWindowTitle(tr("Quit i2pd"));
+    box.setText(tr("How do you want to quit?"));
+    box.setInformativeText(tr("Graceful quit stops accepting new transit tunnels and exits after "
+                              "10 minutes, so tunnels routed through this router can finish. "
+                              "Quit now exits immediately."));
+    QPushButton *graceful = box.addButton(ui->gracefulQuitAction->text(), QMessageBox::AcceptRole);
+    graceful->setEnabled(ui->gracefulQuitAction->isEnabled());
+    QPushButton *now = box.addButton(ui->fastQuitAction->text(), QMessageBox::DestructiveRole);
+    QPushButton *cancel = box.addButton(QMessageBox::Cancel);
+    box.setDefaultButton(graceful->isEnabled() ? graceful : cancel);
+    box.setEscapeButton(cancel);
+    box.exec();
+
+    if (box.clickedButton() == graceful) handleGracefulQuitButton();
+    else if (box.clickedButton() == now) handleQuitButton();
+}
+
 void MainWindow::handleGracefulQuitButton() {
     qDebug("Graceful Quit pressed.");
     if(checkDirtyShowExitDialog())return;
-    ui->gracefulQuitPushButton->setText(QApplication::translate("MainWindow", "Graceful quit is in progress", 0));
-    ui->gracefulQuitPushButton->setEnabled(false);
-    ui->gracefulQuitPushButton->adjustSize();
-    ui->quitPage->adjustSize();
+    ui->gracefulQuitAction->setText(QApplication::translate("MainWindow", "Graceful quit is in progress", 0));
+    ui->gracefulQuitAction->setEnabled(false);
+    ui->quitPushButton->setText(QApplication::translate("MainWindow", "Quitting…", 0));
     i2p::context.SetAcceptsTunnels (false); // stop accepting tunnels
     QTimer::singleShot(10*60*1000//millis
         , this, SLOT(handleGracefulQuitTimerEvent()));
@@ -657,6 +662,14 @@ void MainWindow::handleGracefulQuitButton() {
 
 void MainWindow::handleDoRestartButton() {
     qDebug()<<"Do Restart pressed.";
+    auto reply = QMessageBox::question(
+        this,
+        tr("Restart i2pd"),
+        tr("Restart the i2pd router now? Existing connections and tunnels will be interrupted."),
+        QMessageBox::Ok | QMessageBox::Cancel,
+        QMessageBox::Cancel
+    );
+    if (reply != QMessageBox::Ok) return;
     emit i2pController->restartDaemon();
 }
 
@@ -1114,7 +1127,7 @@ void MainWindow::backClickedFromChild() {
 void MainWindow::adjustSizesAccordingToWrongLabel() {
     if(ui->wrongInputLabel->isVisible()) {
         //int dh = ui->wrongInputLabel->height()+ui->verticalLayout_7->layout()->spacing();
-        ui->verticalLayout_7->invalidate();
+        ui->mainLayout->invalidate();
         //ui->wrongInputLabel->adjustSize();
         //ui->stackedWidget->adjustSize();
         //const auto height = HEIGHT - dh;
@@ -1126,7 +1139,7 @@ void MainWindow::adjustSizesAccordingToWrongLabel() {
         //ui->tunnelsScrollArea->setFixedHeight(height-settingsTitleLabelNominalHeight-ui->horizontalLayout_42->geometry().height()-2*ui->verticalLayout_4->spacing());
         //ui->tunnelsTitleLabel->setFixedHeight(settingsTitleLabelNominalHeight);
     }else{
-        ui->verticalLayout_7->invalidate();
+        ui->mainLayout->invalidate();
         //ui->wrongInputLabel->adjustSize();
         //ui->stackedWidget->adjustSize();
         //ui->stackedWidget->setFixedHeight(HEIGHT);
