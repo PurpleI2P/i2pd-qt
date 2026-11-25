@@ -236,7 +236,7 @@ public:
     QWidget *horizontalLayoutWidget_35;
     QHBoxLayout *horizontalLayout_41;
     QLabel *label_43;
-    QComboBox *comboBox_httpPorxySignatureType;
+    QComboBox *comboBox_httpProxySignatureType;
     QPushButton *httpProxySignTypeComboEditPushButton;
     QSpacerItem *horizontalSpacer_29;
     QCheckBox *httpProxyAddressHelperCheckBox;
@@ -1443,10 +1443,10 @@ public:
 
         horizontalLayout_41->addWidget(label_43);
 
-        comboBox_httpPorxySignatureType = new QComboBox(horizontalLayoutWidget_35);
-        comboBox_httpPorxySignatureType->setObjectName(QString::fromUtf8("comboBox_httpPorxySignatureType"));
+        comboBox_httpProxySignatureType = new QComboBox(horizontalLayoutWidget_35);
+        comboBox_httpProxySignatureType->setObjectName(QString::fromUtf8("comboBox_httpProxySignatureType"));
 
-        horizontalLayout_41->addWidget(comboBox_httpPorxySignatureType);
+        horizontalLayout_41->addWidget(comboBox_httpProxySignatureType);
 
         httpProxySignTypeComboEditPushButton = new QPushButton(horizontalLayoutWidget_35);
         httpProxySignTypeComboEditPushButton->setObjectName(QString::fromUtf8("httpProxySignTypeComboEditPushButton"));

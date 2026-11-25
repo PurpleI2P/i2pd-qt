@@ -1894,7 +1894,7 @@ Comma separated list of base64 identities:</string>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="comboBox_httpPorxySignatureType"/>
+         <widget class="QComboBox" name="comboBox_httpProxySignatureType"/>
         </item>
         <item>
          <widget class="QPushButton" name="httpProxySignTypeComboEditPushButton">
